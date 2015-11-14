@@ -9,6 +9,7 @@
 #define SRC_CGRAPH_H_
 
 #include "../lib/Matrix.h"
+#include<vector>
 
 using namespace std;
 
@@ -21,7 +22,7 @@ public:
    virtual ~CGraph();
 
    // Non-modifying functions
-   void Dijkstra(const int& startVertex, vector<double>&, vector<vector<int>>&);
+   void Dijkstra(const int& startVertex, vector<double>&, vector<vector<int> >&);
 
 private:
    Numeric_lib::Matrix<bool, 2> m_AdjacencyMatrix;

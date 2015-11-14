@@ -22,7 +22,7 @@ CGraph::~CGraph()
    // TODO Auto-generated destructor stub
 }
 
-void CGraph::Dijkstra(const int& startVertex, vector<double>& rShortestDistances, vector<vector<int>>& rOutputRoutes)
+void CGraph::Dijkstra(const int& startVertex, vector<double>& rShortestDistances, vector<vector<int> >& rOutputRoutes)
 {
    // TODO Implement Dijkstra
 }

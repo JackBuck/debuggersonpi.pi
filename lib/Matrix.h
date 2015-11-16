@@ -3,7 +3,7 @@
     warning: this small multidimensional matrix library uses a few features
     not taught in ENGR112 and not explained in elementary textbooks
 
-    (c) Bjarne Stroustrup, Texas A&M University. 
+    (c) Bjarne Stroustrup, Texas A&M University.
 
     Use as you like as long as you acknowledge the source.
 */
@@ -47,7 +47,7 @@ template<class T = double, int D = 1> class Matrix {
     // column() is not (yet) implemented because it requires strides.
     // = has copy semantics
     // ( ) and [ ] are range checked
-    // slice() to give sub-ranges 
+    // slice() to give sub-ranges
 private:
     Matrix();    // this should never be compiled
 };
@@ -113,7 +113,7 @@ template<class T> class Matrix_base {
     // Matrix_base does element-wise operations
 protected:
     T* elem;    // vector? no: we couldn't easily provide a vector for a slice
-    const Index sz;    
+    const Index sz;
     mutable bool owns;
     mutable bool xfer;
 public:
@@ -199,8 +199,8 @@ public:
 
     Matrix(Index n1) : Matrix_base<T>(n1), d1(n1) { }
 
-    Matrix(Row<T,1>& a) : Matrix_base<T>(a.dim1(),a.p), d1(a.dim1()) 
-    { 
+    Matrix(Row<T,1>& a) : Matrix_base<T>(a.dim1(),a.p), d1(a.dim1())
+    {
         // std::cerr << "construct 1D Matrix from Row\n";
     }
 
@@ -211,7 +211,7 @@ public:
         this->base_copy(a);
     }
 
-    template<int n> 
+    template<int n>
     Matrix(const T (&a)[n]) : Matrix_base<T>(n), d1(n)
         // deduce "n" (and "T"), Matrix_base allocates T[n]
     {
@@ -231,7 +231,7 @@ public:
         // does not modify a unless f has been specifically programmed to modify its argument
         // T f(const T&) would be a typical type for f
     {
-        for (Index i = 0; i<this->sz; ++i) this->elem[i] = f(a.elem[i]); 
+        for (Index i = 0; i<this->sz; ++i) this->elem[i] = f(a.elem[i]);
     }
 
     template<class F, class Arg> Matrix(const Matrix& a, F f, const Arg& t1) : Matrix_base<T>(a.size()), d1(a.d1)
@@ -239,7 +239,7 @@ public:
         // does not modify a unless f has been specifically programmed to modify its argument
         // T f(const T&, const Arg&) would be a typical type for f
     {
-        for (Index i = 0; i<this->sz; ++i) this->elem[i] = f(a.elem[i],t1); 
+        for (Index i = 0; i<this->sz; ++i) this->elem[i] = f(a.elem[i],t1);
     }
 
     Matrix& operator=(const Matrix& a)
@@ -264,7 +264,7 @@ public:
 
     void range_check(Index n1) const
     {
-        // std::cerr << "range check: (" << d1 << "): " << n1 << "\n"; 
+        // std::cerr << "range check: (" << d1 << "): " << n1 << "\n";
         if (n1<0 || d1<=n1) error("1D range error: dimension 1");
     }
 
@@ -336,7 +336,7 @@ public:
     Matrix operator~() { return xfer(Matrix(*this,Complement<T>()));  }
 
     template<class F> Matrix apply_new(F f) { return xfer(Matrix(*this,f)); }
-    
+
     void swap_rows(Index i, Index j)
         // swap_rows() uses a row's worth of memory for better run-time performance
         // if you want pairwise swap, just write it yourself
@@ -360,7 +360,7 @@ template<class T> class Matrix<T,2> : public Matrix_base<T> {
 
 protected:
     // for use by Row:
-    Matrix(Index n1, Index n2, T* p) : Matrix_base<T>(n1*n2,p), d1(n1), d2(n2) 
+    Matrix(Index n1, Index n2, T* p) : Matrix_base<T>(n1*n2,p), d1(n1), d2(n2)
     {
         // std::cerr << "construct 3D Matrix from data\n";
     }
@@ -370,7 +370,7 @@ public:
     Matrix(Index n1, Index n2) : Matrix_base<T>(n1*n2), d1(n1), d2(n2) { }
 
     Matrix(Row<T,2>& a) : Matrix_base<T>(a.dim1()*a.dim2(),a.p), d1(a.dim1()), d2(a.dim2())
-    { 
+    {
         // std::cerr << "construct 2D Matrix from Row\n";
     }
 
@@ -381,7 +381,7 @@ public:
         this->base_copy(a);
     }
 
-    template<int n1, int n2> 
+    template<int n1, int n2>
     Matrix(const T (&a)[n1][n2]) : Matrix_base<T>(n1*n2), d1(n1), d2(n2)
         // deduce "n1", "n2" (and "T"), Matrix_base allocates T[n1*n2]
     {
@@ -395,7 +395,7 @@ public:
         // does not modify a unless f has been specifically programmed to modify its argument
         // T f(const T&) would be a typical type for f
     {
-        for (Index i = 0; i<this->sz; ++i) this->elem[i] = f(a.elem[i]); 
+        for (Index i = 0; i<this->sz; ++i) this->elem[i] = f(a.elem[i]);
     }
 
     template<class F, class Arg> Matrix(const Matrix& a, F f, const Arg& t1) : Matrix_base<T>(a.size()), d1(a.d1), d2(a.d2)
@@ -403,7 +403,7 @@ public:
         // does not modify a unless f has been specifically programmed to modify its argument
         // T f(const T&, const Arg&) would be a typical type for f
     {
-        for (Index i = 0; i<this->sz; ++i) this->elem[i] = f(a.elem[i],t1); 
+        for (Index i = 0; i<this->sz; ++i) this->elem[i] = f(a.elem[i],t1);
     }
 
     Matrix& operator=(const Matrix& a)
@@ -416,7 +416,7 @@ public:
     }
 
     ~Matrix() { }
-    
+
     Index dim1() const { return d1; }    // number of elements in a row
     Index dim2() const { return d2; }    // number of elements in a column
 
@@ -501,7 +501,7 @@ public:
     Matrix operator~() { return xfer(Matrix(*this,Complement<T>()));  }
 
     template<class F> Matrix apply_new(F f) { return xfer(Matrix(*this,f)); }
-    
+
     void swap_rows(Index i, Index j)
         // swap_rows() uses a row's worth of memory for better run-time performance
         // if you want pairwise swap, just write it yourself
@@ -526,7 +526,7 @@ template<class T> class Matrix<T,3> : public Matrix_base<T> {
 
 protected:
     // for use by Row:
-    Matrix(Index n1, Index n2, Index n3, T* p) : Matrix_base<T>(n1*n2*n3,p), d1(n1), d2(n2), d3(n3) 
+    Matrix(Index n1, Index n2, Index n3, T* p) : Matrix_base<T>(n1*n2*n3,p), d1(n1), d2(n2), d3(n3)
     {
         // std::cerr << "construct 3D Matrix from data\n";
     }
@@ -536,7 +536,7 @@ public:
     Matrix(Index n1, Index n2, Index n3) : Matrix_base<T>(n1*n2*n3), d1(n1), d2(n2), d3(n3) { }
 
     Matrix(Row<T,3>& a) : Matrix_base<T>(a.dim1()*a.dim2()*a.dim3(),a.p), d1(a.dim1()), d2(a.dim2()), d3(a.dim3())
-    { 
+    {
         // std::cerr << "construct 3D Matrix from Row\n";
     }
 
@@ -547,7 +547,7 @@ public:
         this->base_copy(a);
     }
 
-    template<int n1, int n2, int n3> 
+    template<int n1, int n2, int n3>
     Matrix(const T (&a)[n1][n2][n3]) : Matrix_base<T>(n1*n2), d1(n1), d2(n2), d3(n3)
         // deduce "n1", "n2", "n3" (and "T"), Matrix_base allocates T[n1*n2*n3]
     {
@@ -563,7 +563,7 @@ public:
         // does not modify a unless f has been specifically programmed to modify its argument
         // T f(const T&) would be a typical type for f
     {
-        for (Index i = 0; i<this->sz; ++i) this->elem[i] = f(a.elem[i]); 
+        for (Index i = 0; i<this->sz; ++i) this->elem[i] = f(a.elem[i]);
     }
 
     template<class F, class Arg> Matrix(const Matrix& a, F f, const Arg& t1) : Matrix_base<T>(a.size()), d1(a.d1), d2(a.d2), d3(a.d3)
@@ -571,7 +571,7 @@ public:
         // does not modify a unless f has been specifically programmed to modify its argument
         // T f(const T&, const Arg&) would be a typical type for f
     {
-        for (Index i = 0; i<this->sz; ++i) this->elem[i] = f(a.elem[i],t1); 
+        for (Index i = 0; i<this->sz; ++i) this->elem[i] = f(a.elem[i],t1);
     }
 
     Matrix& operator=(const Matrix& a)
@@ -605,7 +605,7 @@ public:
     }
 
     // subscripting:
-          T& operator()(Index n1, Index n2, Index n3)       { range_check(n1,n2,n3); return this->elem[d2*d3*n1+d3*n2+n3]; }; 
+          T& operator()(Index n1, Index n2, Index n3)       { range_check(n1,n2,n3); return this->elem[d2*d3*n1+d3*n2+n3]; };
     const T& operator()(Index n1, Index n2, Index n3) const { range_check(n1,n2,n3); return this->elem[d2*d3*n1+d3*n2+n3]; };
 
     // slicing (return a row):
@@ -655,7 +655,7 @@ public:
     template<class F> Matrix& apply(F f,const T& c) { this->base_apply(f,c); return *this; }
 
     Matrix& operator=(const T& c)  { this->base_apply(Assign<T>(),c);       return *this; }
-                                                                            
+
     Matrix& operator*=(const T& c) { this->base_apply(Mul_assign<T>(),c);   return *this; }
     Matrix& operator/=(const T& c) { this->base_apply(Div_assign<T>(),c);   return *this; }
     Matrix& operator%=(const T& c) { this->base_apply(Mod_assign<T>(),c);   return *this; }
@@ -671,13 +671,13 @@ public:
     Matrix operator~() { return xfer(Matrix(*this,Complement<T>()));  }
 
     template<class F> Matrix apply_new(F f) { return xfer(Matrix(*this,f)); }
-    
+
     void swap_rows(Index i, Index j)
         // swap_rows() uses a row's worth of memory for better run-time performance
         // if you want pairwise swap, just write it yourself
     {
         if (i == j) return;
-        
+
         Matrix<T,2> temp = (*this)[i];
         (*this)[i] = (*this)[j];
         (*this)[j] = temp;
@@ -750,7 +750,7 @@ public:
     Row(Index n1, Index n2, T* p) : Matrix<T,2>(n1,n2,p)
     {
     }
-        
+
     Matrix<T,2>& operator=(const T& c) { this->base_apply(Assign<T>(),c); return *this; }
 
     Matrix<T,2>& operator=(const Matrix<T,2>& a)

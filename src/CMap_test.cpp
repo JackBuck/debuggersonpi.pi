@@ -6,7 +6,7 @@
 #include<fstream>
 
 
-int main()
+inline int CMap_test()
 {
 	std::ofstream myfile;
 	myfile.open("example.txt");
@@ -22,7 +22,9 @@ int main()
 	myfile.close();
 
 	std::string filepath = "5x5testmap1.txt";
-	CMap::CMap(filepath);
+	CMap aMap {filepath};
+//	CMap::CMap(filepath);
 
-	system("pause");
+	return 0;
+
 }

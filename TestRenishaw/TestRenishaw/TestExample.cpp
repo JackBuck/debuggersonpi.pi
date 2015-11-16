@@ -13,4 +13,5 @@ inline void keep_window_open()
 int main()
 {
 	cout << "Hello world! \n";
+	keep_window_open();
 }

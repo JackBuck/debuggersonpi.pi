@@ -1,5 +1,6 @@
 ## Stuff to be ignored from Jack's computer
 /Debug/
+/.settings/
 /.cproject
 /.project
 

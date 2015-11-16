@@ -1,4 +1,3 @@
-
 /*
     warning: this small multidimensional matrix library uses a few features
     not taught in ENGR112 and not explained in elementary textbooks

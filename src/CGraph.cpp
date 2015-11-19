@@ -2,7 +2,7 @@
  * CGraph.cpp
  *
  *  Created on: 13 Nov 2015
- *      Author: jack
+ *      Author: Jack Buckingham
 */
 
 //#include "CGraph.h"

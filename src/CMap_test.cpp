@@ -17,7 +17,7 @@ int CMap_test()
 
 	myfile.close();
 
-	std::string filepath = "5x5testmap1.txt";
+	std::string filepath = "../TestData/5x5testmap1.txt";
 	CMap Maze(filepath);
 
 	return 0;

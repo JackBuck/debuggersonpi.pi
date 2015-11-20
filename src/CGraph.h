@@ -57,7 +57,7 @@ public:
 	void Dijkstra(const int& startVertex, vector<double>&, vector<vector<int> >&);
 
 private:
-	vector<vector<int> > m_AdjacencyMatrix;
+	vector<vector<bool> > m_AdjacencyMatrix;
 	vector<vector<double> > m_DistanceMatrix;
 };
 

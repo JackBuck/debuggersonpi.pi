@@ -1,12 +1,8 @@
-
-
-
 #include "CMap.h"
 #include<iostream>
 #include<fstream>
 
-
-int main()
+int CMap_test()
 {
 	std::ofstream myfile;
 	myfile.open("example.txt", std::fstream::out);
@@ -21,8 +17,8 @@ int main()
 
 	myfile.close();
 
-	std::string filepath = "5x5testmap1.txt";
+	std::string filepath = "../TestData/5x5testmap1.txt";
 	CMap Maze(filepath);
 
-	system("pause");
+	return 0;
 }

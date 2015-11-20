@@ -34,6 +34,7 @@ public:
 	class InputDistMat_NotSquareMatrix
 	{
 		vector<vector<double> > mm_DistanceMatrix;
+		public:
 		InputDistMat_NotSquareMatrix(vector<vector<double> > distanceMatrix)
 				: mm_DistanceMatrix { distanceMatrix }
 		{
@@ -42,6 +43,7 @@ public:
 	class InputDistMat_InvalidElements
 	{
 		vector<vector<double> > mm_DistanceMatrix;
+		public:
 		InputDistMat_InvalidElements(vector<vector<double> > distanceMatrix)
 				: mm_DistanceMatrix
 						{ distanceMatrix }

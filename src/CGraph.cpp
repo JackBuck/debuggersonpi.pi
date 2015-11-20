@@ -23,10 +23,11 @@ CGraph::CGraph(const vector<vector<double> >& distanceMatrix)
 		: m_DistanceMatrix { distanceMatrix }
 {
 	// Get dimensions and check the input is a matrix and is square
-	int& d = distanceMatrix.size();
+	int d = distanceMatrix.size();
 	for (int i = 0; i < d; ++i)
 	{
-		if (d != distanceMatrix[i].size())
+		int d_new = distanceMatrix[i].size();
+		if (d != d_new)
 		{
 			throw InputDistMat_NotSquareMatrix { distanceMatrix };
 		}
@@ -45,10 +46,10 @@ CGraph::CGraph(const vector<vector<double> >& distanceMatrix)
 	}
 
 	// Create adjacency matrix
-	m_AdjacencyMatrix = vector(d);
+	m_AdjacencyMatrix = vector < vector<int> > (d);
 	for (int i = 0; i < d; ++i)
 	{
-		m_AdjacencyMatrix[i] = vector(d);
+		m_AdjacencyMatrix[i] = vector<int>(d);
 		for (int j = 0; j < d; ++j)
 		{
 			if (distanceMatrix[i][j] >= 0)

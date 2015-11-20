@@ -106,9 +106,9 @@ void CMap::CreateRoomMap()
 	int room_height = m_height/3;
 	int room_width = m_width/3;
 
-	for(int height_index=0; height_index < room_height; height_index++)
+	for(int height_index=0; height_index < 1/*room_height*/; height_index++)
 	{ 
-		for(int width_index=0; width_index< room_width; width_index++)
+		for(int width_index=0; width_index< 1/*room_width*/; width_index++)
 		{
 			vector<bool> room_flag;
 			room_flag.assign(16, true);
@@ -116,12 +116,25 @@ void CMap::CreateRoomMap()
 			if(m_map[3*height_index][(3*width_index)+1] == 0)
 			{ 
 				room_flag[Cross] = false;
+				room_flag[North] = false;
 				room_flag[NorthEast] = false;
 				room_flag[NorthSouth] = false;
 				room_flag[NorthWest] = false;
 				room_flag[NorthEastSouth] = false;
 				room_flag[NorthSouthWest] = false;
-				room_flag[North] = false;
+				room_flag[NorthEastWest] = false;
+				
+			}
+			else
+			{
+				room_flag[Empty] = false; 
+				room_flag[East] = false;
+				room_flag[South] = false;
+				room_flag[West] = false;
+				room_flag[EastSouth] = false;
+				room_flag[SouthWest] = false;
+				room_flag[EastWest] = false;
+				room_flag[EastSouthWest] = false;
 			}
 
 
@@ -133,6 +146,12 @@ void CMap::CreateRoomMap()
 				room_flag[SouthWest] = false;
 				room_flag[West] = false;
 			}
+
+			else
+			{
+
+			}
+
 
 			if (m_map[3 * height_index + 1][(3 * width_index)] == 0)
 			{

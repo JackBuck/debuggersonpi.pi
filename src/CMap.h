@@ -20,7 +20,7 @@
 
 enum room_type
 {
-	Blank,
+	Empty,
 	Cross,
 	NorthSouth,
 	EastWest,

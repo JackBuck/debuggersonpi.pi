@@ -30,7 +30,15 @@ using namespace std;
 class CGraph
 {
 public:
-	// Exceptions
+	// === Constructors and Destructors =============================================================
+	CGraph(const vector<vector<double> >& distanceMatrix);
+	virtual ~CGraph();
+
+	// === Public Functions =========================================================================
+	// Non-modifying functions
+	void Dijkstra(const int& startVertex, vector<double>&, vector<vector<int> >&);
+
+	// === Exceptions ===============================================================================
 	class InputDistMat_NotSquareMatrix
 	{
 		vector<vector<double> > mm_DistanceMatrix;
@@ -51,16 +59,12 @@ public:
 		}
 	};
 
-	// Constructors and destructors
-	CGraph(const vector<vector<double> >& distanceMatrix);
-	virtual ~CGraph();
-
-	// Non-modifying functions
-	void Dijkstra(const int& startVertex, vector<double>&, vector<vector<int> >&);
-
 private:
+	// === Member Variables =========================================================================
 	vector<vector<int> > m_AdjacencyMatrix;
 	vector<vector<double> > m_DistanceMatrix;
+	long unsigned int m_Order;
+
 };
 
 #endif // SRC_CGRAPH_H_

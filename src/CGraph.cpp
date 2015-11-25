@@ -20,9 +20,12 @@
  *
  */
 
-CGraph::CGraph(const vector<vector<double> >& distanceMatrix)
+CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 		: m_DistanceMatrix { distanceMatrix }, m_Order { distanceMatrix.size() }
 {
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//// Check Inputs ////
+
 	// Get dimensions and check the input is a matrix and is square
 	for (int i = 0; i < m_Order; ++i)
 	{
@@ -45,23 +48,28 @@ CGraph::CGraph(const vector<vector<double> >& distanceMatrix)
 		}
 	}
 
-	// Create adjacency matrix
-	m_AdjacencyMatrix = vector < vector<int> > (m_Order);
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//// Create adjacency matrix ////
+
+	// Allocate space in matrix
+	m_AdjacencyMatrix.resize(m_Order);
+
 	for (int i = 0; i < m_Order; ++i)
 	{
-		m_AdjacencyMatrix[i] = vector<int>(m_Order);
+		// Create the matrix one row at a time.
 		for (int j = 0; j < m_Order; ++j)
 		{
 			if (distanceMatrix[i][j] >= 0 && i != j)
 			{
-				m_AdjacencyMatrix[i][j] = 1;
+				m_AdjacencyMatrix[i].push_back(true);
 			}
 			else
 			{
-				m_AdjacencyMatrix[i][j] = 0;
+				m_AdjacencyMatrix[i].push_back(false);
 			}
 		}
 	}
+
 }
 
 /* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -108,7 +116,7 @@ void CGraph::Dijkstra(const int& startVertex, vector<double>& shortestDistances,
 	outputRoutes = vector < vector<int> > (m_Order);
 	for (int i = 0; i < m_Order; ++i)
 	{
-		if (i == startVertex || m_AdjacencyMatrix[startVertex][i] == 1)
+		if (i == startVertex || m_AdjacencyMatrix[startVertex][i])
 		{
 			shortestDistances[i] = m_DistanceMatrix[startVertex][i];
 		}
@@ -152,7 +160,7 @@ void CGraph::Dijkstra(const int& startVertex, vector<double>& shortestDistances,
 		// Update shortest distances and shortest paths
 		for (int i = 0; i < m_Order; ++i)
 		{
-			if (!knownDistances[i] && m_AdjacencyMatrix[nextClosest][i] == 1
+			if (!knownDistances[i] && m_AdjacencyMatrix[nextClosest][i]
 					&& shortestDistances[i] > shortestDistances[nextClosest] + m_DistanceMatrix[nextClosest][i])
 			// For each neighbour i of nextClosest whose shortest distance to startVertex we do not yet know,
 			// if it is faster to go via nextClosest, then update shortestDistances and outputRoutes

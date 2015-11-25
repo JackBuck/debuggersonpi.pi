@@ -21,10 +21,9 @@ using namespace std;
  *               https://en.wikipedia.org/wiki/Dijkstra's_algorithm
  *
  * Member variables:
- *  - m_distance matrix  = A distance matrix for the graph. Use -1 to indicate an infinite distance.
- *  - m_adjacency matrix = An adjacency matrix for the graph. This should be kept consistent with
- *                         distance matrix.
- *
+ *  - m_DistanceMatrix  = A distance matrix for the graph. Use -1 to indicate an infinite distance.
+ *  - m_AdjacencyMatrix = An adjacency matrix for the graph. This should be kept consistent with
+ *                        distance matrix.
  *
  */
 class CGraph
@@ -36,33 +35,31 @@ public:
 
 	// === Public Functions =========================================================================
 	// Non-modifying functions
-	void Dijkstra(const int& startVertex, vector<double>&, vector<vector<int> >&);
+	void Dijkstra(const int& startVertex, vector<double>& shortestDistances, vector<vector<int> >& outputRoutes);
 
 	// === Exceptions ===============================================================================
-	class InputDistMat_NotSquareMatrix
+	// TODO Derive these exceptions from a standard exception so they can be caught by generic exception handlers?
+	struct InputDistMat_NotSquareMatrix
 	{
 		vector<vector<double> > mm_DistanceMatrix;
-		public:
 		InputDistMat_NotSquareMatrix(vector<vector<double> > distanceMatrix)
 				: mm_DistanceMatrix { distanceMatrix }
 		{
 		}
 	};
-	class InputDistMat_InvalidElements
+	struct InputDistMat_InvalidElements
 	{
 		vector<vector<double> > mm_DistanceMatrix;
-		public:
 		InputDistMat_InvalidElements(vector<vector<double> > distanceMatrix)
-				: mm_DistanceMatrix
-						{ distanceMatrix }
+				: mm_DistanceMatrix { distanceMatrix }
 		{
 		}
 	};
 
 private:
 	// === Member Variables =========================================================================
-	vector<vector<int> > m_AdjacencyMatrix;
 	vector<vector<double> > m_DistanceMatrix;
+	vector<vector<bool> > m_AdjacencyMatrix;
 	long unsigned int m_Order;
 
 };

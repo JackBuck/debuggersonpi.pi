@@ -27,7 +27,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 	//// Check Inputs ////
 
 	// Get dimensions and check the input is a matrix and is square
-	for (int i = 0; i < m_Order; ++i)
+	for (long unsigned int i = 0; i < m_Order; ++i)
 	{
 		long unsigned int rowLength = distanceMatrix[i].size();
 		if (m_Order != rowLength)
@@ -37,9 +37,9 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 	}
 
 	// Check elements are valid
-	for (int i = 0; i < m_Order; ++i)
+	for (long unsigned int i = 0; i < m_Order; ++i)
 	{
-		for (int j = 0; j < m_Order; ++j)
+		for (long unsigned int j = 0; j < m_Order; ++j)
 		{
 			if (distanceMatrix[i][j] < 0 && distanceMatrix[i][j] != -1)
 			{
@@ -54,10 +54,10 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 	// Allocate space in matrix
 	m_AdjacencyMatrix.resize(m_Order);
 
-	for (int i = 0; i < m_Order; ++i)
+	for (long unsigned int i = 0; i < m_Order; ++i)
 	{
 		// Create the matrix one row at a time.
-		for (int j = 0; j < m_Order; ++j)
+		for (long unsigned int j = 0; j < m_Order; ++j)
 		{
 			if (distanceMatrix[i][j] >= 0 && i != j)
 			{
@@ -114,7 +114,7 @@ void CGraph::Dijkstra(const int& startVertex, vector<double>& shortestDistances,
 	// Delete contents of, resize and set initial values of shortestDistances and outputRoutes
 	shortestDistances = vector<double>(m_Order); //TODO Will this and the line below defeat the point of passing by reference?
 	outputRoutes = vector < vector<int> > (m_Order);
-	for (int i = 0; i < m_Order; ++i)
+	for (long unsigned int i = 0; i < m_Order; ++i)
 	{
 		if (i == startVertex || m_AdjacencyMatrix[startVertex][i])
 		{
@@ -131,7 +131,7 @@ void CGraph::Dijkstra(const int& startVertex, vector<double>& shortestDistances,
 	// Initialise knownDistances
 	vector<bool>
 	knownDistances(m_Order);
-	for (int i = 0; i < m_Order; ++i)
+	for (long unsigned int i = 0; i < m_Order; ++i)
 	{
 		knownDistances[i] = false;
 	}
@@ -144,7 +144,7 @@ void CGraph::Dijkstra(const int& startVertex, vector<double>& shortestDistances,
 		// Find the vertex with the shortest unconfirmed shortestDistance to startVertex
 		int nextClosest = -1;
 		double nextShortestDistance = -1;
-		for (int i = 0; i < m_Order; ++i)
+		for (long unsigned int i = 0; i < m_Order; ++i)
 		{
 			if (!knownDistances[i]
 					&& (nextShortestDistance == -1 || shortestDistances[i] < nextShortestDistance)) // TODO Check precedences of ! and && here!
@@ -158,7 +158,7 @@ void CGraph::Dijkstra(const int& startVertex, vector<double>& shortestDistances,
 		}
 
 		// Update shortest distances and shortest paths
-		for (int i = 0; i < m_Order; ++i)
+		for (long unsigned int i = 0; i < m_Order; ++i)
 		{
 			if (!knownDistances[i] && m_AdjacencyMatrix[nextClosest][i]
 					&& shortestDistances[i] > shortestDistances[nextClosest] + m_DistanceMatrix[nextClosest][i])
@@ -177,7 +177,7 @@ void CGraph::Dijkstra(const int& startVertex, vector<double>& shortestDistances,
 
 		// TODO Make this more efficient?
 		moreVertices = false;
-		for (int i = 0; i < m_Order; ++i)
+		for (long unsigned int i = 0; i < m_Order; ++i)
 		{
 			if (!knownDistances[i] && shortestDistances[i] != -1)
 				moreVertices = true;

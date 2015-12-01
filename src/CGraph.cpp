@@ -11,6 +11,8 @@
 
 /* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function is a constructor for the CGraph class. It takes inputs for the distance matrix.
+ * distanceMatrix[i][j] should be: - the distance from vertex i to vertex j.
+ *                                 - -1 if vertices i and j are not adjacent (so infinite distance)
  *
  * It checks that
  *   - The vector<vector<double> > is a matrix and is square.

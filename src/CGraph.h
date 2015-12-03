@@ -30,12 +30,12 @@ class CGraph
 {
 public:
 	// === Constructors and Destructors =============================================================
-	CGraph(const vector<vector<double> >& distanceMatrix);
+	explicit CGraph(const vector<vector<double> >& distanceMatrix);
 	virtual ~CGraph();
 
 	// === Public Functions =========================================================================
 	// Non-modifying functions
-	void Dijkstra(const int& startVertex, vector<double>& shortestDistances, vector<vector<int> >& outputRoutes);
+	void Dijkstra(const int& startVertex, vector<double>& shortestDistances, vector<int>& outputRoutes);
 
 	// === Exceptions ===============================================================================
 	// TODO Derive these exceptions from a standard exception so they can be caught by generic exception handlers?

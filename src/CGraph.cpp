@@ -21,7 +21,7 @@
  * It also initialises the adjacency matrix using the distance matrix.
  *
  */
-
+// TODO Check that distance matrix dimensions to fit into a signed integer and cast or throw an exception accordingly
 CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 		: m_DistanceMatrix { distanceMatrix }, m_Order { distanceMatrix.size() }
 {
@@ -95,12 +95,16 @@ CGraph::~CGraph()
  * 	                    the startVertex to each vertex of the graph.
  * 	                    A value of -1 will be used to indicate that the vertex is not connected to
  * 	                    startVertex.
- * 	outputRoutes      - A vector of vectors of integers will be populated to contain examples of
- * 	                    paths from the startVertex to each vertex of the graph which have the
- * 	                    shortest total distance.
+ * 	outputRoutes      - A vector of integers will be populated to define examples of paths from
+ * 	                    the startVertex to each vertex of the graph which have the shortest total
+ * 	                    distance. The union of the example paths form a tree which is defined here
+ * 	                    by setting outputRoutes[i] to be the 'parent' of vertex i in the tree.
+ * 	                    By default, outputRoutes[startVertex] = startVertex. If a vertex i is not
+ * 	                    part of the same connected component as startVertex then outputRoutes[i]
+ * 	                    is -1.
  *
  */
-void CGraph::Dijkstra(const int& startVertex, vector<double>& shortestDistances, vector<vector<int> >& outputRoutes)
+void CGraph::Dijkstra(const int& startVertex, vector<double>& shortestDistances, vector<int>& outputRoutes)
 {
 	// TODO Make outputRoutes more memory efficient (and hence speed up algorithm to avoid frequently copying lots of memory)
 	// E.g. Just store the vertex you should go through next?
@@ -114,29 +118,17 @@ void CGraph::Dijkstra(const int& startVertex, vector<double>& shortestDistances,
 	}
 
 	// Delete contents of, resize and set initial values of shortestDistances and outputRoutes
-	shortestDistances = vector<double>(m_Order); //TODO Will this and the line below defeat the point of passing by reference?
-	outputRoutes = vector < vector<int> > (m_Order);
+	shortestDistances = vector<double>(m_Order, -1); //TODO Will this and the line below defeat the point of passing by reference?
+	outputRoutes = vector<int> (m_Order, -1);
 	for (long unsigned int i = 0; i < m_Order; ++i)
 	{
 		if (i == startVertex || m_AdjacencyMatrix[startVertex][i])
-		{
 			shortestDistances[i] = m_DistanceMatrix[startVertex][i];
-		}
-		else
-		{
-			shortestDistances[i] = -1;
-		}
-		// TODO initialise outputRoutes[i] as an empty vector (if necessary)
 	}
-	outputRoutes[startVertex].push_back(startVertex);
+	outputRoutes[startVertex] = startVertex;
 
 	// Initialise knownDistances
-	vector<bool>
-	knownDistances(m_Order);
-	for (long unsigned int i = 0; i < m_Order; ++i)
-	{
-		knownDistances[i] = false;
-	}
+	vector<bool> knownDistances(m_Order, false);
 	knownDistances[startVertex] = true;
 
 	// -- Main algorithm body -- //
@@ -148,10 +140,10 @@ void CGraph::Dijkstra(const int& startVertex, vector<double>& shortestDistances,
 		double nextShortestDistance = -1;
 		for (long unsigned int i = 0; i < m_Order; ++i)
 		{
-			if (!knownDistances[i]
+			if (!knownDistances[i] && shortestDistances[i] != -1
 					&& (nextShortestDistance == -1 || shortestDistances[i] < nextShortestDistance)) // TODO Check precedences of ! and && here!
 			// For each vertex i for which we have not already confirmed the shortest distance to startVertex,
-			// if our current estimate for its shortest distance to startVertex is less than that of nextClosest,
+			// if we have a current estimate for its shortest distance to startVertex and if it is less than that of nextClosest,
 			// replace nextClosest by i.
 			{
 				nextClosest = i;
@@ -163,21 +155,21 @@ void CGraph::Dijkstra(const int& startVertex, vector<double>& shortestDistances,
 		for (long unsigned int i = 0; i < m_Order; ++i)
 		{
 			if (!knownDistances[i] && m_AdjacencyMatrix[nextClosest][i]
-					&& shortestDistances[i] > shortestDistances[nextClosest] + m_DistanceMatrix[nextClosest][i])
+					&& ( shortestDistances[i] == -1 || shortestDistances[i] > shortestDistances[nextClosest] + m_DistanceMatrix[nextClosest][i] ) )
 			// For each neighbour i of nextClosest whose shortest distance to startVertex we do not yet know,
-			// if it is faster to go via nextClosest, then update shortestDistances and outputRoutes
+			// if it is faster to go via nextClosest (or if we have no current fastest path),
+			// then update shortestDistances and outputRoutes.
 			{
 				shortestDistances[i] = shortestDistances[nextClosest] + m_DistanceMatrix[nextClosest][i];
-				outputRoutes[i] = outputRoutes[nextClosest]; // Make sure that memory is copied here!
-				outputRoutes[i].push_back(i);
+				outputRoutes[i] = nextClosest;
 			}
 		}
 
-		// Update knownDistances and check whether there are still more
-		// (if remaining vertices are all infinity then don't bother checking any more)
+		// Update knownDistances
 		knownDistances[nextClosest] = true;
 
-		// TODO Make this more efficient?
+		// Check whether there are still more
+		// (if remaining vertices are all infinity then don't bother checking any more)
 		moreVertices = false;
 		for (long unsigned int i = 0; i < m_Order; ++i)
 		{

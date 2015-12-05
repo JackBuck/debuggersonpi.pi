@@ -35,7 +35,8 @@ public:
 
 	// === Public Functions =========================================================================
 	// Non-modifying functions
-	void Dijkstra(const int& startVertex, vector<double>& shortestDistances, vector<int>& outputRoutes);
+	int GetOrder() {return m_Order;}
+	void Dijkstra(const unsigned int& startVertex, vector<double>& shortestDistances, vector<int>& outputRoutes);
 
 	// === Exceptions ===============================================================================
 	// TODO Derive these exceptions from a standard exception so they can be caught by generic exception handlers?
@@ -55,12 +56,21 @@ public:
 		{
 		}
 	};
+	struct InputDistMat_MatrixTooLarge
+	{
+		long unsigned int mm_requestedSize;
+		unsigned int mm_largestPermittedSize;
+		InputDistMat_MatrixTooLarge(long unsigned int requestedSize, unsigned int largestPermittedSize)
+				: mm_requestedSize {requestedSize}, mm_largestPermittedSize {largestPermittedSize}
+		{
+		}
+	};
 
 private:
 	// === Member Variables =========================================================================
 	vector<vector<double> > m_DistanceMatrix;
 	vector<vector<bool> > m_AdjacencyMatrix;
-	long unsigned int m_Order;
+	unsigned int m_Order;
 
 };
 

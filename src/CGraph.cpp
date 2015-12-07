@@ -22,9 +22,7 @@
  * It also initialises the adjacency matrix using the distance matrix.
  *
  */
-// TODO Check that distance matrix dimensions to fit into a signed integer and cast or throw an exception accordingly
-// Check only half implemented! Needs to be implemented for each row as well.
-// Currently m_Order is defined as an int and implicit narrowing conversions are being made.
+
 CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 		: m_DistanceMatrix { distanceMatrix }, m_Order { distanceMatrix.size() }
 {
@@ -117,24 +115,23 @@ CGraph::~CGraph()
  */
 void CGraph::Dijkstra(const unsigned int& startVertex, vector<double>& shortestDistances, vector<int>& outputRoutes)
 {
-	// TODO Make outputRoutes more memory efficient (and hence speed up algorithm to avoid frequently copying lots of memory)
-	// E.g. Just store the vertex you should go through next?
-
 	// -- Initial Admin -- //
 	// Check startVertex is a valid vertex
 	if (startVertex < 0 || startVertex >= m_Order)
 	{
-		// TODO Replace this with an exception
-		cerr << "Error: (CGraph::Dijkstra)\nstartVertex does not represent a valid vertex!\n";
+		throw Dijkstra_InvalidStartVertex { startVertex };
 	}
 
 	// Delete contents of, resize and set initial values of shortestDistances and outputRoutes
 	shortestDistances = vector<double>(m_Order, -1); //TODO Will this and the line below defeat the point of passing by reference?
-	outputRoutes = vector<int> (m_Order, -1);
+	outputRoutes = vector<int>(m_Order, -1);
 	for (unsigned int i = 0; i < m_Order; ++i)
 	{
 		if (i == startVertex || m_AdjacencyMatrix[startVertex][i])
+		{
+			outputRoutes[i] = startVertex;
 			shortestDistances[i] = m_DistanceMatrix[startVertex][i];
+		}
 	}
 	outputRoutes[startVertex] = startVertex;
 
@@ -152,7 +149,7 @@ void CGraph::Dijkstra(const unsigned int& startVertex, vector<double>& shortestD
 		for (unsigned int i = 0; i < m_Order; ++i)
 		{
 			if (!knownDistances[i] && shortestDistances[i] != -1
-					&& (nextShortestDistance == -1 || shortestDistances[i] < nextShortestDistance)) // TODO Check precedences of ! and && here!
+					&& (nextShortestDistance == -1 || shortestDistances[i] < nextShortestDistance))
 			// For each vertex i for which we have not already confirmed the shortest distance to startVertex,
 			// if we have a current estimate for its shortest distance to startVertex and if it is less than that of nextClosest,
 			// replace nextClosest by i.
@@ -166,7 +163,8 @@ void CGraph::Dijkstra(const unsigned int& startVertex, vector<double>& shortestD
 		for (unsigned int i = 0; i < m_Order; ++i)
 		{
 			if (!knownDistances[i] && m_AdjacencyMatrix[nextClosest][i]
-					&& ( shortestDistances[i] == -1 || shortestDistances[i] > shortestDistances[nextClosest] + m_DistanceMatrix[nextClosest][i] ) )
+					&& (shortestDistances[i] == -1
+							|| shortestDistances[i] > shortestDistances[nextClosest] + m_DistanceMatrix[nextClosest][i]))
 			// For each neighbour i of nextClosest whose shortest distance to startVertex we do not yet know,
 			// if it is faster to go via nextClosest (or if we have no current fastest path),
 			// then update shortestDistances and outputRoutes.

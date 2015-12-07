@@ -65,6 +65,14 @@ public:
 		{
 		}
 	};
+	struct Dijkstra_InvalidStartVertex
+	{
+		unsigned int mm_startVertex;
+		Dijkstra_InvalidStartVertex(unsigned int startVertex)
+				: mm_startVertex {startVertex}
+		{
+		}
+	};
 
 private:
 	// === Member Variables =========================================================================

@@ -82,7 +82,7 @@ int CGraph_test()
 		cout << '\n' << setw(10) << "Received  ";
 		for (int i = 0; i < exampleGraphOrder; ++i)
 			cout << setw(3) << shortestDistances[i];
-	cout << "\n\n";
+	cout << '\n';
 
 	if (success)
 		return 0;

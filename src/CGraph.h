@@ -10,8 +10,6 @@
 
 #include<vector>
 
-using namespace std;
-
 /* ~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This is a class to represent the mathematical concept of a graph.
  * See https://en.wikipedia.org/wiki/Graph_theory
@@ -30,28 +28,28 @@ class CGraph
 {
 public:
 	// === Constructors and Destructors =============================================================
-	explicit CGraph(const vector<vector<double> >& distanceMatrix);
+	explicit CGraph(const std::vector<std::vector<double> >& distanceMatrix);
 	virtual ~CGraph();
 
 	// === Public Functions =========================================================================
 	// Non-modifying functions
 	int GetOrder() {return m_Order;}
-	void Dijkstra(const unsigned int& startVertex, vector<double>& shortestDistances, vector<int>& outputRoutes);
+	void Dijkstra(const unsigned int& startVertex, std::vector<double>& shortestDistances, std::vector<int>& outputRoutes);
 
 	// === Exceptions ===============================================================================
 	// TODO Derive these exceptions from a standard exception so they can be caught by generic exception handlers?
 	struct InputDistMat_NotSquareMatrix
 	{
-		vector<vector<double> > mm_DistanceMatrix;
-		InputDistMat_NotSquareMatrix(vector<vector<double> > distanceMatrix)
+		std::vector<std::vector<double> > mm_DistanceMatrix;
+		InputDistMat_NotSquareMatrix(std::vector<std::vector<double> > distanceMatrix)
 				: mm_DistanceMatrix { distanceMatrix }
 		{
 		}
 	};
 	struct InputDistMat_InvalidElements
 	{
-		vector<vector<double> > mm_DistanceMatrix;
-		InputDistMat_InvalidElements(vector<vector<double> > distanceMatrix)
+		std::vector<std::vector<double> > mm_DistanceMatrix;
+		InputDistMat_InvalidElements(std::vector<std::vector<double> > distanceMatrix)
 				: mm_DistanceMatrix { distanceMatrix }
 		{
 		}
@@ -76,8 +74,8 @@ public:
 
 private:
 	// === Member Variables =========================================================================
-	vector<vector<double> > m_DistanceMatrix;
-	vector<vector<bool> > m_AdjacencyMatrix;
+	std::vector<std::vector<double> > m_DistanceMatrix;
+	std::vector<std::vector<bool> > m_AdjacencyMatrix;
 	unsigned int m_Order;
 
 };

@@ -9,6 +9,8 @@
 #include<iostream>
 #include<iomanip>
 
+using namespace std;
+
 int CGraph_test()
 {
 	/*
@@ -85,7 +87,13 @@ int CGraph_test()
 	cout << '\n';
 
 	if (success)
+	{
+		cout << "\nSuccess!\n";
 		return 0;
+	}
 	else
+	{
+		cout << "\nFailure!\n";
 		return 1;
+	}
 }

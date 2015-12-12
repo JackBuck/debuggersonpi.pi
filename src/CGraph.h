@@ -22,6 +22,7 @@
  *  - m_DistanceMatrix  = A distance matrix for the graph. Use -1 to indicate an infinite distance.
  *  - m_AdjacencyMatrix = An adjacency matrix for the graph. This should be kept consistent with
  *                        distance matrix.
+ *  - m_Order           = The order of the graph.
  *
  */
 class CGraph

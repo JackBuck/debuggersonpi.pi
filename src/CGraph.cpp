@@ -20,6 +20,7 @@ using namespace std;
  *
  * It checks that
  *   - The vector<vector<double> > is a matrix and is square.
+ *   - The matrix is not too large. The order of the graph must fit into an unsigned integer.
  *   - The entries of the matrix are >= 0 or -1 (-1 is used to represent infinity).
  *
  * It also initialises the adjacency matrix using the distance matrix.
@@ -32,7 +33,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//// Check Inputs ////
 
-	// Check distanceMatrix is not too large for m_Order to fit in an int type
+	// Check distanceMatrix is not too large for m_Order to fit in an unsigned int type
 	const long unsigned max_unsignedInt = std::numeric_limits<unsigned int>::max();
 	if (distanceMatrix.size() > max_unsignedInt)
 		throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), max_unsignedInt };

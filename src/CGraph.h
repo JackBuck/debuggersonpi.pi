@@ -34,7 +34,7 @@ public:
 
 	// === Public Functions =========================================================================
 	// Non-modifying functions
-	int GetOrder() {return m_Order;}
+	unsigned int GetOrder() {return m_Order;}
 	void Dijkstra(const unsigned int& startVertex, std::vector<double>& shortestDistances, std::vector<int>& outputRoutes);
 
 	// === Exceptions ===============================================================================

@@ -5,10 +5,10 @@
 int CMap_test()
 {
 	std::ofstream myfile;
-	myfile.open("example.txt", std::fstream::out);
+	myfile.open("./TestData/example.txt", std::fstream::out);
 	if(myfile.is_open())
-	{ 
-	myfile << "Writing this to a file.\n";
+	{
+		myfile << "Writing this to a file.\n";
 	}
 	else 
 	{
@@ -17,7 +17,7 @@ int CMap_test()
 
 	myfile.close();
 
-	std::string filepath = "../TestData/5x5testmap1.txt";
+	std::string filepath = "./TestData/5x5testmap1.txt";
 	CMap Maze(filepath);
 
 	return 0;

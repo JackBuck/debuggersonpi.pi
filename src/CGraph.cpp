@@ -3,51 +3,192 @@
  *
  *  Created on: 13 Nov 2015
  *      Author: Jack Buckingham
-*/
+ */
 
-//#include "CGraph.h"
-//
-//CGraph::CGraph(const Numeric_lib::Matrix<bool, 2>& adjacencyMatrix,
-//		const Numeric_lib::Matrix<double, 2>& distanceMatrix)
-//{
-//	m_AdjacencyMatrix{adjacencyMatrix};
-//	m_DistanceMatrix{distanceMatrix};
-//
-//	//	TODO Implement check that adjacency matrix is consistent with distance matrix
-//}
-//
-//CGraph::CGraph(const Numeric_lib::Matrix<double, 2>& distanceMatrix)
-//{
-//	m_DistanceMatrix { distanceMatrix };
-//
-//	int d1 = distanceMatrix.dim1();
-//	int d2 = distanceMatrix.dim2();
-//	Numeric_lib::Matrix<int, 2> adjacencyMatrix_tmp(d1, d2);
-//	for (int i = 0; i < d1; ++i)
-//	{
-//		for (int j = 0; j < d2; ++j)
-//		{
-//			if (m_DistanceMatrix(i, j) >= 0)
-//			{
-//				adjacencyMatrix_tmp(i, j) = 1;
-//			}
-//			else
-//			{
-//				adjacencyMatrix_tmp(i, j) = 0;
-//			}
-//		}
-//	}
-//
-//	m_AdjacencyMatrix { adjacencyMatrix_tmp };
-//}
-//
-//CGraph::~CGraph()
-//{
-//	// TODO Auto-generated destructor stub
-//}
-//
-//void CGraph::Dijkstra(const int& startVertex, vector<double>& rShortestDistances, vector<vector<int> >& rOutputRoutes)
-//{
-//	// TODO Implement Dijkstra
-//}
+// ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#include "CGraph.h"
+#include<iostream>
+#include<limits>
+
+// ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+using namespace std;
+
+/* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function is a constructor for the CGraph class. It takes inputs for the distance matrix.
+ * distanceMatrix[i][j] should be: - the distance from vertex i to vertex j.
+ *                                 - -1 if vertices i and j are not adjacent (so infinite distance)
+ *
+ * It checks that
+ *   - The vector<vector<double> > is a matrix and is square.
+ *   - The matrix is not too large. The order of the graph must fit into an unsigned integer.
+ *   - The entries of the matrix are >= 0 or -1 (-1 is used to represent infinity).
+ *
+ * It also initialises the adjacency matrix using the distance matrix.
+ *
+ */
+
+CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
+		: m_DistanceMatrix { distanceMatrix }, m_Order { distanceMatrix.size() }
+{
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//// Check Inputs ////
+
+	// Check distanceMatrix is not too large for m_Order to fit in an unsigned int type
+	const long unsigned max_unsignedInt = std::numeric_limits<unsigned int>::max();
+	if (distanceMatrix.size() > max_unsignedInt)
+		throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), max_unsignedInt };
+
+	// Get dimensions and check the input is a matrix and is square
+	for (unsigned int i = 0; i < m_Order; ++i)
+	{
+		if (distanceMatrix[i].size() > max_unsignedInt)
+			throw InputDistMat_MatrixTooLarge { distanceMatrix[i].size(), max_unsignedInt };
+
+		unsigned int rowLength = distanceMatrix[i].size();
+		if (m_Order != rowLength)
+		{
+			throw InputDistMat_NotSquareMatrix { distanceMatrix };
+		}
+	}
+
+	// Check elements are valid
+	for (unsigned int i = 0; i < m_Order; ++i)
+	{
+		for (unsigned int j = 0; j < m_Order; ++j)
+		{
+			if (distanceMatrix[i][j] < 0 && distanceMatrix[i][j] != -1)
+			{
+				throw InputDistMat_InvalidElements { distanceMatrix };
+			}
+		}
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//// Create adjacency matrix ////
+
+	// Allocate space in matrix
+	m_AdjacencyMatrix.resize(m_Order);
+
+	for (unsigned int i = 0; i < m_Order; ++i)
+	{
+		// Create the matrix one row at a time.
+		for (unsigned int j = 0; j < m_Order; ++j)
+		{
+			if (distanceMatrix[i][j] >= 0 && i != j)
+			{
+				m_AdjacencyMatrix[i].push_back(true);
+			}
+			else
+			{
+				m_AdjacencyMatrix[i].push_back(false);
+			}
+		}
+	}
+
+}
+
+/* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function is the destructor for the CGraph class.
+ */
+CGraph::~CGraph()
+{
+// TODO Auto-generated destructor stub
+}
+
+/* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function is an implementation of Dijkstra's algorithm -
+ *                                                https://en.wikipedia.org/wiki/Dijkstra's_algorithm
+ * INPUTS:
+ * 	startVertex       - An integer to indicate the vertex of the graph from which to run the
+ * 	                    algorithm. Vertices of the graph will be represented by integers 0,...,n-1
+ * 	                    where n is the order of the graph.
+ *
+ * OUTPUTS:
+ * 	shortestDistances - A vector of integers will be populated with the shortest distances from
+ * 	                    the startVertex to each vertex of the graph.
+ * 	                    A value of -1 will be used to indicate that the vertex is not connected to
+ * 	                    startVertex.
+ * 	outputRoutes      - A vector of integers will be populated to define examples of paths from
+ * 	                    the startVertex to each vertex of the graph which have the shortest total
+ * 	                    distance. The union of the example paths form a tree which is defined here
+ * 	                    by setting outputRoutes[i] to be the 'parent' of vertex i in the tree.
+ * 	                    By default, outputRoutes[startVertex] = startVertex. If a vertex i is not
+ * 	                    part of the same connected component as startVertex then outputRoutes[i]
+ * 	                    is -1.
+ *
+ */
+void CGraph::Dijkstra(const unsigned int& startVertex, vector<double>& shortestDistances, vector<int>& outputRoutes)
+{
+	// -- Initial Admin -- //
+	// Check startVertex is a valid vertex
+	if (startVertex < 0 || startVertex >= m_Order)
+	{
+		throw Dijkstra_InvalidStartVertex { startVertex };
+	}
+
+	// Delete contents of, resize and set initial values of shortestDistances and outputRoutes
+	shortestDistances = vector<double>(m_Order, -1); //TODO Will this and the line below defeat the point of passing by reference?
+	outputRoutes = vector<int>(m_Order, -1);
+	for (unsigned int i = 0; i < m_Order; ++i)
+	{
+		if (i == startVertex || m_AdjacencyMatrix[startVertex][i])
+		{
+			outputRoutes[i] = startVertex;
+			shortestDistances[i] = m_DistanceMatrix[startVertex][i];
+		}
+	}
+	outputRoutes[startVertex] = startVertex;
+
+	// Initialise knownDistances
+	vector<bool> knownDistances(m_Order, false);
+	knownDistances[startVertex] = true;
+
+	// -- Main algorithm body -- //
+	bool moreVertices = true; // If graph is empty then startVertex will not be a valid vertex and an exception will already have been thrown
+	while (moreVertices)
+	{
+		// Find the vertex with the shortest unconfirmed shortestDistance to startVertex
+		int nextClosest = -1;
+		double nextShortestDistance = -1;
+		for (unsigned int i = 0; i < m_Order; ++i)
+		{
+			if (!knownDistances[i] && shortestDistances[i] != -1
+					&& (nextShortestDistance == -1 || shortestDistances[i] < nextShortestDistance))
+			// For each vertex i for which we have not already confirmed the shortest distance to startVertex,
+			// if we have a current estimate for its shortest distance to startVertex and if it is less than that of nextClosest,
+			// replace nextClosest by i.
+			{
+				nextClosest = i;
+				nextShortestDistance = shortestDistances[i];
+			}
+		}
+
+		// Update shortest distances and shortest paths
+		for (unsigned int i = 0; i < m_Order; ++i)
+		{
+			if (!knownDistances[i] && m_AdjacencyMatrix[nextClosest][i]
+					&& (shortestDistances[i] == -1
+							|| shortestDistances[i] > shortestDistances[nextClosest] + m_DistanceMatrix[nextClosest][i]))
+			// For each neighbour i of nextClosest whose shortest distance to startVertex we do not yet know,
+			// if it is faster to go via nextClosest (or if we have no current fastest path),
+			// then update shortestDistances and outputRoutes.
+			{
+				shortestDistances[i] = shortestDistances[nextClosest] + m_DistanceMatrix[nextClosest][i];
+				outputRoutes[i] = nextClosest;
+			}
+		}
+
+		// Update knownDistances
+		knownDistances[nextClosest] = true;
+
+		// Check whether there are still more
+		// (if remaining vertices are all infinity then don't bother checking any more)
+		moreVertices = false;
+		for (unsigned int i = 0; i < m_Order; ++i)
+		{
+			if (!knownDistances[i] && shortestDistances[i] != -1)
+				moreVertices = true;
+		}
+	}
+}
 

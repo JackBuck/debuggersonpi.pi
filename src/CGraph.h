@@ -9,6 +9,7 @@
 #define SRC_CGRAPH_H_
 
 #include<vector>
+#include<map>
 
 /* ~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This is a class to represent the mathematical concept of a graph.
@@ -35,7 +36,7 @@ public:
 	// === Public Functions =========================================================================
 	// Non-modifying functions
 	unsigned int GetOrder() {return m_Order;}
-	void Dijkstra(const unsigned int& startVertex, std::vector<double>& shortestDistances, std::vector<int>& outputRoutes);
+	void Dijkstra(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute);
 
 	// === Exceptions ===============================================================================
 	// TODO Derive these exceptions from a standard exception so they can be caught by generic exception handlers?
@@ -74,10 +75,20 @@ public:
 	};
 
 private:
+	// === Private Functions ========================================================================
+	int internalDijkstra(const unsigned int& startVertex);
+
 	// === Member Variables =========================================================================
+	// Graph properties
 	std::vector<std::vector<double> > m_DistanceMatrix;
 	std::vector<std::vector<bool> > m_AdjacencyMatrix;
 	unsigned int m_Order;
+
+	// Saved Dijkstra output
+	// TODO: Change m_DijkstraOutputRoutes to a vector of vectors of unsigned ints
+	std::vector<std::vector<int> > m_DijkstraOutputRoutes;
+	std::vector<std::vector<double> > m_DijkstraShortestDistances;
+	std::map<int,int> m_DijkstraStartVertices;
 
 };
 

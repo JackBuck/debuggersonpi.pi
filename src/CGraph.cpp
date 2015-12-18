@@ -26,7 +26,6 @@ using namespace std;
  * It also initialises the adjacency matrix using the distance matrix.
  *
  */
-
 CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 		: m_DistanceMatrix { distanceMatrix }, m_Order { distanceMatrix.size() }
 {
@@ -96,28 +95,60 @@ CGraph::~CGraph()
 }
 
 /* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * This function is an implementation of Dijkstra's algorithm -
- *                                                https://en.wikipedia.org/wiki/Dijkstra's_algorithm
+ * This function is a public wrapper for Dijkstra's algorithm.
+ * It returns the shortest distance between two specified vertices, and an example shortest route
+ * between them. This is done by searching for a previous appropriate set of Dijkstra outputs, and
+ * calling Dijkstra if none exists.
+ *
  * INPUTS:
- * 	startVertex       - An integer to indicate the vertex of the graph from which to run the
- * 	                    algorithm. Vertices of the graph will be represented by integers 0,...,n-1
- * 	                    where n is the order of the graph.
  *
  * OUTPUTS:
- * 	shortestDistances - A vector of integers will be populated with the shortest distances from
- * 	                    the startVertex to each vertex of the graph.
- * 	                    A value of -1 will be used to indicate that the vertex is not connected to
- * 	                    startVertex.
- * 	outputRoutes      - A vector of integers will be populated to define examples of paths from
- * 	                    the startVertex to each vertex of the graph which have the shortest total
- * 	                    distance. The union of the example paths form a tree which is defined here
- * 	                    by setting outputRoutes[i] to be the 'parent' of vertex i in the tree.
- * 	                    By default, outputRoutes[startVertex] = startVertex. If a vertex i is not
- * 	                    part of the same connected component as startVertex then outputRoutes[i]
- * 	                    is -1.
+ *
  *
  */
-void CGraph::Dijkstra(const unsigned int& startVertex, vector<double>& shortestDistances, vector<int>& outputRoutes)
+void CGraph::Dijkstra(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute)
+{
+	// TODO: Write this function!!
+	/*
+	 * Check whether we have already done Dijkstra for the start or end vertex
+	 */
+}
+
+/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function is an implementation of Dijkstra's algorithm -
+ *                                                https://en.wikipedia.org/wiki/Dijkstra's_algorithm
+ * It is called by the public function CGraph::Dijkstra and computes the tree of minimal routes in
+ * the graph, from a specified start vertex to every other vertex in the graph. The output is stored
+ * in the member variables of CGraph beginning with 'm_Dijkstra'.
+ *
+ * INPUTS:
+ * 	startVertex - An integer to indicate the vertex of the graph from which to run the algorithm.
+ * 	              Vertices of the graph will be represented by integers 0,...,n-1 where n is the
+ * 	              order of the graph.
+ *
+ * OUTPUT:
+ * 	The function returns an int which is m_DijkstraStartVertices[startVertex]. That is, it is the
+ * 	index in m_DijkstraShortestDistances and m_DijkstraOutputRoutes corresponding to startVertex.
+ *
+ * MEMBER VARIABLES SET:
+ * 	m_DijkstraShortestDistances - A vector of integers will be created which contains the shortest
+ * 	              distances from the startVertex to each vertex of the graph. A value of -1 will
+ * 	              be used to indicate that the vertex is not connected to startVertex.
+ * 	              This vector is then appended to m_DijkstraShortestDistances.
+ * 	m_DijkstraOutputRoutes - A vector of integers will be created to define examples of paths from
+ * 	              the startVertex to each vertex of the graph which have the shortest total
+ * 	              distance. The union of the example paths form a tree which is defined here by
+ * 	              setting outputRoutes[i] to be the 'parent' of vertex i in the tree. By default,
+ * 	              outputRoutes[startVertex] = startVertex. If a vertex i is not part of the same
+ * 	              connected component as startVertex then outputRoutes[i] is -1.
+ * 	              This vector is then appended to m_DijkstraOutputRoutes.
+ * 	m_DijkstraStartVertices - A key-value pair is added in the map<int,int>
+ * 	              m_DijkstraStartVertices to save the start vertex used to generate the Dijkstra
+ * 	              results. The key is the startVertex and the value is the corresponding index in
+ * 	              m_DijkstraShortestDistances and m_DijkstraOutputRoutes.
+ *
+ */
+int CGraph::internalDijkstra(const unsigned int& startVertex)
 {
 	// -- Initial Admin -- //
 	// Check startVertex is a valid vertex
@@ -126,9 +157,14 @@ void CGraph::Dijkstra(const unsigned int& startVertex, vector<double>& shortestD
 		throw Dijkstra_InvalidStartVertex { startVertex };
 	}
 
-	// Delete contents of, resize and set initial values of shortestDistances and outputRoutes
-	shortestDistances = vector<double>(m_Order, -1); //TODO Will this and the line below defeat the point of passing by reference?
-	outputRoutes = vector<int>(m_Order, -1);
+	// Check whether we have already computed Dijkstra for this startVertex
+	auto mapIterator = m_DijkstraStartVertices.find(startVertex);
+	if (mapIterator != m_DijkstraStartVertices.end())
+		return mapIterator->second; // Todo: Check this syntax does what I want!!
+
+	// Create and initialise vectors shortestDistances and outputRoutes
+	vector<double> shortestDistances(m_Order, -1);
+	vector<int> outputRoutes(m_Order, -1);
 	for (unsigned int i = 0; i < m_Order; ++i)
 	{
 		if (i == startVertex || m_AdjacencyMatrix[startVertex][i])
@@ -143,7 +179,7 @@ void CGraph::Dijkstra(const unsigned int& startVertex, vector<double>& shortestD
 	vector<bool> knownDistances(m_Order, false);
 	knownDistances[startVertex] = true;
 
-	// -- Main algorithm body -- //
+	// -- Main Algorithm Body -- //
 	bool moreVertices = true; // If graph is empty then startVertex will not be a valid vertex and an exception will already have been thrown
 	while (moreVertices)
 	{
@@ -190,5 +226,12 @@ void CGraph::Dijkstra(const unsigned int& startVertex, vector<double>& shortestD
 				moreVertices = true;
 		}
 	}
+
+	// -- Save Results in Member Variables -- //
+	m_DijkstraOutputRoutes.push_back(outputRoutes);
+	m_DijkstraShortestDistances.push_back(shortestDistances);
+	m_DijkstraStartVertices[startVertex] = m_DijkstraOutputRoutes.size() - 1;
+
+	return m_DijkstraStartVertices[startVertex];
 }
 

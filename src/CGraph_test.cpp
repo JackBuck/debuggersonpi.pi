@@ -51,7 +51,7 @@ int CGraph_test()
 	vector<double> expected_shortestDistances {0, 1, 2, 3, 3, 3, 2};
 
 	// 3 - Call Dijkstra function in CGraph class
-	// TODO Do these declarations call the default constructors?
+	// TODO Update to use the new Dijkstra
 	vector<double> shortestDistances;
 	vector<int> outputRoutes;
 	exampleGraph.Dijkstra(0, shortestDistances, outputRoutes);

@@ -25,3 +25,6 @@ git push origin --delete Debugging
 I do not know what happens if someone deletes a branch on the remote repository which you are still working on!
 (Though presumably you can just push it and hence create it on the remote repository again).
 If more than one set of debugging is required at a time then another branch should be created and named appropriately.
+
+## Other useful things
+See the GitHub [Markdown Basics](https://help.github.com/articles/markdown-basics/) page for an introduction on how to format this README file. 

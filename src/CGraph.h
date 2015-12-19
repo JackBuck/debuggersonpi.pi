@@ -76,7 +76,7 @@ public:
 
 private:
 	// === Private Functions ========================================================================
-	int internalDijkstra(const unsigned int& startVertex);
+	unsigned int internalDijkstra(const unsigned int& startVertex);
 
 	// === Member Variables =========================================================================
 	// Graph properties
@@ -86,9 +86,9 @@ private:
 
 	// Saved Dijkstra output
 	// TODO: Change m_DijkstraOutputRoutes to a vector of vectors of unsigned ints
-	std::vector<std::vector<int> > m_DijkstraOutputRoutes;
+	std::vector<std::vector<unsigned int> > m_DijkstraOutputRoutes;
 	std::vector<std::vector<double> > m_DijkstraShortestDistances;
-	std::map<int,int> m_DijkstraStartVertices;
+	std::map<unsigned int,unsigned int> m_DijkstraStartVertices;
 
 };
 

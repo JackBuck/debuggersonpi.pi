@@ -7,7 +7,6 @@
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "CGraph.h"
-#include<iostream>
 #include<limits>
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,6 +66,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 
 	// Allocate space in matrix
 	m_AdjacencyMatrix.resize(m_Order);
+	// TODO: Initialise with right length rows? Use capacity inside loop? Or call a cleverer overload of resize() if possible?
 
 	for (unsigned int i = 0; i < m_Order; ++i)
 	{
@@ -84,6 +84,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 		}
 	}
 
+	//TODO: Do I also need to initialise the Dijkstra member variables or will their default constructors be called?
 }
 
 /* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -148,7 +149,7 @@ void CGraph::Dijkstra(const unsigned int& startVertex, const unsigned int& endVe
  * 	              m_DijkstraShortestDistances and m_DijkstraOutputRoutes.
  *
  */
-int CGraph::internalDijkstra(const unsigned int& startVertex)
+unsigned int CGraph::internalDijkstra(const unsigned int& startVertex)
 {
 	// -- Initial Admin -- //
 	// Check startVertex is a valid vertex
@@ -164,7 +165,7 @@ int CGraph::internalDijkstra(const unsigned int& startVertex)
 
 	// Create and initialise vectors shortestDistances and outputRoutes
 	vector<double> shortestDistances(m_Order, -1);
-	vector<int> outputRoutes(m_Order, -1);
+	vector<unsigned int> outputRoutes(m_Order, -1);
 	for (unsigned int i = 0; i < m_Order; ++i)
 	{
 		if (i == startVertex || m_AdjacencyMatrix[startVertex][i])
@@ -184,7 +185,7 @@ int CGraph::internalDijkstra(const unsigned int& startVertex)
 	while (moreVertices)
 	{
 		// Find the vertex with the shortest unconfirmed shortestDistance to startVertex
-		int nextClosest = -1;
+		unsigned int nextClosest = -1;
 		double nextShortestDistance = -1;
 		for (unsigned int i = 0; i < m_Order; ++i)
 		{

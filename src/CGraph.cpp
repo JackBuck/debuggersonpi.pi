@@ -65,8 +65,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 	//// Create adjacency matrix ////
 
 	// Allocate space in matrix
-	m_AdjacencyMatrix.resize(m_Order);
-	// TODO: Initialise with right length rows? Use capacity inside loop? Or call a cleverer overload of resize() if possible?
+	m_AdjacencyMatrix = vector< vector<bool> >(m_Order, vector<bool>(m_Order, false));
 
 	for (unsigned int i = 0; i < m_Order; ++i)
 	{
@@ -75,11 +74,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 		{
 			if (distanceMatrix[i][j] >= 0 && i != j)
 			{
-				m_AdjacencyMatrix[i].push_back(true);
-			}
-			else
-			{
-				m_AdjacencyMatrix[i].push_back(false);
+				m_AdjacencyMatrix[i][j] =true;
 			}
 		}
 	}

@@ -15,15 +15,35 @@
  * This is a class to represent the mathematical concept of a graph.
  * See https://en.wikipedia.org/wiki/Graph_theory
  *
- * Member functions:
- *  - Dijkstra = An implementation of Dijkstra's algorithm.
- *               https://en.wikipedia.org/wiki/Dijkstra's_algorithm
+ * Public Member functions:
+ *  - GetOrder = A function to return the order of the graph.
+ *  - Dijkstra = A public interface for internalDijkstra. It calls internalDijkstra if necessary, in
+ *               order to return the shortest distance and a shortest path between two supplied
+ *               vertices of the graph.
+ *
+ * Private Member functions:
+ *  - internalDijkstra = An implementation of Dijkstra's algorithm.
+ *                       https://en.wikipedia.org/wiki/Dijkstra's_algorithm
+ *                       Results are saved in the member variables beginning 'm_Dijkstra'.
  *
  * Member variables:
+ *  Graph Properties
  *  - m_DistanceMatrix  = A distance matrix for the graph. Use -1 to indicate an infinite distance.
  *  - m_AdjacencyMatrix = An adjacency matrix for the graph. This should be kept consistent with
  *                        distance matrix.
  *  - m_Order           = The order of the graph.
+ *
+ *  Dijkstra results
+ *  - m_DijkstraOutputroutes      = Contains all previous output routes found when calling Dijkstra.
+ *                                  The ith entry corresponds to the ith call to Dijkstra and
+ *                                  contains a vector specifying the tree of shortest routes found.
+ *  - m_DijkstraShortestDistances = Contains all previous shortest distances found when calling
+ *                                  Dijkstra. The ith entry corresponds to the ith call to Dijkstra
+ *                                  and contains a vector specifying the shortest distances between
+ *                                  the start vertex and all the other vertices.
+ *  - m_DijkstraStartVertices     = A map allow lookup of which index in m_DijkstraOutputroutes and
+ *                                  m_DijkstraShortestDistances correspond to a requested start
+ *                                  vertex.
  *
  */
 class CGraph

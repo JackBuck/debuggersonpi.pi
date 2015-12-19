@@ -96,6 +96,8 @@ public:
 
 private:
 	// === Private Functions ========================================================================
+	// TODO: Make internalDijkstra public so that the user can write code more efficiently?
+	//			Also, make return type void
 	unsigned int internalDijkstra(const unsigned int& startVertex);
 
 	// === Member Variables =========================================================================

@@ -102,12 +102,60 @@ CGraph::~CGraph()
  *
  *
  */
-void CGraph::Dijkstra(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute)
+void CGraph::Dijkstra(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
 {
-	// TODO: Write this function!!
-	/*
-	 * Check whether we have already done Dijkstra for the start or end vertex
+	/*  -- Decide on whether to use Dijkstra from the startVertex or the endVertex -- //
+	 *   - Default is to use endVertex if Dijkstra as already been called for this, and startVertex
+	 *     otherwise.
+	 * Call internalDijkstra if necessary (from startVertex)
 	 */
+	bool fromStartVertex;
+	if (m_DijkstraStartVertices.count(endVertex))
+		fromStartVertex = false;
+	else if (m_DijkstraStartVertices.count(startVertex))
+		fromStartVertex = true;
+	else
+	{
+		fromStartVertex = true;
+		internalDijkstra(startVertex);
+	}
+
+	// -- Unwind the shortest path and set shortestDistance -- //
+	if (fromStartVertex)
+	{
+		// index is the index in m_DijkstraOutputRoutes and m_DijkstraShortestDistances
+		// corresponding to startVertex
+		unsigned int index = m_DijkstraStartVertices[startVertex];
+
+		// Set first element in reverseOutputRoute as endVertex.
+		// Then repeatedly push_back the parent vertex of the latest vertex in reverseOutputRoute until we reach startVertex
+		vector<unsigned int> reverseOutputRoute = {endVertex};
+		while (reverseOutputRoute[reverseOutputRoute.size()-1] != startVertex)
+			reverseOutputRoute.push_back(m_DijkstraOutputRoutes[index][reverseOutputRoute[reverseOutputRoute.size()-1]]);
+
+		// Set outputRoute as reverse of outputRoute
+		outputRoute = vector<unsigned int> (reverseOutputRoute.size());
+		for (unsigned int i = 0; i < reverseOutputRoute.size(); ++i)
+			outputRoute[i] = reverseOutputRoute[reverseOutputRoute.size()-1 - i];
+
+		// Set shortestDistance
+		shortestDistance = m_DijkstraShortestDistances[index][endVertex];
+	}
+	else
+	{
+		// index is the index in m_DijkstraOutputRoutes and m_DijkstraShortestDistances
+		// corresponding to endVertex
+		unsigned int index = m_DijkstraStartVertices[endVertex];
+
+		// Set first element in outputRoute as startVertex
+		// Then repeatedly push_back the parent vertex of the latest vertex in outputRoute until we reach endVertex
+		outputRoute = vector<unsigned int> {startVertex};
+		while (outputRoute[outputRoute.size()-1] != endVertex)
+			outputRoute.push_back(m_DijkstraOutputRoutes[index][outputRoute[outputRoute.size()-1]]);
+
+		// Set shortestDistance
+		shortestDistance = m_DijkstraShortestDistances[index][startVertex];
+	}
 }
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

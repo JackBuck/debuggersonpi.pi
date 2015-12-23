@@ -32,6 +32,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 	//// Check Inputs ////
 
 	// Check distanceMatrix is not too large for m_Order to fit in an unsigned int type
+	// TODO: Can I make this a constexpr?
 	const long unsigned max_unsignedInt = std::numeric_limits<unsigned int>::max();
 	if (distanceMatrix.size() > max_unsignedInt)
 		throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), max_unsignedInt };
@@ -97,12 +98,26 @@ CGraph::~CGraph()
  * calling Dijkstra if none exists.
  *
  * INPUTS:
+ * startVertex       = An unsigned integer representing the vertex at the start of the desired
+ *                     route.
+ * endVertex         = An unsigned integer representing the vertex at the end of the desired route.
+ * preferStartVertex = A bool to determine whether to prefer running Dijkstra from the startVertex
+ *                     (as opposed to from the end vertex). If this argument is omitted then the
+ *                     default of false shall be used (since this requires marginally less effort on
+ *                     the part of the computer).
+ *                     The availability of this argument allows the caller to minimise the calls to
+ *                     internalDijkstra required to return the desired shortest routes through the
+ *                     graph.
  *
- * OUTPUTS:
- *
+ * INPUT OUTPUTS:
+ * shortestDistance = The shortest distance between startVertex and endVertex.
+ * outputRoute      = A vector containing an example shortest route from startVertex to endVertex.
+ *                    outputRoute.front() == startVertex
+ *                    outputRoute[i] == the ith element of the route
+ *                    outputRoute.back() == endVertex
  *
  */
-void CGraph::Dijkstra(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
+void CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
 {
 	/*  -- Decide on whether to use Dijkstra from the startVertex or the endVertex -- //
 	 *   - Default is to use endVertex if Dijkstra as already been called for this, and startVertex
@@ -110,14 +125,19 @@ void CGraph::Dijkstra(const unsigned int& startVertex, const unsigned int& endVe
 	 * Call internalDijkstra if necessary (from startVertex)
 	 */
 	bool fromStartVertex;
-	if (m_DijkstraStartVertices.count(endVertex))
+	if (m_DijkstraStartVertices.count(endVertex) > 0)
 		fromStartVertex = false;
-	else if (m_DijkstraStartVertices.count(startVertex))
+	else if (m_DijkstraStartVertices.count(startVertex) > 0)
 		fromStartVertex = true;
-	else
+	else if (preferStartVertex)
 	{
 		fromStartVertex = true;
 		internalDijkstra(startVertex);
+	}
+	else // !preferStartVertex
+	{
+		fromStartVertex = false;
+		internalDijkstra(endVertex);
 	}
 
 	// -- Unwind the shortest path and set shortestDistance -- //
@@ -130,13 +150,14 @@ void CGraph::Dijkstra(const unsigned int& startVertex, const unsigned int& endVe
 		// Set first element in reverseOutputRoute as endVertex.
 		// Then repeatedly push_back the parent vertex of the latest vertex in reverseOutputRoute until we reach startVertex
 		vector<unsigned int> reverseOutputRoute = {endVertex};
-		while (reverseOutputRoute[reverseOutputRoute.size()-1] != startVertex)
-			reverseOutputRoute.push_back(m_DijkstraOutputRoutes[index][reverseOutputRoute[reverseOutputRoute.size()-1]]);
+		while (reverseOutputRoute.back() != startVertex)
+			reverseOutputRoute.push_back(m_DijkstraOutputRoutes[index][reverseOutputRoute.back()]);
 
 		// Set outputRoute as reverse of outputRoute
-		outputRoute = vector<unsigned int> (reverseOutputRoute.size());
-		for (unsigned int i = 0; i < reverseOutputRoute.size(); ++i)
-			outputRoute[i] = reverseOutputRoute[reverseOutputRoute.size()-1 - i];
+		outputRoute = vector<unsigned int> (reverseOutputRoute.rbegin(), reverseOutputRoute.rend());
+//		outputRoute = vector<unsigned int> (reverseOutputRoute.size());
+//		for (unsigned int i = 0; i < reverseOutputRoute.size(); ++i)
+//			outputRoute[i] = reverseOutputRoute[reverseOutputRoute.size()-1 - i];
 
 		// Set shortestDistance
 		shortestDistance = m_DijkstraShortestDistances[index][endVertex];
@@ -150,13 +171,19 @@ void CGraph::Dijkstra(const unsigned int& startVertex, const unsigned int& endVe
 		// Set first element in outputRoute as startVertex
 		// Then repeatedly push_back the parent vertex of the latest vertex in outputRoute until we reach endVertex
 		outputRoute = vector<unsigned int> {startVertex};
-		while (outputRoute[outputRoute.size()-1] != endVertex)
-			outputRoute.push_back(m_DijkstraOutputRoutes[index][outputRoute[outputRoute.size()-1]]);
+		while (outputRoute.back() != endVertex)
+			outputRoute.push_back(m_DijkstraOutputRoutes[index][outputRoute.back()]);
 
 		// Set shortestDistance
 		shortestDistance = m_DijkstraShortestDistances[index][startVertex];
 	}
 }
+
+void CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
+{
+	ShortestDistance(startVertex, endVertex, false, shortestDistance, outputRoute);
+}
+
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function is an implementation of Dijkstra's algorithm -

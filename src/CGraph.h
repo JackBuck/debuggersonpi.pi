@@ -51,12 +51,13 @@ class CGraph
 public:
 	// === Constructors and Destructors =============================================================
 	explicit CGraph(const std::vector<std::vector<double> >& distanceMatrix);
-	virtual ~CGraph();
+	~CGraph();
 
 	// === Public Functions =========================================================================
 	// Non-modifying functions
 	unsigned int GetOrder() {return m_Order;}
-	void Dijkstra(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute);
+	void ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute);
+	void ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute);
 
 	// === Exceptions ===============================================================================
 	// TODO Derive these exceptions from a standard exception so they can be caught by generic exception handlers?

@@ -55,7 +55,9 @@ public:
 
 	// === Public Functions =========================================================================
 	// Non-modifying functions
-	unsigned int GetOrder() {return m_Order;}
+	unsigned int GetOrder() const {return m_Order;}
+
+	// Dijkstra functions
 	void ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute);
 	void ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute);
 
@@ -97,9 +99,14 @@ public:
 
 private:
 	// === Private Functions ========================================================================
-	// TODO: Make internalDijkstra public so that the user can write code more efficiently?
-	//			Also, make return type void
-	unsigned int internalDijkstra(const unsigned int& startVertex);
+	// External look-up functions
+	unsigned int InternalToExternal(const unsigned int) const;
+	void InternalToExternal(std::vector<unsigned int>&) const;
+	unsigned int ExternalToInternal(const unsigned int) const;
+	void ExternalToInternal(std::vector<unsigned int>&) const;
+
+	// Dijkstra functions
+	unsigned int InternalDijkstra(const unsigned int& startVertex);
 
 	// === Member Variables =========================================================================
 	// Graph properties
@@ -107,11 +114,14 @@ private:
 	std::vector<std::vector<bool> > m_AdjacencyMatrix;
 	unsigned int m_Order;
 
+	// External vertex numbering look-up table
+	std::map<unsigned int, unsigned int> m_ExternalToInternal;
+	std::map<unsigned int, unsigned int> m_InternalToExternal;
+
 	// Saved Dijkstra output
-	// TODO: Change m_DijkstraOutputRoutes to a vector of vectors of unsigned ints
 	std::vector<std::vector<unsigned int> > m_DijkstraOutputRoutes;
 	std::vector<std::vector<double> > m_DijkstraShortestDistances;
-	std::map<unsigned int,unsigned int> m_DijkstraStartVertices;
+	std::map<unsigned int, unsigned int> m_DijkstraStartVertices;
 
 };
 

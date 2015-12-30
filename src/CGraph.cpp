@@ -12,6 +12,7 @@
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
 
+// -/-/-/-/-/-/-/ CONSTRUCTORS AND DESTRUCTORS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function is a constructor for the CGraph class. It takes inputs for the distance matrix.
  * distanceMatrix[i][j] should be: - the distance from vertex i to vertex j.
@@ -25,8 +26,8 @@ using namespace std;
  * It also initialises the adjacency matrix using the distance matrix.
  *
  */
-CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
-		: m_DistanceMatrix { distanceMatrix }, m_Order { distanceMatrix.size() }
+CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<unsigned int> vertexLabels)
+		: m_DistanceMatrix { distanceMatrix }, m_Order { distanceMatrix.size() }, m_InternalToExternal { vertexLabels }
 {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//// Check Inputs ////
@@ -62,6 +63,11 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix)
 		}
 	}
 
+	// Store external-to-internal vertex labels
+	//TODO: Check vertex labelling?
+	for (unsigned int i = 0; i < vertexLabels.size(); ++i)
+		m_ExternalToInternal[vertexLabels[i]] = i;
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//// Create adjacency matrix ////
 
@@ -91,23 +97,81 @@ CGraph::~CGraph()
 // TODO Auto-generated destructor stub
 }
 
+// -/-/-/-/-/-/-/ INTERNAL NUMBERING FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
+/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function converts the internal numbering of the vertices to the external numbering.
+ *
+ * -- Overload 1 --
+ * INPUT:
+ * vertex = An unsigned int which is the internal label of some vertex of the graph
+ *
+ * OUTPUT:
+ * An unsigned int which is the external label of vertex.
+ *
+ * -- Overload 2 --
+ * INPUT/OUTPUT:
+ * vertices = A vector of unsigned ints which are the internal labels of some vertices of the graph.
+ *            This is passed as a reference and updated by the function to contain the corresponding
+ *            external labels.
+ */
+unsigned int CGraph::InternalToExternal(const unsigned int vertex) const
+{
+	return m_InternalToExternal.at(vertex);
+}
+
+void CGraph::InternalToExternal(vector<unsigned int>& vertices) const
+{
+	for (long unsigned int i = 0; i < vertices.size(); ++i)
+		vertices[i] = m_InternalToExternal.at(vertices[i]);
+}
+
+/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function converts the external numbering of the vertices to the internal numbering.
+ *
+ * -- Overload 1 --
+ * INPUT:
+ * vertex = An unsigned int which is the external label of some vertex of the graph
+ *
+ * OUTPUT:
+ * An unsigned int which is the internal label of vertex.
+ *
+ * -- Overload 2 --
+ * INPUT/OUTPUT:
+ * vertices = A vector of unsigned ints which are the external labels of some vertices of the graph.
+ *            This is passed as a reference and updated by the function to contain the corresponding
+ *            internal labels.
+ */
+unsigned int CGraph::ExternalToInternal(const unsigned int vertex) const
+{
+	return m_ExternalToInternal.at(vertex);
+}
+
+void CGraph::ExternalToInternal(vector<unsigned int>& vertices) const
+{
+	for (long unsigned int i = 0; i < vertices.size(); ++i)
+		vertices[i] = m_ExternalToInternal.at(vertices[i]);
+}
+
+// -/-/-/-/-/-/-/ DIJKSTRA FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * This function is a public wrapper for Dijkstra's algorithm.
+ * This is a public wrapper for InternalShortestDistance.
  * It returns the shortest distance between two specified vertices, and an example shortest route
  * between them. This is done by searching for a previous appropriate set of Dijkstra outputs, and
  * calling Dijkstra if none exists.
+ * Inputs and outputs use the external vertex numbering.
  *
  * INPUTS:
  * startVertex       = An unsigned integer representing the vertex at the start of the desired
  *                     route.
  * endVertex         = An unsigned integer representing the vertex at the end of the desired route.
  * preferStartVertex = A bool to determine whether to prefer running Dijkstra from the startVertex
- *                     (as opposed to from the end vertex). If this argument is omitted then the
+ *                     (as opposed to from the end vertex).
+ *                     The this argument allows the caller to minimise the calls to
+ *                     InternalDijkstra required to return the desired shortest routes through the
+ *                     graph.
+ *                     If this argument is omitted then the
  *                     default of false shall be used (since this requires marginally less effort on
  *                     the part of the computer).
- *                     The availability of this argument allows the caller to minimise the calls to
- *                     internalDijkstra required to return the desired shortest routes through the
- *                     graph.
  *
  * INPUT OUTPUTS:
  * shortestDistance = The shortest distance between startVertex and endVertex.
@@ -118,6 +182,50 @@ CGraph::~CGraph()
  *
  */
 void CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
+{
+	// Convert to internal vertex numbering
+	unsigned int iStartVertex = ExternalToInternal(startVertex);
+	unsigned int iEndVertex = ExternalToInternal(endVertex);
+
+	// Do the work
+	InternalShortestDistance(iStartVertex, iEndVertex, preferStartVertex, shortestDistance, outputRoute);
+
+	// Convert to external vertex numbering
+	shortestDistance = InternalToExternal(shortestDistance);
+	InternalToExternal(outputRoute);
+}
+
+void CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
+{
+	ShortestDistance(startVertex, endVertex, false, shortestDistance, outputRoute);
+}
+
+/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function is a wrapper for Dijkstra's algorithm.
+ * It returns the shortest distance between two specified vertices, and an example shortest route
+ * between them. This is done by searching for a previous appropriate set of Dijkstra outputs, and
+ * calling Dijkstra if none exists.
+ * Inputs and outputs use the internal vertex numbering.
+ *
+ * INPUTS:
+ * startVertex       = An unsigned integer representing the vertex at the start of the desired
+ *                     route.
+ * endVertex         = An unsigned integer representing the vertex at the end of the desired route.
+ * preferStartVertex = A bool to determine whether to prefer running Dijkstra from the startVertex
+ *                     (as opposed to from the end vertex).
+ *                     The this argument allows the caller to minimise the calls to
+ *                     InternalDijkstra required to return the desired shortest routes through the
+ *                     graph.
+ *
+ * INPUT OUTPUTS:
+ * shortestDistance = The shortest distance between startVertex and endVertex.
+ * outputRoute      = A vector containing an example shortest route from startVertex to endVertex.
+ *                    outputRoute.front() == startVertex
+ *                    outputRoute[i] == the ith element of the route
+ *                    outputRoute.back() == endVertex
+ *
+ */
+void CGraph::InternalShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
 {
 	/*  -- Decide on whether to use Dijkstra from the startVertex or the endVertex -- //
 	 *   - Default is to use endVertex if Dijkstra as already been called for this, and startVertex
@@ -177,71 +285,7 @@ void CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned in
 		// Set shortestDistance
 		shortestDistance = m_DijkstraShortestDistances[index][startVertex];
 	}
-}
 
-void CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
-{
-	ShortestDistance(startVertex, endVertex, false, shortestDistance, outputRoute);
-}
-
-/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * This function converts the internal numbering of the vertices to the external numbering.
- *
- * INPUT:
- * vertex = An unsigned int which is the internal label of some vertex of the graph
- *
- * OUTPUT:
- * An unsigned int which is the external label of vertex.
- */
-unsigned int CGraph::InternalToExternal(const unsigned int vertex) const
-{
-	return m_InternalToExternal.at(vertex);
-}
-
-/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * This function converts the internal numbering of the vertices to the external numbering.
- *
- * INPUT/OUTPUT:
- * vertices = A vector of unsigned ints which are the internal labels of some vertices of the graph.
- *            This is passed as a reference and updated by the function to contain the corresponding
- *            external labels.
- */
-void CGraph::InternalToExternal(vector<unsigned int>& vertices) const
-{
-	for (long unsigned int i = 0; i < vertices.size(); ++i)
-	{
-		vertices[i] = m_InternalToExternal.at(vertices[i]);
-	}
-}
-
-/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * This function converts the external numbering of the vertices to the internal numbering.
- *
- * INPUT:
- * vertex = An unsigned int which is the external label of some vertex of the graph
- *
- * OUTPUT:
- * An unsigned int which is the internal label of vertex.
- */
-unsigned int CGraph::ExternalToInternal(const unsigned int vertex) const
-{
-	return m_ExternalToInternal.at(vertex);
-}
-
-/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * This function converts the external numbering of the vertices to the internal numbering.
- *
- * INPUT/OUTPUT:
- * vertices = A vector of unsigned ints which are the external labels of some vertices of the graph.
- *            This is passed as a reference and updated by the function to contain the corresponding
- *            internal labels.
- */
-void CGraph::ExternalToInternal(vector<unsigned int>& vertices) const
-{
-	for (long unsigned int i = 0; i < vertices.size(); ++i)
-	{
-		vertices[i] = m_ExternalToInternal.at(vertices[i]);
-	}
 }
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

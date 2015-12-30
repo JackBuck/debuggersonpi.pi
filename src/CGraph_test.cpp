@@ -43,10 +43,11 @@ int CGraph_test()
 			{ -1, -1,  0, -1, -1,  1,  0 }
 	};
 
-	CGraph exampleGraph { exampleGraph_DistMat };
+	vector<unsigned int> externalLabelling { 0, 1, 2, 3, 4, 5, 6 };
+	CGraph exampleGraph { exampleGraph_DistMat, externalLabelling };
 
 	// 2 - Define hand computed result of Dijkstra manually
-	// TODO: Load these test cases from a file?
+	// TODO: Load these test cases from a file? As well as the above distance matrix?
 	vector<unsigned int> startVertices        { 0, 0, 0, 3, 3, 0 };
 	vector<unsigned int> endVertices          { 0, 3, 5, 0, 6, 3 };
 	vector<double> expected_shortestDistances { 0, 3, 3, 3, 1, 3 };

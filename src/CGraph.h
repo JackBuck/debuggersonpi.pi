@@ -50,7 +50,7 @@ class CGraph
 {
 public:
 	// === Constructors and Destructors =============================================================
-	explicit CGraph(const std::vector<std::vector<double> >& distanceMatrix);
+	explicit CGraph(const std::vector<std::vector<double> >& distanceMatrix, const std::vector<unsigned int> vertexLabels);
 	~CGraph();
 
 	// === Public Functions =========================================================================
@@ -106,6 +106,7 @@ private:
 	void ExternalToInternal(std::vector<unsigned int>&) const;
 
 	// Dijkstra functions
+	void InternalShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute);
 	unsigned int InternalDijkstra(const unsigned int& startVertex);
 
 	// === Member Variables =========================================================================
@@ -116,7 +117,7 @@ private:
 
 	// External vertex numbering look-up table
 	std::map<unsigned int, unsigned int> m_ExternalToInternal;
-	std::map<unsigned int, unsigned int> m_InternalToExternal;
+	std::vector<unsigned int> m_InternalToExternal;
 
 	// Saved Dijkstra output
 	std::vector<std::vector<unsigned int> > m_DijkstraOutputRoutes;

@@ -88,6 +88,14 @@ public:
 		{
 		}
 	};
+	struct InputVertexLabels_BadSize
+	{
+		long unsigned int mm_vertexLabelsSize;
+		InputVertexLabels_BadSize(long unsigned int vertexLabelsSize)
+				: mm_vertexLabelsSize { vertexLabelsSize }
+		{
+		}
+	};
 	struct Dijkstra_InvalidStartVertex
 	{
 		unsigned int mm_startVertex;

@@ -27,7 +27,7 @@ using namespace std;
  *
  */
 CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<unsigned int> vertexLabels)
-		: m_DistanceMatrix { distanceMatrix }, m_Order { distanceMatrix.size() }, m_InternalToExternal { vertexLabels }
+		: m_DistanceMatrix { distanceMatrix }, m_Order { (unsigned int)distanceMatrix.size() }, m_InternalToExternal { vertexLabels }
 {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//// Check Inputs ////
@@ -63,8 +63,9 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<unsig
 		}
 	}
 
-	// Store external-to-internal vertex labels
-	//TODO: Check vertex labelling?
+	// Check and store external-to-internal vertex labels
+	if (m_Order != vertexLabels.size())
+		throw InputVertexLabels_BadSize { vertexLabels.size() };
 	for (unsigned int i = 0; i < vertexLabels.size(); ++i)
 		m_ExternalToInternal[vertexLabels[i]] = i;
 

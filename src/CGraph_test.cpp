@@ -104,9 +104,9 @@ int CGraph_test()
 		for (int j = 0; j < (int) outputRoutes[i].size(); ++j)
 			cout << outputRoutes[i][j] << ' ';
 		cout << " (";
-		for (int j = 0; j < (int) expected_outputRoutes[i].size(); ++j)
+		for (int j = 0; j < (int) expected_outputRoutes[i].size() - 1; ++j)
 			cout << expected_outputRoutes[i][j] << ' ';
-		cout << ')';
+		cout << expected_outputRoutes[i].back() << ')';
 		cout << '\n';
 	}
 	cout << '\n';

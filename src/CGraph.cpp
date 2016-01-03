@@ -29,6 +29,9 @@ using namespace std;
 CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<unsigned int> vertexLabels)
 		: m_DistanceMatrix { distanceMatrix }, m_Order { (unsigned int)distanceMatrix.size() }, m_InternalToExternal { vertexLabels }
 {
+	// TODO: Implement another construtor which creates distanceMatrix from one or two triangular matrices provided.
+	// I.e. split out the bit which creates the distance matrix. Use a static enum flag which is part of the CGraph class?
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//// Check Inputs ////
 

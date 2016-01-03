@@ -8,6 +8,7 @@
 #ifndef SRC_CGRAPH_H_
 #define SRC_CGRAPH_H_
 
+#include<string>
 #include<vector>
 #include<map>
 
@@ -46,6 +47,7 @@
  *                                  vertex.
  *
  */
+enum class CGraph_DistMatCheckResult { undefined, square, lowerTriangular, upperTriangular, badShape, invalidElements, tooLarge};
 class CGraph
 {
 public:
@@ -112,6 +114,14 @@ public:
 		{
 		}
 	};
+	struct InternalException
+	{
+		std::string mm_message;
+		InternalException(std::string message)
+				: mm_message { message }
+		{
+		}
+	};
 
 private:
 	// === Private Functions ========================================================================
@@ -124,6 +134,10 @@ private:
 	// Dijkstra functions
 	void InternalShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute);
 	unsigned int InternalDijkstra(const unsigned int& startVertex);
+
+	// Helper functions
+	// TODO Implement this function, as well as the triangular constructor
+	CGraph_DistMatCheckResult CheckInput_DistMat(std::vector<std::vector<double> >& distanceMatrix);
 
 	// === Member Variables =========================================================================
 	// Graph properties
@@ -139,7 +153,6 @@ private:
 	std::vector<std::vector<unsigned int> > m_DijkstraOutputRoutes;
 	std::vector<std::vector<double> > m_DijkstraShortestDistances;
 	std::map<unsigned int, unsigned int> m_DijkstraStartVertices;
-
 };
 
 #endif // SRC_CGRAPH_H_

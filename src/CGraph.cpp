@@ -414,3 +414,58 @@ unsigned int CGraph::InternalDijkstra(const unsigned int& startVertex)
 	return m_DijkstraStartVertices[startVertex];
 }
 
+// -/-/-/-/-/-/-/ HELPER FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
+CGraph_DistMatCheckResult CGraph::CheckInput_DistMat(vector<vector<double> >& distanceMatrix)
+{
+	// Check distanceMatrix is not too large for m_Order to fit in an unsigned int type
+	// TODO: Can I make this a constexpr?
+	const long unsigned max_unsignedInt = numeric_limits<unsigned int>::max();
+	if (distanceMatrix.size() > max_unsignedInt)
+		return CGraph_DistMatCheckResult::tooLarge;
+
+	// Get dimensions and check the input is a square or triangular matrix
+	// Determine shape if possible, and return bad shape if no shape is matched
+	CGraph_DistMatCheckResult matrixShape { CGraph_DistMatCheckResult::undefined };
+	if (distanceMatrix[0].size() == m_Order && distanceMatrix[1].size() == m_Order)
+		matrixShape = CGraph_DistMatCheckResult::square;
+	else if (distanceMatrix[0].size() == 1 && distanceMatrix[1].size() == 2 )
+		matrixShape = CGraph_DistMatCheckResult::lowerTriangular;
+	else if (distanceMatrix[0].size() == m_Order && distanceMatrix[1].size() == m_Order - 1)
+		matrixShape = CGraph_DistMatCheckResult::upperTriangular;
+	else
+		return CGraph_DistMatCheckResult::badShape;
+
+	// Check rest of matrix agrees with this shape
+	for (unsigned int i = 0; i < m_Order; ++i)
+	{
+		if (distanceMatrix[i].size() > max_unsignedInt)
+			return CGraph_DistMatCheckResult::tooLarge;
+
+		unsigned int rowLength = distanceMatrix[i].size();
+		if (matrixShape == CGraph_DistMatCheckResult::square && rowLength != m_Order)
+			return CGraph_DistMatCheckResult::badShape;
+		else if (matrixShape == CGraph_DistMatCheckResult::lowerTriangular && i > 0
+				&& rowLength != distanceMatrix[i-1].size() + 1)
+			return CGraph_DistMatCheckResult::badShape;
+		else if (matrixShape == CGraph_DistMatCheckResult::upperTriangular && i > 0
+				&& rowLength != distanceMatrix[i-1].size() - 1)
+			return CGraph_DistMatCheckResult::badShape;
+	}
+	if (matrixShape == CGraph_DistMatCheckResult::undefined)
+		throw InternalException("Code broken internally. Variable matrixShape was not changed from undefined.");
+
+	// Check elements are valid
+	for (unsigned int i = 0; i < m_Order; ++i)
+	{
+		for (unsigned int j = 0; j < distanceMatrix[i].size(); ++j)
+		{
+			if (distanceMatrix[i][j] < 0 && distanceMatrix[i][j] != -1)
+				return CGraph_DistMatCheckResult::invalidElements;
+		}
+	}
+
+	// Return positive result
+	return matrixShape;
+}
+
+

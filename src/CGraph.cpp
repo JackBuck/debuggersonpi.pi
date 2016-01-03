@@ -195,7 +195,6 @@ void CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned in
 	InternalShortestDistance(iStartVertex, iEndVertex, preferStartVertex, shortestDistance, outputRoute);
 
 	// Convert to external vertex numbering
-	shortestDistance = InternalToExternal(shortestDistance);
 	InternalToExternal(outputRoute);
 }
 

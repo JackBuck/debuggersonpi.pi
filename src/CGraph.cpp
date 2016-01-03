@@ -71,6 +71,8 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<unsig
 		throw InputVertexLabels_BadSize { vertexLabels.size() };
 	for (unsigned int i = 0; i < vertexLabels.size(); ++i)
 		m_ExternalToInternal[vertexLabels[i]] = i;
+	if (m_Order != m_ExternalToInternal.size())
+		throw InputVertexLabels_RepeatedLabel { vertexLabels };
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//// Create adjacency matrix ////

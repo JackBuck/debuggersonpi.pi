@@ -96,11 +96,19 @@ public:
 		{
 		}
 	};
+	struct InputVertexLabels_RepeatedLabel
+	{
+		std::vector<unsigned int> mm_vertexLabels;
+		InputVertexLabels_RepeatedLabel(std::vector<unsigned int> vertexLabels)
+				: mm_vertexLabels { vertexLabels }
+		{
+		}
+	};
 	struct Dijkstra_InvalidStartVertex
 	{
 		unsigned int mm_startVertex;
 		Dijkstra_InvalidStartVertex(unsigned int startVertex)
-				: mm_startVertex {startVertex}
+				: mm_startVertex { startVertex }
 		{
 		}
 	};

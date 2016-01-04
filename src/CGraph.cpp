@@ -13,6 +13,7 @@
 using namespace std;
 
 // -/-/-/-/-/-/-/ CONSTRUCTORS AND DESTRUCTORS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
+// TODO: Update comments
 /* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function is a constructor for the CGraph class. It takes inputs for the distance matrix.
  * distanceMatrix[i][j] should be: - the distance from vertex i to vertex j.
@@ -27,44 +28,59 @@ using namespace std;
  *
  */
 CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<unsigned int> vertexLabels)
-		: m_DistanceMatrix { distanceMatrix }, m_Order { (unsigned int)distanceMatrix.size() }, m_InternalToExternal { vertexLabels }
+		: m_Order { (unsigned int)distanceMatrix.size() }, m_InternalToExternal { vertexLabels }
 {
-	// TODO: Implement another construtor which creates distanceMatrix from one or two triangular matrices provided.
-	// I.e. split out the bit which creates the distance matrix. Use a static enum flag which is part of the CGraph class?
-
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//// Check Inputs ////
 
-	// Check distanceMatrix is not too large for m_Order to fit in an unsigned int type
-	// TODO: Can I make this a constexpr?
-	const long unsigned max_unsignedInt = std::numeric_limits<unsigned int>::max();
-	if (distanceMatrix.size() > max_unsignedInt)
-		throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), max_unsignedInt };
+	// Distance matrix
+	CGraph_DistMatCheckResult distanceMatrixType = CheckInput_DistMat(distanceMatrix);
 
-	// Get dimensions and check the input is a matrix and is square
-	for (unsigned int i = 0; i < m_Order; ++i)
-	{
-		if (distanceMatrix[i].size() > max_unsignedInt)
-			throw InputDistMat_MatrixTooLarge { distanceMatrix[i].size(), max_unsignedInt };
-
-		unsigned int rowLength = distanceMatrix[i].size();
-		if (m_Order != rowLength)
+	switch (distanceMatrixType) {
+	case CGraph_DistMatCheckResult::tooLarge:
+		throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), std::numeric_limits<unsigned int>::max() };
+		break;
+	case CGraph_DistMatCheckResult::badShape:
+		//TODO Change this to a badShape exception
+		throw InputDistMat_NotSquareMatrix { distanceMatrix };
+		break;
+	case CGraph_DistMatCheckResult::invalidElements:
+		throw InputDistMat_InvalidElements { distanceMatrix };
+		break;
+	case CGraph_DistMatCheckResult::square:
+		m_DistanceMatrix = distanceMatrix;
+		break;
+	case CGraph_DistMatCheckResult::lowerTriangular:
+		// Define and fill out distance matrix as a square matrix
+		m_DistanceMatrix = vector<vector<double> >(m_Order, vector<double>(m_Order, 0));
+		for (unsigned int i = 0; i < m_Order; ++i)
 		{
-			throw InputDistMat_NotSquareMatrix { distanceMatrix };
-		}
-	}
-
-	// Check elements are valid
-	for (unsigned int i = 0; i < m_Order; ++i)
-	{
-		for (unsigned int j = 0; j < m_Order; ++j)
-		{
-			if (distanceMatrix[i][j] < 0 && distanceMatrix[i][j] != -1)
+			for (unsigned int j = 0; j < m_Order; ++j)
 			{
-				throw InputDistMat_InvalidElements { distanceMatrix };
+				if (i < j)
+					m_DistanceMatrix[i][j] = distanceMatrix[j][i];
+				else
+					m_DistanceMatrix[i][j] = distanceMatrix[i][j];
 			}
 		}
+		break;
+	case CGraph_DistMatCheckResult::upperTriangular:
+		m_DistanceMatrix = vector<vector<double> >(m_Order, vector<double>(m_Order, 0));
+		for (unsigned int i = 0; i < m_Order; ++i)
+		{
+			for (unsigned int j = 0; j < m_Order; ++j)
+			{
+				if (i > j)
+					m_DistanceMatrix[i][j] = distanceMatrix[j][i];
+				else
+					m_DistanceMatrix[i][j] = distanceMatrix[i][j];
+			}
+		}
+		break;
+	default:
+		throw InternalException("Code broken internally. CGraph::CheckInput_DistMat returned undefined.");
 	}
+
 
 	// Check and store external-to-internal vertex labels
 	if (m_Order != vertexLabels.size())
@@ -415,7 +431,7 @@ unsigned int CGraph::InternalDijkstra(const unsigned int& startVertex)
 }
 
 // -/-/-/-/-/-/-/ HELPER FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
-CGraph_DistMatCheckResult CGraph::CheckInput_DistMat(vector<vector<double> >& distanceMatrix)
+CGraph_DistMatCheckResult CGraph::CheckInput_DistMat(const vector<vector<double> >& distanceMatrix) const
 {
 	// Check distanceMatrix is not too large for m_Order to fit in an unsigned int type
 	// TODO: Can I make this a constexpr?

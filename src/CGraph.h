@@ -56,7 +56,7 @@ public:
 	~CGraph();
 
 	// === Public Functions =========================================================================
-	// Non-modifying functions
+	// Access functions
 	unsigned int GetOrder() const {return m_Order;}
 
 	// Dijkstra functions
@@ -137,7 +137,7 @@ private:
 
 	// Helper functions
 	// TODO Implement this function, as well as the triangular constructor
-	CGraph_DistMatCheckResult CheckInput_DistMat(std::vector<std::vector<double> >& distanceMatrix);
+	CGraph_DistMatCheckResult CheckInput_DistMat(const std::vector<std::vector<double> >& distanceMatrix) const;
 
 	// === Member Variables =========================================================================
 	// Graph properties

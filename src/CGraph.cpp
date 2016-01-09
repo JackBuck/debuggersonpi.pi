@@ -7,7 +7,8 @@
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "CGraph.h"
-#include<limits>
+#include <limits>
+#include <stdexcept>
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -15,14 +16,20 @@ using namespace std;
 // -/-/-/-/-/-/-/ CONSTRUCTORS AND DESTRUCTORS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 // TODO: Update comments
 /* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * This function is a constructor for the CGraph class. It takes inputs for the distance matrix.
+ * This function is a constructor for the CGraph class. It takes inputs for the distance matrix and
+ * external labels for the vertices.
  * distanceMatrix[i][j] should be: - the distance from vertex i to vertex j.
  *                                 - -1 if vertices i and j are not adjacent (so infinite distance)
+ * This (distanceMatrix) should be either:
+ *    - a square matrix (distanceMatrix[i][j] defined for all 0<=i,j<n, where n is the graph order)
+ *    - a lower triangular matrix (distanceMatrix[i][j] defined only for 0<=i<=j<n)
+ *    - an upper triangular matrix (distanceMatrix[i][j] defined only for 0<=j<=i<n)
  *
  * It checks that
- *   - The vector<vector<double> > is a matrix and is square.
- *   - The matrix is not too large. The order of the graph must fit into an unsigned integer.
- *   - The entries of the matrix are >= 0 or -1 (-1 is used to represent infinity).
+ *   - The distanceMatrix is a square, or upper or lower triangular matrix.
+ *   - The matrix is not too large (the order of the graph must fit into an unsigned integer).
+ *   - The entries of the matrix are >= 0 or =-1 (-1 is used to represent infinity).
+ *   - The correct number of vertex labels has been provided.
  *
  * It also initialises the adjacency matrix using the distance matrix.
  *
@@ -41,8 +48,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<unsig
 		throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), std::numeric_limits<unsigned int>::max() };
 		break;
 	case CGraph_DistMatCheckResult::badShape:
-		//TODO Change this to a badShape exception
-		throw InputDistMat_NotSquareMatrix { distanceMatrix };
+		throw InputDistMat_BadShape{ distanceMatrix };
 		break;
 	case CGraph_DistMatCheckResult::invalidElements:
 		throw InputDistMat_InvalidElements { distanceMatrix };
@@ -119,6 +125,7 @@ CGraph::~CGraph()
 // TODO Auto-generated destructor stub
 }
 
+
 // -/-/-/-/-/-/-/ INTERNAL NUMBERING FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function converts the internal numbering of the vertices to the external numbering.
@@ -147,12 +154,13 @@ void CGraph::InternalToExternal(vector<unsigned int>& vertices) const
 		vertices[i] = m_InternalToExternal.at(vertices[i]);
 }
 
+
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function converts the external numbering of the vertices to the internal numbering.
  *
  * -- Overload 1 --
  * INPUT:
- * vertex = An unsigned int which is the external label of some vertex of the graph
+ * vertex = An unsigned int which is the external label of some vertex of the graph.
  *
  * OUTPUT:
  * An unsigned int which is the internal label of vertex.
@@ -174,6 +182,7 @@ void CGraph::ExternalToInternal(vector<unsigned int>& vertices) const
 		vertices[i] = m_ExternalToInternal.at(vertices[i]);
 }
 
+
 // -/-/-/-/-/-/-/ DIJKSTRA FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This is a public wrapper for InternalShortestDistance.
@@ -188,12 +197,10 @@ void CGraph::ExternalToInternal(vector<unsigned int>& vertices) const
  * endVertex         = An unsigned integer representing the vertex at the end of the desired route.
  * preferStartVertex = A bool to determine whether to prefer running Dijkstra from the startVertex
  *                     (as opposed to from the end vertex).
- *                     The this argument allows the caller to minimise the calls to
- *                     InternalDijkstra required to return the desired shortest routes through the
- *                     graph.
- *                     If this argument is omitted then the
- *                     default of false shall be used (since this requires marginally less effort on
- *                     the part of the computer).
+ *                     The this argument allows the caller to minimise the calls to InternalDijkstra
+ *                     required to return the desired shortest routes through the graph.
+ *                     If this argument is omitted then the default of false shall be used (since
+ *                     the algorithm in this case is fractionally simpler).
  *
  * INPUT OUTPUTS:
  * shortestDistance = The shortest distance between startVertex and endVertex.
@@ -205,9 +212,17 @@ void CGraph::ExternalToInternal(vector<unsigned int>& vertices) const
  */
 void CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
 {
-	// Convert to internal vertex numbering
-	unsigned int iStartVertex = ExternalToInternal(startVertex);
-	unsigned int iEndVertex = ExternalToInternal(endVertex);
+	// Convert to internal vertex numbering (and check valid start and end vertices)
+	unsigned int iStartVertex, iEndVertex;
+	try
+	{
+		iStartVertex = ExternalToInternal(startVertex);
+		iEndVertex = ExternalToInternal(endVertex);
+	}
+	catch (out_of_range& e)
+	{
+		throw ShortestDistance_InvalidVertex { startVertex, endVertex };
+	}
 
 	// Do the work
 	InternalShortestDistance(iStartVertex, iEndVertex, preferStartVertex, shortestDistance, outputRoute);
@@ -221,7 +236,8 @@ void CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned in
 	ShortestDistance(startVertex, endVertex, false, shortestDistance, outputRoute);
 }
 
-/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function is a wrapper for Dijkstra's algorithm.
  * It returns the shortest distance between two specified vertices, and an example shortest route
  * between them. This is done by searching for a previous appropriate set of Dijkstra outputs, and
@@ -309,12 +325,13 @@ void CGraph::InternalShortestDistance(const unsigned int& startVertex, const uns
 
 }
 
+
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function is an implementation of Dijkstra's algorithm -
  *                                                https://en.wikipedia.org/wiki/Dijkstra's_algorithm
- * It is called by the public function CGraph::Dijkstra and computes the tree of minimal routes in
- * the graph, from a specified start vertex to every other vertex in the graph. The output is stored
- * in the member variables of CGraph beginning with 'm_Dijkstra'.
+ * It is called by the private function CGraph::InternalShortestDistance and computes the tree of
+ * minimal routes in the graph, from a specified start vertex to every other vertex in the graph.
+ * The output is stored in the member variables of CGraph beginning with 'm_Dijkstra'.
  *
  * INPUTS:
  * 	startVertex - An integer to indicate the vertex of the graph from which to run the algorithm.
@@ -322,14 +339,15 @@ void CGraph::InternalShortestDistance(const unsigned int& startVertex, const uns
  * 	              order of the graph.
  *
  * OUTPUT:
- * 	The function returns an int which is m_DijkstraStartVertices[startVertex]. That is, it is the
- * 	index in m_DijkstraShortestDistances and m_DijkstraOutputRoutes corresponding to startVertex.
+ * 	The function returns an unsigned int which is m_DijkstraStartVertices[startVertex]. That is,
+ * 	it	is the index in m_DijkstraShortestDistances and m_DijkstraOutputRoutes corresponding to
+ * 	startVertex.
  *
  * MEMBER VARIABLES SET:
  * 	m_DijkstraShortestDistances - A vector of integers will be created which contains the shortest
  * 	              distances from the startVertex to each vertex of the graph. A value of -1 will
- * 	              be used to indicate that the vertex is not connected to startVertex.
- * 	              This vector is then appended to m_DijkstraShortestDistances.
+ * 	              be used to indicate that the vertex is not connected to startVertex. This vector
+ * 	              is then appended to m_DijkstraShortestDistances.
  * 	m_DijkstraOutputRoutes - A vector of integers will be created to define examples of paths from
  * 	              the startVertex to each vertex of the graph which have the shortest total
  * 	              distance. The union of the example paths form a tree which is defined here by
@@ -346,16 +364,10 @@ void CGraph::InternalShortestDistance(const unsigned int& startVertex, const uns
 unsigned int CGraph::InternalDijkstra(const unsigned int& startVertex)
 {
 	// -- Initial Admin -- //
-	// Check startVertex is a valid vertex
-	if (startVertex < 0 || startVertex >= m_Order)
-	{
-		throw Dijkstra_InvalidStartVertex { startVertex };
-	}
-
 	// Check whether we have already computed Dijkstra for this startVertex
 	auto mapIterator = m_DijkstraStartVertices.find(startVertex);
 	if (mapIterator != m_DijkstraStartVertices.end())
-		return mapIterator->second; // Todo: Check this syntax does what I want!!
+		return mapIterator->second; // TODO: Check this syntax does what I want!!
 
 	// Create and initialise vectors shortestDistances and outputRoutes
 	vector<double> shortestDistances(m_Order, -1);
@@ -430,7 +442,28 @@ unsigned int CGraph::InternalDijkstra(const unsigned int& startVertex)
 	return m_DijkstraStartVertices[startVertex];
 }
 
+
 // -/-/-/-/-/-/-/ HELPER FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
+/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function can be used to determine the format of a distance matrix. If the format is not
+ * recognised then a reason is returned instead. It is used in the CGraph constructor.
+ *
+ * INPUT:
+ * distanceMatrix = The distance matrix to check.
+ *
+ * OUTPUT:
+ * This takes one of the values of the enum class CGraph_DistMatCheckResult:
+ *  - undefined       => An internal error has occurred and the output has not been set.
+ *  - square          => The matrix supplied is square.
+ *  - lowerTriangular => The matrix supplied is lower triangular.
+ *  - upperTriangular => The matrix supplied is upper triangular.
+ *  - badShape        => The matrix supplied is not square, lower or upper triangular.
+ *  - invalidElements => The matrix supplied has elements which are not allowed.
+ *                       Allowed elements are -1 and anything >=0 (-1 represents infinity).
+ *  - tooLarge        => Either the number of rows, or the length of some row is too large to fit
+ *                       into an unsigned int.
+ *
+ */
 CGraph_DistMatCheckResult CGraph::CheckInput_DistMat(const vector<vector<double> >& distanceMatrix) const
 {
 	// Check distanceMatrix is not too large for m_Order to fit in an unsigned int type

@@ -12,27 +12,57 @@
 #include<vector>
 #include<map>
 
+/* ~~~ SIMPLE TYPES USED BY CGRAPH ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * CGraph_DistMatCheckResult defines values returnable by the function CGraph::CheckInput_DistMat(),
+ * which checks the format of a supplied distance matrix.
+ */
+enum class CGraph_DistMatCheckResult { undefined, square, lowerTriangular, upperTriangular, badShape, invalidElements, tooLarge};
+
 /* ~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This is a class to represent the mathematical concept of a graph.
  * See https://en.wikipedia.org/wiki/Graph_theory
+ * It has facility for an external numbering of the vertices.
+ * The reader should beware that (excepting the private functions which convert between the two
+ * numberings) all public functions use the external vertex numbering and have a corresponding
+ * private version prefixed 'Internal' which uses the internal vertex numbering. All private
+ * functions which need a vertex numbering will use the internal numbering and be prefixed
+ * 'Internal'.
  *
- * Public Member functions:
- *  - GetOrder = A function to return the order of the graph.
- *  - Dijkstra = A public interface for internalDijkstra. It calls internalDijkstra if necessary, in
- *               order to return the shortest distance and a shortest path between two supplied
- *               vertices of the graph.
+ * Public Member Functions:
+ *  - GetOrder         = A function to return the order of the graph.
+ *  - ShortestDistance = A function to return the shortest distance and a shortest path between two
+ *                       supplied vertices of the graph.
+ *                       See comments in the source file for details of the inputs and outputs.
  *
- * Private Member functions:
- *  - internalDijkstra = An implementation of Dijkstra's algorithm.
- *                       https://en.wikipedia.org/wiki/Dijkstra's_algorithm
- *                       Results are saved in the member variables beginning 'm_Dijkstra'.
+ *                       [This function is public interface for InternalShortestDistance.
+ *                       It converts the inputs and outputs between the internal vertex numbering
+ *                       and the external numbering, using internalShortestDistance to do the work.]
  *
- * Member variables:
- *  Graph Properties
+ * Private Member Functions:
+ *  - InternalToExternal        = A function to relabel vertex labels from internal to external.
+ *  - ExternalToInternal        = A function to relabel vertex labels from external to internal.
+ *  - InternalDijkstra          = An implementation of Dijkstra's algorithm.
+ *                                https://en.wikipedia.org/wiki/Dijkstra's_algorithm
+ *                                Results are saved in the member variables beginning 'm_Dijkstra'.
+ *  - InternalShortestDistance  = Calls InternalDijkstra if necessary (or just reads the relevant
+ *                                member variables) to compute the shortest distance between two
+ *                                supplied points.
+ *  - CGraph_DistMatCheckResult = A function to check a distance matrix has the correct format, and
+ *                                to return that format using the enum class
+ *                                CGraph_DistMatCheckResult.
+ *
+ * Member Variables:
+ *  Graph properties
  *  - m_DistanceMatrix  = A distance matrix for the graph. Use -1 to indicate an infinite distance.
  *  - m_AdjacencyMatrix = An adjacency matrix for the graph. This should be kept consistent with
  *                        distance matrix.
  *  - m_Order           = The order of the graph.
+ *
+ *  Vertex labelling
+ *	 - m_ExternalToInternal = A map where the value corresponding to key i is the internal label of
+ *	                          the vertex with external label i.
+ *	 - m_InternalToExternal = A vector whose ith element is the external label of the vertex with
+ *	                          internal label i.
  *
  *  Dijkstra results
  *  - m_DijkstraOutputroutes      = Contains all previous output routes found when calling Dijkstra.
@@ -46,8 +76,24 @@
  *                                  m_DijkstraShortestDistances correspond to a requested start
  *                                  vertex.
  *
+ * Exceptions:
+ *  - InputDistMat_BadShape           = Thrown when the distance matrix passed to the constructor
+ *                                      has an unrecognised shape.
+ *  - InputDistMat_InvalidElements    = Thrown when the distance matrix passed to the constructor
+ *                                      has at least one unrecognised element.
+ *  - InputDistMat_MatrixTooLarge     = Thrown when the distance matrix passed to the constructor
+ *                                      has some row or column whose number of elements is too
+ *                                      large.
+ *  - InputVertexLabels_BadSize       = Thrown when the wrong number of vertex labels is passed to
+ *                                      the constructor.
+ *  - InputVertexLabels_RepeatedLabel = Thrown when the vertex labels is passed to the constructor
+ *                                      contain a repeat.
+ *  - ShortestDistance_InvalidVertex  = Thrown when ShortestDistance is called with in invalid start
+ *                                      vertex.
+ *  - InternalException               = Thrown with a string message when the code is internally
+ *                                      broken.
+ *
  */
-enum class CGraph_DistMatCheckResult { undefined, square, lowerTriangular, upperTriangular, badShape, invalidElements, tooLarge};
 class CGraph
 {
 public:
@@ -65,10 +111,10 @@ public:
 
 	// === Exceptions ===============================================================================
 	// TODO Derive these exceptions from a standard exception so they can be caught by generic exception handlers?
-	struct InputDistMat_NotSquareMatrix
+	struct InputDistMat_BadShape
 	{
 		std::vector<std::vector<double> > mm_DistanceMatrix;
-		InputDistMat_NotSquareMatrix(std::vector<std::vector<double> > distanceMatrix)
+		InputDistMat_BadShape(std::vector<std::vector<double> > distanceMatrix)
 				: mm_DistanceMatrix { distanceMatrix }
 		{
 		}
@@ -106,11 +152,12 @@ public:
 		{
 		}
 	};
-	struct Dijkstra_InvalidStartVertex
+	struct ShortestDistance_InvalidVertex
 	{
 		unsigned int mm_startVertex;
-		Dijkstra_InvalidStartVertex(unsigned int startVertex)
-				: mm_startVertex { startVertex }
+		unsigned int mm_endVertex;
+		ShortestDistance_InvalidVertex(unsigned int startVertex, unsigned int endVertex)
+				: mm_startVertex { startVertex }, mm_endVertex { endVertex }
 		{
 		}
 	};
@@ -136,7 +183,6 @@ private:
 	unsigned int InternalDijkstra(const unsigned int& startVertex);
 
 	// Helper functions
-	// TODO Implement this function, as well as the triangular constructor
 	CGraph_DistMatCheckResult CheckInput_DistMat(const std::vector<std::vector<double> >& distanceMatrix) const;
 
 	// === Member Variables =========================================================================

@@ -2,7 +2,7 @@
  * CGraph.h
  *
  *  Created on: 13 Nov 2015
- *      Author: jack
+ *      Author: Jack Buckingham
  */
 
 #ifndef SRC_CGRAPH_H_

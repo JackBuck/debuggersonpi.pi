@@ -14,7 +14,6 @@
 using namespace std;
 
 // -/-/-/-/-/-/-/ CONSTRUCTORS AND DESTRUCTORS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
-// TODO: Update comments
 /* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function is a constructor for the CGraph class. It takes inputs for the distance matrix and
  * external labels for the vertices.
@@ -114,7 +113,6 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<unsig
 		}
 	}
 
-	//TODO: Do I also need to initialise the Dijkstra member variables or will their default constructors be called?
 }
 
 /* ~~~ FUNCTION (destructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

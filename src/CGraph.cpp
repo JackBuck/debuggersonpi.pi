@@ -77,9 +77,9 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<unsig
 			for (unsigned int j = 0; j < m_Order; ++j)
 			{
 				if (i > j)
-					m_DistanceMatrix[i][j] = distanceMatrix[j][i];
+					m_DistanceMatrix[i][j] = distanceMatrix[j][i-j];
 				else
-					m_DistanceMatrix[i][j] = distanceMatrix[i][j];
+					m_DistanceMatrix[i][j] = distanceMatrix[i][j-i];
 			}
 		}
 		break;
@@ -107,7 +107,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<unsig
 		// Create the matrix one row at a time.
 		for (unsigned int j = 0; j < m_Order; ++j)
 		{
-			if (distanceMatrix[i][j] >= 0 && i != j)
+			if (m_DistanceMatrix[i][j] >= 0 && i != j)
 			{
 				m_AdjacencyMatrix[i][j] =true;
 			}

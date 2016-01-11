@@ -4,10 +4,10 @@
 // Author: Hannah Howell
 //
 
-// ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #include "CMap.h"
-#include<iostream>
+#include<iostream>%
 #include<fstream>
 
 
@@ -106,72 +106,111 @@ void CMap::CreateRoomMap()
 	int room_height = m_height/3;
 	int room_width = m_width/3;
 
-	for(int height_index=0; height_index < 1/*room_height*/; height_index++)
+	for(int height_index=0; height_index<room_height; height_index++)
 	{ 
-		for(int width_index=0; width_index< 1/*room_width*/; width_index++)
+		for(int width_index=0; width_index<room_width; width_index++)
 		{
+			//////////////////////////////////////////////////////////
+			// Determine room type
+
 			vector<bool> room_flag;
 			room_flag.assign(16, true);
 
-			if(m_map[3*height_index][(3*width_index)+1] == 0)
+			if(m_map[(3*height_index)][(3*width_index) + 1] == 0)
 			{ 
-				room_flag[Cross] = false;
-				room_flag[North] = false;
-				room_flag[NorthEast] = false;
-				room_flag[NorthSouth] = false;
-				room_flag[NorthWest] = false;
-				room_flag[NorthEastSouth] = false;
-				room_flag[NorthSouthWest] = false;
-				room_flag[NorthEastWest] = false;
+				room_flag[ERoom_Cross] = false;
+				room_flag[ERoom_North] = false;
+				room_flag[ERoom_NorthEast] = false;
+				room_flag[ERoom_NorthSouth] = false;
+				room_flag[ERoom_NorthWest] = false;
+				room_flag[ERoom_NorthEastSouth] = false;
+				room_flag[ERoom_NorthSouthWest] = false;
+				room_flag[ERoom_NorthEastWest] = false;
 				
 			}
 			else
 			{
-				room_flag[Empty] = false; 
-				room_flag[East] = false;
-				room_flag[South] = false;
-				room_flag[West] = false;
-				room_flag[EastSouth] = false;
-				room_flag[SouthWest] = false;
-				room_flag[EastWest] = false;
-				room_flag[EastSouthWest] = false;
+				room_flag[ERoom_Empty] = false; 
+				room_flag[ERoom_East] = false;
+				room_flag[ERoom_South] = false;
+				room_flag[ERoom_West] = false;
+				room_flag[ERoom_EastSouth] = false;
+				room_flag[ERoom_SouthWest] = false;
+				room_flag[ERoom_EastWest] = false;
+				room_flag[ERoom_EastSouthWest] = false;
 			}
 
-
-			if (m_map[3 * height_index+1][(3 * width_index)] == 0)
+			if (m_map[(3*height_index) + 1][(3*width_index) + 2] == 0)
 			{
-				room_flag[EastWest] = false;
-				room_flag[EastSouthWest] = false;;
-				room_flag[SouthWest] = false;
-				room_flag[SouthWest] = false;
-				room_flag[West] = false;
+				room_flag[ERoom_Cross] = false;
+				room_flag[ERoom_East] = false;
+				room_flag[ERoom_EastSouth] = false;
+				room_flag[ERoom_EastWest] = false;
+				room_flag[ERoom_NorthEast] = false;
+				room_flag[ERoom_NorthEastSouth] = false;
+				room_flag[ERoom_EastSouthWest] = false;
+				room_flag[ERoom_NorthEastWest] = false;
 			}
-
 			else
 			{
-
+				room_flag[ERoom_Empty] = false;
+				room_flag[ERoom_North] = false;
+				room_flag[ERoom_South] = false;
+				room_flag[ERoom_West] = false;
+				room_flag[ERoom_NorthSouth] = false;
+				room_flag[ERoom_SouthWest] = false;
+				room_flag[ERoom_NorthWest] = false;
+				room_flag[ERoom_NorthSouthWest] = false;
 			}
 
-
-			if (m_map[3 * height_index + 1][(3 * width_index)] == 0)
+			if (m_map[(3 * height_index) + 2][(3 * width_index) + 1] == 0)
 			{
-				room_flag[EastWest] = false;
-				room_flag[EastSouthWest] = false;;
-				room_flag[SouthWest] = false;
-				room_flag[SouthWest] = false;
-				room_flag[West] = false;
+				room_flag[ERoom_Cross] = false;
+				room_flag[ERoom_South] = false;
+				room_flag[ERoom_NorthSouth] = false;
+				room_flag[ERoom_SouthWest] = false;
+				room_flag[ERoom_EastSouth] = false;
+				room_flag[ERoom_NorthEastSouth] = false;
+				room_flag[ERoom_NorthSouthWest] = false;
+				room_flag[ERoom_EastSouthWest] = false;
 			}
-
-			if (m_map[3 * height_index + 1][(3 * width_index)+2] == 0)
+			else
 			{
-				room_flag[East] = false;
-				room_flag[EastSouth] = false;;
+				room_flag[ERoom_Empty] = false;
+				room_flag[ERoom_East] = false;
+				room_flag[ERoom_North] = false;
+				room_flag[ERoom_West] = false;
+				room_flag[ERoom_NorthEast] = false;
+				room_flag[ERoom_NorthWest] = false;
+				room_flag[ERoom_EastWest] = false;
+				room_flag[ERoom_NorthEastWest] = false;
 			}
-
-			if (m_map[3 * height_index + 2][(3 * width_index) + 1] == 0)
+			
+			if (m_map[(3*height_index) + 1][(3*width_index)] == 0)
 			{
-				room_flag[South] = false;
+				room_flag[ERoom_Cross] = false;
+				room_flag[ERoom_West] = false;
+				room_flag[ERoom_EastWest] = false;
+				room_flag[ERoom_NorthWest] = false;
+				room_flag[ERoom_SouthWest] = false;
+				room_flag[ERoom_NorthEastWest] = false;
+				room_flag[ERoom_NorthSouthWest] = false;
+				room_flag[ERoom_EastSouthWest] = false;
+
 			}
+			else
+			{
+				room_flag[ERoom_Empty] = false;
+				room_flag[ERoom_East] = false;
+				room_flag[ERoom_South] = false;
+				room_flag[ERoom_North] = false;
+				room_flag[ERoom_EastSouth] = false;
+				room_flag[ERoom_NorthSouth] = false;
+				room_flag[ERoom_NorthEast] = false;
+				room_flag[ERoom_NorthEastSouth] = false;
+			}
+			//////////////////////////////////////////////////////////
+			// There should now only be one true flag.
 
 			int count = 0;
 
@@ -180,11 +219,12 @@ void CMap::CreateRoomMap()
 				if(room_flag[i])
 				{
 					count++;
-					int temp_room = static_cast<room_type>( i );
+					ERoom temp_room = static_cast<ERoom>( i );
+					vector<ERoom> temp_vec;
 
 					if (width_index == 0)
 					{
-						vector<int> temp_vec;
+						temp_vec.clear();
 						temp_vec.push_back(temp_room);
 						m_roomMap.push_back(temp_vec);
 					}
@@ -192,16 +232,8 @@ void CMap::CreateRoomMap()
 					{
 						m_roomMap[height_index].push_back(temp_room);
 					}
-					
-
-
-					////////////////////////////////////////////////////////////////////////////////
-					// Temporary Check
-
-					cout << temp_room;
 				}
 			}
-			cout << endl;
 		}
 
 	}
@@ -215,6 +247,12 @@ void CMap::ComputeMapSize()
 	m_height= m_map.size();
 
 	m_width = m_map[0].size();
+}
+
+
+vector<vector<ERoom>> CMap::GetRoomMap()
+{
+	return m_roomMap;
 }
 
 

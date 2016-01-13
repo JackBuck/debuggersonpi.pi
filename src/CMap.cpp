@@ -7,7 +7,7 @@
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #include "CMap.h"
-#include<iostream>%
+#include<iostream>
 #include<fstream>
 
 
@@ -41,7 +41,7 @@ CMap::CMap(string filepath)
 			vector<int> temp_vec;
 			myReadFile >> temp_int;
 			temp_vec.push_back(temp_int);
-			m_map.push_back(temp_vec);
+			m_cellMap.push_back(temp_vec);
 
 			
 
@@ -51,7 +51,7 @@ CMap::CMap(string filepath)
 				// Fill row of array
 
 				myReadFile >> temp_int;
-				m_map[i].push_back(temp_int);
+				m_cellMap[i].push_back(temp_int);
 			}
 		}
 	}
@@ -68,13 +68,13 @@ CMap::CMap(string filepath)
 	{
 		for (int j=0; j<m_width; j++)
 		{
-			cout << m_map[i][j];
+			cout << m_cellMap[i][j];
 		}
 		cout << endl;
 	}
 
 	CreateRoomMap();
-	//ComputeMapSize();
+	ComputeCellMapSize();
 
 	// TODO START AND FINISH DETECTOR
 	//m_start = start;
@@ -90,7 +90,7 @@ CMap::CMap(string filepath)
 CMap::CMap(vector<vector<int>> inputMap, int start, int finish)
 {
 
-	m_map = inputMap;
+	m_cellMap = inputMap;
 	CreateRoomMap();
 	//ComputeMapSize();
 	m_start = start;
@@ -116,7 +116,7 @@ void CMap::CreateRoomMap()
 			vector<bool> room_flag;
 			room_flag.assign(16, true);
 
-			if(m_map[(3*height_index)][(3*width_index) + 1] == 0)
+			if(m_cellMap[(3*height_index)][(3*width_index) + 1] == 0)
 			{ 
 				room_flag[ERoom_Cross] = false;
 				room_flag[ERoom_North] = false;
@@ -140,7 +140,7 @@ void CMap::CreateRoomMap()
 				room_flag[ERoom_EastSouthWest] = false;
 			}
 
-			if (m_map[(3*height_index) + 1][(3*width_index) + 2] == 0)
+			if (m_cellMap[(3*height_index) + 1][(3*width_index) + 2] == 0)
 			{
 				room_flag[ERoom_Cross] = false;
 				room_flag[ERoom_East] = false;
@@ -163,7 +163,7 @@ void CMap::CreateRoomMap()
 				room_flag[ERoom_NorthSouthWest] = false;
 			}
 
-			if (m_map[(3 * height_index) + 2][(3 * width_index) + 1] == 0)
+			if (m_cellMap[(3 * height_index) + 2][(3 * width_index) + 1] == 0)
 			{
 				room_flag[ERoom_Cross] = false;
 				room_flag[ERoom_South] = false;
@@ -186,7 +186,7 @@ void CMap::CreateRoomMap()
 				room_flag[ERoom_NorthEastWest] = false;
 			}
 			
-			if (m_map[(3*height_index) + 1][(3*width_index)] == 0)
+			if (m_cellMap[(3*height_index) + 1][(3*width_index)] == 0)
 			{
 				room_flag[ERoom_Cross] = false;
 				room_flag[ERoom_West] = false;
@@ -241,19 +241,154 @@ void CMap::CreateRoomMap()
 }
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Needs checking!
-void CMap::ComputeMapSize()
+void CMap::ComputeCellMapSize()
 {
-	m_height= m_map.size();
+	m_height= m_cellMap.size();
 
-	m_width = m_map[0].size();
+	m_width = m_cellMap[0].size();
 }
 
-
+// ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 vector<vector<ERoom>> CMap::GetRoomMap()
 {
 	return m_roomMap;
 }
 
 
+// ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+vector<vector<int>> CMap::GetCellMap()
+{
+	return m_cellMap;
+}
+
+
+// ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void CMap::UpdateRoomMap()
+{
+	CreateRoomMap();
+}
+
+
+// ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void CMap::UpdateCellMap()
+{
+	m_cellMap.clear();
+	m_cellMap.resize(m_roomMap.size());
+
+	for(int i=0; i<m_roomMap.size(); i++)
+	{ 
+		m_cellMap[i].resize(m_roomMap[i].size());
+
+		for (int j = 0; j < m_roomMap[i].size(); j++)
+		{
+			m_cellMap[i][j] = 0;
+			m_cellMap[i+2][j] = 0;
+			m_cellMap[i][j+2] = 0;
+			m_cellMap[i+2][j+2] = 0;
+			m_cellMap[i+1][j+1] = 1;
+
+			switch (m_roomMap[i][j])
+			{
+				case ERoom_Empty:
+				{
+					m_cellMap[i + 1][j + 1] = 1;
+					break;
+				}
+				case ERoom_Cross:
+				{
+					m_cellMap[i][j+1] = 1;
+					m_cellMap[i+1][j+2] = 1;
+					m_cellMap[i+2][j+1] = 1;
+					m_cellMap[i + 1][j] = 1;
+					break;
+				}
+				case ERoom_North:
+				{
+					m_cellMap[i][j + 1] = 1;
+					break;
+				}
+				case ERoom_East:
+				{
+					m_cellMap[i + 1][j + 2] = 1;
+					break;
+				}
+				case ERoom_South:
+				{
+					m_cellMap[i + 2][j + 1] = 1;
+					break;
+				}
+				case ERoom_West:
+				{
+					m_cellMap[i + 1][j] = 1;
+					break;
+				}
+				case ERoom_NorthEast:
+				{
+					m_cellMap[i][j + 1] = 1;
+					m_cellMap[i + 1][j + 2] = 1;
+					break;
+				}
+				case ERoom_NorthSouth:
+				{
+					m_cellMap[i][j + 1] = 1;
+					m_cellMap[i + 2][j + 1] = 1;
+					break;
+				}
+				case ERoom_NorthWest:
+				{
+					m_cellMap[i][j + 1] = 1;
+					m_cellMap[i + 1][j] = 1;
+					break;
+				}
+				case ERoom_EastSouth:
+				{
+					m_cellMap[i + 1][j + 2] = 1;
+					m_cellMap[i + 2][j + 1] = 1;
+					break;
+				}
+				case ERoom_EastWest:
+				{
+					m_cellMap[i + 1][j + 2] = 1;
+					m_cellMap[i + 1][j] = 1;
+					break;
+				}
+				case ERoom_SouthWest:
+				{
+					m_cellMap[i + 2][j + 1] = 1;
+					m_cellMap[i + 1][j] = 1;
+					break;
+				}
+				case ERoom_NorthEastSouth:
+				{
+					m_cellMap[i][j + 1] = 1;
+					m_cellMap[i + 1][j + 2] = 1;
+					m_cellMap[i + 2][j + 1] = 1;
+					break;
+				}
+				case ERoom_NorthEastWest:
+				{
+					m_cellMap[i][j + 1] = 1;
+					m_cellMap[i + 1][j + 2] = 1;
+					m_cellMap[i + 1][j] = 1;
+					break;
+				}
+				case ERoom_NorthSouthWest:
+				{
+					m_cellMap[i][j + 1] = 1;
+					m_cellMap[i + 2][j + 1] = 1;
+					m_cellMap[i + 1][j] = 1;
+					break;
+				}
+				case ERoom_EastSouthWest:
+				{
+					m_cellMap[i + 1][j + 2] = 1;
+					m_cellMap[i + 2][j + 1] = 1;
+					m_cellMap[i + 1][j] = 1;
+					break;
+				}
+			}
+		
+		}
+	}
+}
 

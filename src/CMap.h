@@ -57,7 +57,7 @@ public:
 	CMap(std::vector<std::vector<int>> inputMap, int start, int finish);
 	// === Member Variables =========================================================================
 private:
-	std::vector<std::vector<int>> m_map;
+	std::vector<std::vector<int>> m_cellMap;
 	int m_start;
 	int m_finish;
 	int m_height;
@@ -71,11 +71,16 @@ private:
 public:
 	std::vector<std::vector<ERoom>>	GetRoomMap();
 
+	std::vector<std::vector<int>> GetCellMap();
+
+	void UpdateRoomMap();
+
+	void UpdateCellMap();
+
 	// === Private Functions ========================================================================
 private:
 	void CreateRoomMap();
-	void ComputeMapSize();
-
+	void ComputeCellMapSize();
 };
 
 

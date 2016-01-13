@@ -20,6 +20,21 @@ int main()
 			}
 			std::cout << std::endl;
 		}
+
+		Maze.UpdateCellMap();
+
+		std::vector<std::vector<int>> cellMap = Maze.GetCellMap();
+
+		for (unsigned int i = 0; i<cellMap.size(); i++)
+		{
+			for (unsigned int j = 0; j<cellMap[i].size(); j++)
+			{
+				std::cout << cellMap[i][j];
+			}
+			std::cout << std::endl;
+		}
+
+
 	}
 	else
 	{

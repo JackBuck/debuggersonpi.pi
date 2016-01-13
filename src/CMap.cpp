@@ -273,121 +273,135 @@ void CMap::UpdateRoomMap()
 void CMap::UpdateCellMap()
 {
 	m_cellMap.clear();
-	m_cellMap.resize(m_roomMap.size());
+	m_cellMap.resize(m_roomMap.size()*3);
 
 	for(int i=0; i<m_roomMap.size(); i++)
 	{ 
-		m_cellMap[i].resize(m_roomMap[i].size());
+		for (int cell_index=0; cell_index<3; cell_index++)
+		{
+			m_cellMap[3*i+cell_index].resize(m_roomMap[i].size()*3);
+		}
+		
 
 		for (int j = 0; j < m_roomMap[i].size(); j++)
 		{
-			m_cellMap[i][j] = 0;
-			m_cellMap[i+2][j] = 0;
-			m_cellMap[i][j+2] = 0;
-			m_cellMap[i+2][j+2] = 0;
-			m_cellMap[i+1][j+1] = 1;
+			m_cellMap[3*i][3*j] = 0;
+			m_cellMap[3*i+2][3*j] = 0;
+			m_cellMap[3*i][3 * j+2] = 0;
+			m_cellMap[3*i+2][3 * j+2] = 0;
+			m_cellMap[3*i+1][3 * j+1] = 1;
 
 			switch (m_roomMap[i][j])
 			{
 				case ERoom_Empty:
 				{
-					m_cellMap[i + 1][j + 1] = 1;
+					m_cellMap[3 * i + 1][3*j + 1] = 0;
 					break;
 				}
 				case ERoom_Cross:
 				{
-					m_cellMap[i][j+1] = 1;
-					m_cellMap[i+1][j+2] = 1;
-					m_cellMap[i+2][j+1] = 1;
-					m_cellMap[i + 1][j] = 1;
+					m_cellMap[3*i][3*j+1] = 1;
+					m_cellMap[3*i+1][3*j+2] = 1;
+					m_cellMap[3*i+2][3*j+1] = 1;
+					m_cellMap[3*i + 1][3*j] = 1;
 					break;
 				}
 				case ERoom_North:
 				{
-					m_cellMap[i][j + 1] = 1;
+					m_cellMap[3*i][3*j + 1] = 1;
 					break;
 				}
 				case ERoom_East:
 				{
-					m_cellMap[i + 1][j + 2] = 1;
+					m_cellMap[3*i + 1][3*j + 2] = 1;
 					break;
 				}
 				case ERoom_South:
 				{
-					m_cellMap[i + 2][j + 1] = 1;
+					m_cellMap[3*i + 2][3*j + 1] = 1;
 					break;
 				}
 				case ERoom_West:
 				{
-					m_cellMap[i + 1][j] = 1;
+					m_cellMap[3*i + 1][3*j] = 1;
 					break;
 				}
 				case ERoom_NorthEast:
 				{
-					m_cellMap[i][j + 1] = 1;
-					m_cellMap[i + 1][j + 2] = 1;
+					m_cellMap[3*i][3*j + 1] = 1;
+					m_cellMap[3*i + 1][3*j + 2] = 1;
 					break;
 				}
 				case ERoom_NorthSouth:
 				{
-					m_cellMap[i][j + 1] = 1;
-					m_cellMap[i + 2][j + 1] = 1;
+					m_cellMap[3*i][3*j+1] = 1;
+					m_cellMap[3*i+2][3*j+1] = 1;
 					break;
 				}
 				case ERoom_NorthWest:
 				{
-					m_cellMap[i][j + 1] = 1;
-					m_cellMap[i + 1][j] = 1;
+					m_cellMap[3*i][3*j+1] = 1;
+					m_cellMap[3*i+1][3*j] = 1;
 					break;
 				}
 				case ERoom_EastSouth:
 				{
-					m_cellMap[i + 1][j + 2] = 1;
-					m_cellMap[i + 2][j + 1] = 1;
+					m_cellMap[3*i+1][3*j+2] = 1;
+					m_cellMap[3*i+2][3*j+1] = 1;
 					break;
 				}
 				case ERoom_EastWest:
 				{
-					m_cellMap[i + 1][j + 2] = 1;
-					m_cellMap[i + 1][j] = 1;
+					m_cellMap[3*i+1][3*j+2] = 1;
+					m_cellMap[3*i+1][3*j] = 1;
 					break;
 				}
 				case ERoom_SouthWest:
 				{
-					m_cellMap[i + 2][j + 1] = 1;
-					m_cellMap[i + 1][j] = 1;
+					m_cellMap[3*i+2][3*j+1] = 1;
+					m_cellMap[3*i+1][3*j] = 1;
 					break;
 				}
 				case ERoom_NorthEastSouth:
 				{
-					m_cellMap[i][j + 1] = 1;
-					m_cellMap[i + 1][j + 2] = 1;
-					m_cellMap[i + 2][j + 1] = 1;
+					m_cellMap[3*i][3*j+1] = 1;
+					m_cellMap[3*i+1][3*j+2] = 1;
+					m_cellMap[3*i+2][3*j+1] = 1;
 					break;
 				}
 				case ERoom_NorthEastWest:
 				{
-					m_cellMap[i][j + 1] = 1;
-					m_cellMap[i + 1][j + 2] = 1;
-					m_cellMap[i + 1][j] = 1;
+					m_cellMap[3*i][3*j+1] = 1;
+					m_cellMap[3*i+1][3*j+2] = 1;
+					m_cellMap[3*i+1][3*j] = 1;
 					break;
 				}
 				case ERoom_NorthSouthWest:
 				{
-					m_cellMap[i][j + 1] = 1;
-					m_cellMap[i + 2][j + 1] = 1;
-					m_cellMap[i + 1][j] = 1;
+					m_cellMap[3*i][3*j+1] = 1;
+					m_cellMap[3*i+2][3*j+1] = 1;
+					m_cellMap[3*i+1][3*j] = 1;
 					break;
 				}
 				case ERoom_EastSouthWest:
 				{
-					m_cellMap[i + 1][j + 2] = 1;
-					m_cellMap[i + 2][j + 1] = 1;
-					m_cellMap[i + 1][j] = 1;
+					m_cellMap[3*i+1][3*j+2] = 1;
+					m_cellMap[3*i+2][3*j+1] = 1;
+					m_cellMap[3*i+1][3*j] = 1;
 					break;
 				}
 			}
-		
+
+			for (unsigned int i = 0; i<m_cellMap.size(); i++)
+			{
+				for (unsigned int j = 0; j<m_cellMap[i].size(); j++)
+				{
+					std::cout << m_cellMap[i][j];
+				}
+				std::cout << std::endl;
+				
+			}
+			std::cout << std::endl;
 		}
 	}
 }

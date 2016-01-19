@@ -12,14 +12,6 @@ int main()
 	if (myfile.is_open())
 	{
 		std::vector<std::vector<ERoom>> roomMap = Maze.GetRoomMap();
-		for (unsigned int i=0; i<roomMap.size(); i++)
-		{
-			for (unsigned int j=0; j<roomMap[i].size(); j++)
-			{
-				std::cout << roomMap[i][j] << "_";
-			}
-			std::cout << std::endl;
-		}
 
 		Maze.UpdateCellMap();
 

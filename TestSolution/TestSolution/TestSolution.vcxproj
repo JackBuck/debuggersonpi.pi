@@ -121,12 +121,15 @@
     <ClInclude Include="..\..\lib\Matrix.h" />
     <ClInclude Include="..\..\src\CGraph.h" />
     <ClInclude Include="..\..\src\CMap.h" />
+    <ClInclude Include="CInstructions.h" />
+    <ClInclude Include="Enums.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\CGraph.cpp" />
     <ClCompile Include="..\..\src\CGraph_test.cpp" />
     <ClCompile Include="..\..\src\CMap.cpp" />
     <ClCompile Include="..\..\src\CMap_test.cpp" />
+    <ClCompile Include="CInstructions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\5x5testmap1.txt" />

@@ -13,14 +13,19 @@
 
 int CMap_test();
 int CGraph_test();
+int CImageAnalysis_test();
 
 int TestAllFunctions()
 {
 	int returnVal = 0;
 	// TODO It would be useful to produce output to the console to show which functions 'passed' and which 'failed' so that we can look at their output in the future.
-	returnVal += CMap_test();
-	std::cout << '\n';
-	returnVal += CGraph_test();
+//	returnVal += CMap_test();
+//	std::cout << '\n';
+
+//	returnVal += CGraph_test();
+//	std::cout << '\n';
+
+	returnVal += CImageAnalysis_test();
 	std::cout << '\n';
 
 	return returnVal;

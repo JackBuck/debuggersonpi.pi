@@ -4,11 +4,11 @@
 
 int CMap_test()
 {
-	std::string filepath = "5x5testmap1.txt";
+	std::string filepath = "TestData/5x5testmap1.txt";
 	CMap Maze(filepath);
 
 	std::ofstream myfile;
-	myfile.open("example.txt", std::fstream::out);
+	myfile.open("TestData/example.txt", std::fstream::out);
 	if (myfile.is_open())
 	{
 		std::vector<std::vector<ERoom>> roomMap = Maze.GetRoomMap();
@@ -31,11 +31,11 @@ int CMap_test()
 	else
 	{
 		std::cout << "Unable to open file \n";
-		return 0;
+		return 1;
 	}
 
 	myfile.close();
 	
-	std::cin.get();
+//	std::cin.get();
 	return 0;
 }

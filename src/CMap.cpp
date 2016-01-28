@@ -275,7 +275,7 @@ void CMap::UpdateCellMap()
 	m_cellMap.clear();
 	m_cellMap.resize(m_roomMap.size()*3);
 
-	for(int i=0; i<m_roomMap.size(); i++)
+	for(unsigned int i=0; i<m_roomMap.size(); i++)
 	{ 
 		for (int cell_index=0; cell_index<3; cell_index++)
 		{
@@ -283,7 +283,7 @@ void CMap::UpdateCellMap()
 		}
 		
 
-		for (int j = 0; j < m_roomMap[i].size(); j++)
+		for (unsigned int j = 0; j < m_roomMap[i].size(); j++)
 		{
 			m_cellMap[3*i][3*j] = 0;
 			m_cellMap[3*i+2][3*j] = 0;

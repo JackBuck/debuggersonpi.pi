@@ -2,7 +2,7 @@
 #include<iostream>
 #include<fstream>
 
-int main()
+int CMap_test()
 {
 	std::string filepath = "5x5testmap1.txt";
 	CMap Maze(filepath);

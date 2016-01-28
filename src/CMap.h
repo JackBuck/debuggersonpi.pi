@@ -9,9 +9,9 @@
 
 
 
-
 //~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#include "EnumsHeader.h"
 #include<vector>
 #include<string>
 

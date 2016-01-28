@@ -18,17 +18,14 @@
     <ClInclude Include="..\..\src\CGraph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\Matrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\CMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CInstructions.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\src\CInstructions.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Enums.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\src\EnumsHeader.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -44,7 +41,10 @@
     <ClCompile Include="..\..\src\CMap_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CInstructions.cpp">
+    <ClCompile Include="..\..\src\CInstructions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\CInstruction_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

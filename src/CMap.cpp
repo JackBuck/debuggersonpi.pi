@@ -6,11 +6,10 @@
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#include "Enums.h"
 #include "CMap.h"
 #include<iostream>
 #include<fstream>
-
+#include "EnumsHeader.h"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -245,8 +244,7 @@ void CMap::CreateRoomMap()
 void CMap::ComputeCellMapSize()
 {
 	m_height= m_cellMap.size();
-
-	m_width = m_cellMap[0].size();
+	if(m_height > 0)	m_width = m_cellMap[0].size();
 }
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -291,6 +289,7 @@ void CMap::UpdateCellMap()
 			m_cellMap[3*i][3 * j+2] = 0;
 			m_cellMap[3*i+2][3 * j+2] = 0;
 			m_cellMap[3*i+1][3 * j+1] = 1;
+
 
 			switch (m_roomMap[i][j])
 			{

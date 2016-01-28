@@ -118,18 +118,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\Matrix.h" />
     <ClInclude Include="..\..\src\CGraph.h" />
+    <ClInclude Include="..\..\src\CInstructions.h" />
     <ClInclude Include="..\..\src\CMap.h" />
-    <ClInclude Include="CInstructions.h" />
-    <ClInclude Include="Enums.h" />
+    <ClInclude Include="..\..\src\EnumsHeader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\CGraph.cpp" />
     <ClCompile Include="..\..\src\CGraph_test.cpp" />
+    <ClCompile Include="..\..\src\CInstructions.cpp" />
+    <ClCompile Include="..\..\src\CInstruction_test.cpp" />
     <ClCompile Include="..\..\src\CMap.cpp" />
     <ClCompile Include="..\..\src\CMap_test.cpp" />
-    <ClCompile Include="CInstructions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\5x5testmap1.txt" />

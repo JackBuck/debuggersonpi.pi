@@ -75,7 +75,12 @@ bool CBlockReader::TakePhoto(const std::string saveLocation)
  */
 int CBlockReader::CountSpots()
 {
+	DetectSpots();
 
+	if (VerifySpotNbhdVisible() & VerifySpotArrangement())
+		return m_Spots.size();
+	else
+		return -1;
 }
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,6 +89,36 @@ int CBlockReader::CountSpots()
  */
 void CBlockReader::DetectSpots()
 {
+	////////////////////////////////////////////////////////////
+	// Setup SimpleBlobDetector Parameters.
+
+	SimpleBlobDetector::Params params;
+
+	// Change thresholds
+	params.minThreshold = 10;
+	params.maxThreshold = 200;
+
+	// Filter by Area.
+	params.filterByArea = true;
+	params.minArea = 500;
+
+	// Filter by Circularity
+	params.filterByCircularity = true;
+	params.minCircularity = 0.7;
+
+	// Filter by Convexity
+	params.filterByConvexity = true;
+	params.minConvexity = 0.87;
+
+	// Filter by Inertia
+	params.filterByInertia = true;
+	params.minInertiaRatio = 0.8;
+
+	////////////////////////////////////////////////////////////
+	// Detect Spots
+
+	SimpleBlobDetector detector(params);
+	detector.detect(m_Image, m_Spots);
 }
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,6 +130,21 @@ void CBlockReader::DetectSpots()
  */
 bool CBlockReader::VerifySpotArrangement()
 {
+	// Compute distances between spots
+	vector<vector<double>> distsBetweenSpots (m_Spots.size(), vector<double>(m_Spots.size()));
+	for (unsigned int i = 0; i < m_Spots.size(); ++i)
+	{
+		for (unsigned int j = 0; j < m_Spots.size(); ++i)
+		{
+			distsBetweenSpots[i][j] = norm(m_Spots[i].pt - m_Spots[j].pt);
+		}
+	}
+
+	// Sort spots based on distances
+	// TODO: This could be quite difficult actually since the graph isomorphism problem was only recently solved (if it has been, wikipedia thinks not!)
+
+	// Compare with expected distances
+
 }
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,7 +165,7 @@ bool CBlockReader::VerifySpotNbhdVisible()
  * OUTPUTS:
  * blockRelPosn_x - The x-coordinate of the approximate centre of the block in the image frame.
  * blockRelPosn_y - The y-coordinate of the approximate centre of the block in the image frame.
- * blockRelRotation - The (anticlockwise) angle (in RADIANS) through which the block has been
+ * blockRelRotation - The (anti-clockwise) angle (in RADIANS) through which the block has been
  * 	rotated in the image frame. Note that this can only be defined up to pi/2 since a square has
  * 	rotational symmetry of order four.
  * return value - This returns true if the above quantities could be computed from the picture, and

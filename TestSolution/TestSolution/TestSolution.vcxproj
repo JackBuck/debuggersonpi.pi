@@ -119,17 +119,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\CGraph.h" />
+    <ClInclude Include="..\..\src\Challenges.h" />
     <ClInclude Include="..\..\src\CInstructions.h" />
     <ClInclude Include="..\..\src\CMap.h" />
     <ClInclude Include="..\..\src\EnumsHeader.h" />
+    <ClInclude Include="..\..\src\GoodsIn.h" />
+    <ClInclude Include="..\..\src\GoodsOut.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\CGraph.cpp" />
     <ClCompile Include="..\..\src\CGraph_test.cpp" />
+    <ClCompile Include="..\..\src\Challenges.cpp" />
     <ClCompile Include="..\..\src\CInstructions.cpp" />
     <ClCompile Include="..\..\src\CInstruction_test.cpp" />
     <ClCompile Include="..\..\src\CMap.cpp" />
     <ClCompile Include="..\..\src\CMap_test.cpp" />
+    <ClCompile Include="..\..\src\GoodsIn.cpp" />
+    <ClCompile Include="..\..\src\GoodsOut.cpp" />
+    <ClCompile Include="..\..\src\Main.cpp" />
+    <ClCompile Include="..\..\src\Signals.cpp" />
+    <ClCompile Include="..\..\src\TestFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\5x5testmap1.txt" />

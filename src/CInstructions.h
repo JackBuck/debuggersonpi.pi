@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// CMap.h
+// CInstructions.h
 // Created: 15/11/15
 // Author: Hannah Howell
 //
@@ -7,6 +7,8 @@
 #ifndef SRC_CINSTRUCTIONS_H_
 #define SRC_CINSTRUCTIONS_H_
 
+#include <vector>
+#include "EnumsHeader.h"
 
 //~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class CInstructions

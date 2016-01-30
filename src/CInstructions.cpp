@@ -69,7 +69,7 @@ CInstructions::CInstructions(const std::vector<int> &labels, const std::vector<i
 
 	m_orientationBetweenInstructions[0] = current_orientation;
 
-	for(int i=0; i<vertexList.size()-1; i++)
+	for(size_t i=0; i<vertexList.size()-1; i++)
 	{	
 		num_diff = labels[vertexList[i+1]] - labels[vertexList[i]];
 		EInstruction current_instruction;
@@ -163,12 +163,12 @@ CInstructions::CInstructions(const std::vector<int> &labels, const std::vector<i
 		{
 			if(current_orientation == EOrientation_North)
 			{
-				row_index = floor(labels[vertexList[i]]/2*map_width);
+				row_index = static_cast<int>(floor(labels[vertexList[i]]/2*map_width));
 				col_index = (labels[vertexList[i]] %(2*map_width+1) -1)/2;	
 			}
 			else if(current_orientation == EOrientation_South)
 			{
-				row_index = floor(labels[vertexList[i]]/2*map_width) -1;
+				row_index = static_cast<int>(floor(labels[vertexList[i]]/2*map_width)) -1;
 				col_index = (labels[vertexList[i]] %(2*map_width+1) -1)/2;	
 			}
 		}

@@ -23,5 +23,6 @@ int TestAllFunctions()
 	returnVal += CGraph_test();
 	std::cout << '\n';
 
+
 	return returnVal;
 }

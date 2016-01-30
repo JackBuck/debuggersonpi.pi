@@ -121,7 +121,7 @@ CMap::CMap(int room_height, int room_width)
 }
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// This function is incomplete but does compile
+// This function creates the room map from a cell map.
 void CMap::CreateRoomMap()
 {
 
@@ -426,5 +426,102 @@ void CMap::UpdateCellMap()
 			std::cout << std::endl;
 		}
 	}
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// This functions take a Room Enum and returns the vertices of the room in a vector with 1 for vertex
+// 0 for no vertex and -1 for unknown. The order of the vertices in the vector is
+// North East South West.
+std::vector<int> CMap::GetRoomVertices(ERoom room_type)
+{
+	std::vector<int> vertex_flag;
+
+	switch (room_type)
+	{
+	case ERoom_Empty:
+	{
+		vertex_flag = {0, 0, 0, 0};
+		break;
+	}
+	case ERoom_Cross:
+	{
+		vertex_flag = {1, 1, 1, 1};
+		break;
+	}
+	case ERoom_North:
+	{
+		vertex_flag = {1, 0, 0, 0};
+		break;
+	}
+	case ERoom_East:
+	{
+		vertex_flag = {0, 1, 0, 0};
+		break;
+	}
+	case ERoom_South:
+	{
+		vertex_flag = {0, 0, 1, 0};
+		break;
+	}
+	case ERoom_West:
+	{
+		vertex_flag = {0, 0, 0, 1};
+		break;
+	}
+	case ERoom_NorthEast:
+	{
+		vertex_flag = {1, 1, 0, 0};
+		break;
+	}
+	case ERoom_NorthSouth:
+	{
+		vertex_flag = {1, 0, 1, 0};
+		break;
+	}
+	case ERoom_NorthWest:
+	{
+		vertex_flag = {1, 0, 0, 1};
+		break;
+	}
+	case ERoom_EastSouth:
+	{
+		vertex_flag = {0, 1, 1, 0};
+		break;
+	}
+	case ERoom_EastWest:
+	{
+		vertex_flag = {0, 1, 0, 1};
+		break;
+	}
+	case ERoom_SouthWest:
+	{
+		vertex_flag = {0, 0, 1, 1};
+		break;
+	}
+	case ERoom_NorthEastSouth:
+	{
+		vertex_flag = {1, 1, 1, 0};
+		break;
+	}
+	case ERoom_NorthEastWest:
+	{
+		vertex_flag = {1, 1, 0, 1};
+		break;
+	}
+	case ERoom_NorthSouthWest:
+	{
+		vertex_flag = {1, 0, 1, 1};
+		break;
+	}
+	case ERoom_EastSouthWest:
+	{
+		vertex_flag = {0, 1, 1, 1};
+		break;
+	}
+	case ERoom_Unknown:
+		vertex_flag = {-1, -1, -1, -1};
+	}
+
+
+	return vertex_flag;
 }
 

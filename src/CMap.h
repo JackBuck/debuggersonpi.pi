@@ -46,6 +46,8 @@ public:
 
 	void UpdateCellMap();
 
+	static std::vector<int> GetRoomVertices(ERoom room_type);
+
 	// === Private Functions ========================================================================
 private:
 	void CreateRoomMap();

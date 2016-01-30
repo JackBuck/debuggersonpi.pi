@@ -22,6 +22,8 @@ class CMap
 public:
 	CMap(std::string filepath);
 	CMap(std::vector<std::vector<int>> inputMap, int start, int finish);
+	CMap(int room_height, int room_width);
+
 	// === Member Variables =========================================================================
 private:
 	std::vector<std::vector<int>> m_cellMap;

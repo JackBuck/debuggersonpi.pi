@@ -98,6 +98,28 @@ CMap::CMap(vector<vector<int>> inputMap, int start, int finish)
 
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Initialiser for unknown map.
+CMap::CMap(int room_height, int room_width)
+{
+	for(int i=0; i<room_height; i++)
+	{
+		for(int j=0; j<room_width; j++)
+		{
+			m_cellMap[3*i][3*j] = 0;
+			m_cellMap[3*i+2][3*j] = 0;
+			m_cellMap[3*i][3 * j+2] = 0;
+			m_cellMap[3*i+2][3 * j+2] = 0;
+			m_cellMap[3*i+1][3 * j+1] = -1;
+			m_cellMap[3*i][3*j+1] = -1;
+			m_cellMap[3*i+1][3*j+2] = -1;
+			m_cellMap[3*i+2][3*j+1] = -1;
+			m_cellMap[3*i + 1][3*j] = -1;
+
+		}
+	}
+}
+
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // This function is incomplete but does compile
 void CMap::CreateRoomMap()

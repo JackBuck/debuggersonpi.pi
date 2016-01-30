@@ -29,7 +29,8 @@ enum ERoom
 	ERoom_North,
 	ERoom_East,
 	ERoom_South,
-	ERoom_West
+	ERoom_West,
+	ERoom_Unknown
 };
 
 enum EInstruction

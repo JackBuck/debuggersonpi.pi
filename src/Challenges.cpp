@@ -38,6 +38,7 @@ void CChallenges::ChallengeOne()
 	CGoodsOut::Stop();
 
 	CSignals::Complete();
+}
 
 void CChallenges::ChallengeTwo()
 {

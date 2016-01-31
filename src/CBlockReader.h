@@ -37,8 +37,8 @@
  * 		arrangement of the spots found does not match the arrangement expected for that number of
  * 		spots.
  *
- * 	ComputeBlockLocation(...) - Outputs the approximate position and orientation of the block
- * 		relative to the robot. This allows the caller to reposition the robot for a better photo.
+ * 	ComputeBlockLocation(...) - Outputs the approximate position of the block relative to the
+ * 	robot. This allows the caller to reposition the robot for a better photo.
  *
  * 	TakePhoto(...) - This will use the Pi's camera to take a photo. It will save the photo in the
  *			specified location, update m_Image to use this photo and reset all member variables
@@ -55,7 +55,7 @@ public:
 
 	// === Public Functions =========================================================================
 	int CountSpots();
-	bool ComputeBlockLocation(double& blockRelPosn_x, double& blockRelPosn_y, double& blockRelRotation);
+	bool ComputeBlockLocation(double& blockRelPosn_x, double& blockRelPosn_y);
 	bool TakePhoto(const std::string saveLocation);
 
 	// === Exceptions ===============================================================================

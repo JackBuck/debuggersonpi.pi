@@ -12,7 +12,6 @@
 using namespace std;
 using namespace cv;
 
-
 // -/-/-/-/-/-/-/ CONSTRUCTORS AND DESTRUCTORS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (default constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Initialises m_Image and m_Spots as empty by implicit calls to their default constructors.
@@ -33,16 +32,15 @@ CBlockReader::CBlockReader()
 CBlockReader::CBlockReader(string imagePath)
 {
 	Mat image_fullsize = imread(imagePath, IMREAD_GRAYSCALE);
-	if ( image_fullsize.empty() )
+	if (image_fullsize.empty())
 	{
-		throw InputImagePath_BadFilePath {imagePath};
+		throw InputImagePath_BadFilePath { imagePath };
 	}
 	else
 	{
 		resize(image_fullsize, m_Image, Size(), 0.2, 0.2, INTER_AREA);
 	}
 }
-
 
 /* ~~~ FUNCTION (destructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
@@ -51,7 +49,6 @@ CBlockReader::~CBlockReader()
 {
 	// TODO Auto-generated destructor stub
 }
-
 
 // -/-/-/-/-/-/-/ INITIALISER FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
 /* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +62,6 @@ bool CBlockReader::TakePhoto(const std::string saveLocation)
 {
 	// TODO: Find out how to take a photo with the PI camera and the implement CBlockReader::TakePhoto
 }
-
 
 // -/-/-/-/-/-/-/ SPOT COUNTING FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
 /* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,29 +118,52 @@ void CBlockReader::DetectSpots()
 }
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * This function computes the distances between the spots and compares the results with the
- * distances expected for that number of spots. (If the distances match up to within a given
- * tolerance then the two arrangements are regarded as the same up to an isometry, and so are deemed
- * acceptable). A value of true is returned if the test passes and false if the spot arrangement is
- * unexpected.
+ * This function verifies that the spots are in the expected arrangement for that number of spots.
+ * That is, it verifies that they are related to the expected arrangement by a non-reflecting
+ * isometry. That is, by a rotation and a translation.
+ *
+ * Let X be an nx2 matrix containing the coordinates of the n spots, relative to the mean spot. That
+ * is, compute the mean location of the spots, and subtract it from the coordinates of each spot to
+ * obtain X. Do similarly with the expected arrangement for n spots to obtain a matrix Y. We wish to
+ * verify that there exist an orthogonal matrix Q and a permutation matrix P such that X = PYQ.
+ *
+ * This is done by computing a singular value decomposition X = USV'. Here S is diagonal of the same
+ * shape as X, with descending diagonal elements, and U and V are orthogonal (and hence square).
+ * Matrix transpose is denoted '.
+ *
+ *	If the singular values (diagonal elements of S) are distinct, then V is determined uniquely, as
+ *	are the first two columns of U. The remaining columns of U are unconstrained (so long as U
+ *	remains orthogonal). Hence, computing a singular value decomposition of Y, say Y = WTZ' for T
+ *	diagonal and W and Z orthogonal, it suffices to check that T = S and that the first two columns
+ *	of U can be transformed into the first two columns of V by a permutation P of the rows.This is
+ *	done by sorting the rows of U and comparing with the values in the first two columns of W
+ *	(equality up to some tolerance that is).
+ *
+ *	If the singular values of X are the same, then we still require that they match the singular
+ *	values of Y. However, everything commutes with scalar matrices, so we have the more general
+ *	problem of determining whether the first two columns of U span the same space as the first two
+ *	columns of W, possibly after a permutation of the rows. For each permutation of the rows, we can
+ *	take the dot product between the first column of U and the first two columns of W. If the sum of
+ *	the squares of these gives the square of the norm of the first column of U then it lies in the
+ *	span of the first two columns of W (W is orthogonal). Similarly with the second column. If both
+ *	the first two columns of U lie in the span of the first two columns of W, then their span is the
+ *	same (since U is invertible). Since U and W are at most 5x5, there are only 120 permutations of
+ *	the rows, so this is feasible.
+ *
  */
 bool CBlockReader::VerifySpotArrangement()
 {
-	// Compute distances between spots
-	vector<vector<double>> distsBetweenSpots (m_Spots.size(), vector<double>(m_Spots.size()));
+	// Compute SVD of X
+	vector<double> X1(m_Spots.size());
+	vector<double> X2(m_Spots.size());
+
 	for (unsigned int i = 0; i < m_Spots.size(); ++i)
 	{
-		for (unsigned int j = 0; j < m_Spots.size(); ++i)
-		{
-			distsBetweenSpots[i][j] = norm(m_Spots[i].pt - m_Spots[j].pt);
-		}
+		X1[i] = m_Spots[i].pt.x;
+		X2[i] = m_Spots[i].pt.y;
 	}
 
-	// Sort spots based on distances
-	// TODO: This could be quite difficult actually since the graph isomorphism problem was only recently solved (if it has been, wikipedia thinks not!)
-
-	// Compare with expected distances
-
+	// TODO: Finish this function!
 }
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -153,27 +172,72 @@ bool CBlockReader::VerifySpotArrangement()
  */
 bool CBlockReader::VerifySpotNbhdVisible()
 {
+	double minSpotPadding = 1; // A proportion of the diameter of the spot
+
+	bool result = true;
+	for (unsigned int i = 0; i < m_Spots.size(); ++i)
+	{
+		double distFromLeftEdge = m_Spots[i].pt.x;
+		double distFromRightEdge = m_Image.cols - m_Spots[i].pt.x;
+		double distFromTopEdge = m_Spots[i].pt.y;
+		double distFromBottomEdge = m_Image.rows - m_Spots[i].pt.y;
+
+		if (distFromLeftEdge < minSpotPadding * m_Spots[i].size)
+		{
+			result = false;
+		}
+		else if (distFromRightEdge < minSpotPadding * m_Spots[i].size)
+		{
+			result = false;
+		}
+		else if (distFromTopEdge < minSpotPadding * m_Spots[i].size)
+		{
+			result = false;
+		}
+		else if (distFromBottomEdge < minSpotPadding * m_Spots[i].size)
+		{
+			result = false;
+		}
+	}
+
+	return result;
 }
+
 
 
 // -/-/-/-/-/-/-/ BLOCK LOCATION FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * This function analyses the image to determine the position and orientation of the block relative
- * to the robot. This is useful for providing feedback to the caller when the picture supplied to
- * the CBlockReader is rejected when counting the spots.
+ * This function analyses the image to determine the position of the block relative to the robot.
+ * This is useful for providing feedback to the caller when the picture supplied to the CBlockReader
+ * is rejected when counting the spots.
  *
  * OUTPUTS:
  * blockRelPosn_x - The x-coordinate of the approximate centre of the block in the image frame.
  * blockRelPosn_y - The y-coordinate of the approximate centre of the block in the image frame.
- * blockRelRotation - The (anti-clockwise) angle (in RADIANS) through which the block has been
- * 	rotated in the image frame. Note that this can only be defined up to pi/2 since a square has
- * 	rotational symmetry of order four.
  * return value - This returns true if the above quantities could be computed from the picture, and
  * 	false otherwise. For example, false is returned if the block could not be found within the
  * 	image.
  */
-bool CBlockReader::ComputeBlockLocation(double& blockRelPosn_x, double& blockRelPosn_y, double& blockRelRotation)
+bool CBlockReader::ComputeBlockLocation(double& blockRelPosn_x, double& blockRelPosn_y)
 {
-	// TODO: Come up with a good algorithm for the CBlockReader::ComputeBlockLocation(...) function.
+	blockRelPosn_x = 0;
+	blockRelPosn_y = 0;
+
+	for (unsigned int i = 0; i < m_Spots.size(); ++i)
+	{
+		blockRelPosn_x += m_Spots[i].pt.x;
+		blockRelPosn_y += m_Spots[i].pt.y;
+	}
+
+	if (m_Spots.size() == 0)
+		return false;
+	else
+	{
+		blockRelPosn_x /= m_Spots.size();
+		blockRelPosn_y /= m_Spots.size();
+		return true;
+	}
+
 }
+
 

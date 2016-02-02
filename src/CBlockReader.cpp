@@ -7,6 +7,7 @@
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "CBlockReader.h"
+#include <cmath>
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -122,48 +123,70 @@ void CBlockReader::DetectSpots()
  * That is, it verifies that they are related to the expected arrangement by a non-reflecting
  * isometry. That is, by a rotation and a translation.
  *
- * Let X be an nx2 matrix containing the coordinates of the n spots, relative to the mean spot. That
- * is, compute the mean location of the spots, and subtract it from the coordinates of each spot to
- * obtain X. Do similarly with the expected arrangement for n spots to obtain a matrix Y. We wish to
- * verify that there exist an orthogonal matrix Q and a permutation matrix P such that X = PYQ.
- *
- * This is done by computing a singular value decomposition X = USV'. Here S is diagonal of the same
- * shape as X, with descending diagonal elements, and U and V are orthogonal (and hence square).
- * Matrix transpose is denoted '.
- *
- *	If the singular values (diagonal elements of S) are distinct, then V is determined uniquely, as
- *	are the first two columns of U. The remaining columns of U are unconstrained (so long as U
- *	remains orthogonal). Hence, computing a singular value decomposition of Y, say Y = WTZ' for T
- *	diagonal and W and Z orthogonal, it suffices to check that T = S and that the first two columns
- *	of U can be transformed into the first two columns of V by a permutation P of the rows.This is
- *	done by sorting the rows of U and comparing with the values in the first two columns of W
- *	(equality up to some tolerance that is).
- *
- *	If the singular values of X are the same, then we still require that they match the singular
- *	values of Y. However, everything commutes with scalar matrices, so we have the more general
- *	problem of determining whether the first two columns of U span the same space as the first two
- *	columns of W, possibly after a permutation of the rows. For each permutation of the rows, we can
- *	take the dot product between the first column of U and the first two columns of W. If the sum of
- *	the squares of these gives the square of the norm of the first column of U then it lies in the
- *	span of the first two columns of W (W is orthogonal). Similarly with the second column. If both
- *	the first two columns of U lie in the span of the first two columns of W, then their span is the
- *	same (since U is invertible). Since U and W are at most 5x5, there are only 120 permutations of
- *	the rows, so this is feasible.
- *
  */
 bool CBlockReader::VerifySpotArrangement()
 {
-	// Compute SVD of X
-	vector<double> X1(m_Spots.size());
-	vector<double> X2(m_Spots.size());
+	// Define tolerance to use in this function
+	double tol = 5; // pixels
+
+	// Compute mean spot location
+	double meanLoc_x {0};
+	double meanLoc_y {0};
+	for (unsigned int i = 0; i < m_Spots.size(); ++i)
+	{
+		meanLoc_x += m_Spots[i].pt.x;
+		meanLoc_y += m_Spots[i].pt.y;
+	}
+
+	if (m_Spots.size() == 0)
+		return false;
+	else
+	{
+		meanLoc_x /= m_Spots.size();
+		meanLoc_y /= m_Spots.size();
+	}
+
+	// Extract mean corrected x and y values
+	vector<double> xValues (m_Spots.size());
+	vector<double> yValues (m_Spots.size());
 
 	for (unsigned int i = 0; i < m_Spots.size(); ++i)
 	{
-		X1[i] = m_Spots[i].pt.x;
-		X2[i] = m_Spots[i].pt.y;
+		xValues[i] = m_Spots[i].pt.x - meanLoc_x;
+		yValues[i] = m_Spots[i].pt.y - meanLoc_y;
 	}
 
-	// TODO: Finish this function!
+	// Remove centre spot if it exists
+	int centreSpot = -1;
+	for (unsigned int i = 0; i < m_Spots.size(); ++i)
+	{
+		if (abs(xValues[i]) < tol && abs(yValues[i]) < tol)
+		{
+			if (centreSpot > -1)
+			{
+				// TODO: Throw exception
+			}
+			else
+			{
+				centreSpot = i;
+			}
+		}
+	}
+
+	// Sort remaining spots by angle, then radial position
+	vector<double> angles (m_Spots.size());
+	vector<double> radii_sq (m_Spots.size());
+	for (unsigned int i = 0; i < m_Spots.size(); ++i)
+	{
+		if (i != centreSpot)
+		{
+			angles[i] = atan2(yValues[i], xValues[i]);
+			radii_sq[i] = pow(xValues[i], 2) + pow(yValues[i], 2);
+		}
+	}
+
+	// TODO: The actual sorting...
+
 }
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

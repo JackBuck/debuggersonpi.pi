@@ -208,7 +208,7 @@ void CGraph::ExternalToInternal(vector<unsigned int>& vertices) const
  *                    outputRoute.back() == endVertex
  *
  */
-void CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
+double CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, vector<unsigned int>& outputRoute)
 {
 	// Convert to internal vertex numbering (and check valid start and end vertices)
 	unsigned int iStartVertex, iEndVertex;
@@ -223,15 +223,18 @@ void CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned in
 	}
 
 	// Do the work
+	double shortestDistance;
 	InternalShortestDistance(iStartVertex, iEndVertex, preferStartVertex, shortestDistance, outputRoute);
 
 	// Convert to external vertex numbering
 	InternalToExternal(outputRoute);
+
+	return shortestDistance;
 }
 
-void CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
+double CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, vector<unsigned int>& outputRoute)
 {
-	ShortestDistance(startVertex, endVertex, false, shortestDistance, outputRoute);
+	return ShortestDistance(startVertex, endVertex, false, outputRoute);
 }
 
 

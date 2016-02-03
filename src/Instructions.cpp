@@ -12,7 +12,7 @@
 #include<vector>
 #include<string>
 #include<math.h>
-#include "CInstructions.h"
+#include "Instructions.h"
 
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,10 +20,10 @@ using namespace std;
 
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// This function is a constructor for the CMap Class. It takes the filepath of the raw input data
+// This function is a constructor for the CInstructor Class. It takes the filepath of the raw input data
 // and from this creates an instance of the class.
 
-CInstructions::CInstructions(const std::vector<int> &labels, const std::vector<int> &vertexList, const int map_width)
+CInstructions::CInstructions(const std::vector<unsigned int> &labels, const std::vector<unsigned int> &vertexList, const int map_width)
 {
 
 	m_roomList.clear();
@@ -194,3 +194,22 @@ std::vector<EOrientation> CInstructions::GetOrientations()
 {
 	return std::vector<EOrientation>();
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// This function truncates instructions if they go through the room of interest.
+void CInstructions::TruncateAtRoom(int room_index)
+{
+	for(size_t i=0; i<m_instructions.size(); i++)
+	{
+		if(m_roomList[i] == room_index)
+		{
+			m_instructions.resize(i-1);
+			m_roomList.resize(i-1);
+			m_orientationBetweenInstructions.resize(i);
+		}
+	}
+}
+
+
+

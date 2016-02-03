@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Sisgnals.cpp
-// Created: 15/11/15
+// Created: 15/01/16
 // Author: Hannah Howell
 //
 // This is a place holder for the signal class and has been created so that the functions can be used, 

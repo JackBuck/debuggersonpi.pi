@@ -47,6 +47,10 @@ public:
 	void UpdateCellMap();
 
 	static std::vector<int> GetRoomVertices(ERoom room_type);
+	
+	/// TODO /////////////////////////////////////////
+	int GetEntranceVertex();
+	int GetExitVertex();
 
 	// === Private Functions ========================================================================
 private:

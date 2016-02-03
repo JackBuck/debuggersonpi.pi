@@ -525,3 +525,13 @@ std::vector<int> CMap::GetRoomVertices(ERoom room_type)
 	return vertex_flag;
 }
 
+int CMap::GetEntranceVertex()
+{
+	return 0;
+}
+
+int CMap::GetExitVertex()
+{
+	return 0;
+}
+

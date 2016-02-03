@@ -106,8 +106,8 @@ public:
 	unsigned int GetOrder() const {return m_Order;}
 
 	// Dijkstra functions
-	void ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute);
-	void ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute);
+	double ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, std::vector<unsigned int>& outputRoute);
+	double ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, std::vector<unsigned int>& outputRoute);
 
 	// === Exceptions ===============================================================================
 	// TODO Derive these exceptions from a standard exception so they can be caught by generic exception handlers?

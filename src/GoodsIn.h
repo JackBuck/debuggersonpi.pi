@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // GoodsIn.h
-// Created: 28/11/15
+// Created: 28/01/16
 // Author: Hannah Howell
 //
 
@@ -22,13 +22,9 @@ class CGoodsIn
 {
 	// === Public Functions =========================================================================
 public:
-	static void Forward(double distance, bool watch_sensors);
-	static void Reverse(double distance, bool watch_sensors);
-	static void TurnLeft90();
-	static void TurnRight90();
-	static void Stop();
-
-	static ERoom GetCurrentRoomType();
+	static void GetJunctionType();
+	static void GetRawSensorData();
+	static void GetRawCompassData();
 
 
 

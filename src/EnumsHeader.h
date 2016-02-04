@@ -12,6 +12,13 @@
 
 // ~~~ DEFINITIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+const double HALFROOMLENGTH = 1.0;
+
+const double ROOMLENGTH = 2.0;
+
+
+
+
 enum ERoom
 {
 	ERoom_Empty,

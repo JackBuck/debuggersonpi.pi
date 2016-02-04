@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // GoodsIn.cpp
-// Created: 28/11/15
+// Created: 28/01/16
 // Author: Hannah Howell
 //
 // This is a place holder for the GoodsIn class and has been created so that the functions can be used.
@@ -9,22 +9,14 @@
 
 #include "GoodsIn.h"
 
-void CGoodsIn::Forward(double distance, bool watch_sensors)
+void CGoodsIn::GetJunctionType()
 {
 }
 
-void CGoodsIn::Reverse(double distance, bool watch_sensors)
+void CGoodsIn::GetRawSensorData()
 {
 }
 
-void CGoodsIn::TurnLeft90()
-{
-}
-
-void CGoodsIn::TurnRight90()
-{
-}
-
-void CGoodsIn::Stop()
+void CGoodsIn::GetRawCompassData()
 {
 }

@@ -10,8 +10,30 @@
 
 //~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "Manouvre.h"
+#include "GoodsOut.h"
 
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//
+void CManouvre::InstructionToManouvre(EInstruction instruction_type)
+{
+	switch(instruction_type)
+	{
+	case EInstruction_Straight:
+	{
+		CManouvre::StraightAcrossRoom();
+	}
+	case EInstruction_TurnLeft:
+	{
+		CManouvre::TurnLeftInRoom();
+	}
+	case EInstruction_TurnRight:
+	{
+		CManouvre::TurnRightInRoom();
+	}
+	}
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Move into the maze to entrance vertex (edge of first room).
@@ -24,24 +46,32 @@ void CManouvre::MoveToStartVertex()
 // Move out of map from exit vertex.
 void CManouvre::ExitMap()
 {
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Move straight across a room from one vertex to another.
 void CManouvre::StraightAcrossRoom()
 {
+	CGoodsOut::Forward(ROOMLENGTH, false);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Move across the room from vertex to another by turning left
 void CManouvre::TurnLeftInRoom()
 {
+	CGoodsOut::Forward(HALFROOMLENGTH, true);
+	CGoodsOut::TurnLeft90();
+	CGoodsOut::Forward(HALFROOMLENGTH, false);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Move across the room from vertex to another by turning left
 void CManouvre::TurnRightInRoom()
 {
+	CGoodsOut::Forward(HALFROOMLENGTH, true);
+	CGoodsOut::TurnRight90();
+	CGoodsOut::Forward(HALFROOMLENGTH, false);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

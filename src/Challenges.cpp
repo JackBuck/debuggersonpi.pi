@@ -48,11 +48,19 @@ void CChallenges::ChallengeOne()
 
 void CChallenges::ChallengeTwo()
 {
+	
+
+
+
+}
+
+void CChallenges::ChallengeThree()
+{
 	std::string filepath;
 	CMap aMap = CMap(filepath);
 	int entrance_vertex = aMap.GetEntranceVertex();
 	int exit_vertex = aMap.GetExitVertex();
-	
+
 	std::vector<std::vector<double>> distanceMatrix;
 	std::vector<unsigned int> labels;
 	///////////////////////////// Call Johns Function to populate these
@@ -81,16 +89,19 @@ void CChallenges::ChallengeTwo()
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
-	// Now we know our route, execute it!
+	// Now we know our route, execute it
 
+	CManouvre::MoveToStartVertex();
 
+	for(unsigned int i=0; i<macroInstructions.size(); i++)
+	{
+		CManouvre::InstructionToManouvre(macroInstructions[i]);
+	}
 
+	CManouvre::ExitMap();
 }
 
-void CChallenges::ChallengeThree()
-{
 
-}
 
 void CChallenges::ChallengeFour()
 {

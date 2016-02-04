@@ -68,7 +68,7 @@ int CGraph_test()
 			{                          0 }
 	};
 
-	vector<unsigned int> externalLabelling { 7, 1, 2, 3, 4, 5, 6 };
+	vector<int> externalLabelling { 7, 1, 2, 3, 4, 5, 6 };
 	CGraph exampleGraph { exampleGraph_DistMat, externalLabelling };
 	CGraph exampleGraph_LT { exampleGraph_DistMat_LT, externalLabelling };
 	CGraph exampleGraph_UT { exampleGraph_DistMat_UT, externalLabelling };
@@ -76,10 +76,10 @@ int CGraph_test()
 
 	// 2 - Define hand computed result of Dijkstra manually
 	// TODO: Load these test cases from a file? As well as the above distance matrix?
-	vector<unsigned int> startVertices        { 7, 7, 7, 3, 3, 7 };
-	vector<unsigned int> endVertices          { 7, 3, 5, 7, 6, 3 };
+	vector<int> startVertices                 { 7, 7, 7, 3, 3, 7 };
+	vector<int> endVertices                   { 7, 3, 5, 7, 6, 3 };
 	vector<double> expected_shortestDistances { 0, 3, 3, 3, 1, 3 };
-	vector<vector<unsigned int> > expected_outputRoutes {
+	vector<vector<int> > expected_outputRoutes {
 			{ 7 },
 			{ 7, 1, 2, 3 },
 			{ 7, 1, 2, 6, 5 },
@@ -93,9 +93,9 @@ int CGraph_test()
 	vector<double> shortestDistances(numTestCases);
 	vector<double> shortestDistances_LT(numTestCases);
 	vector<double> shortestDistances_UT(numTestCases);
-	vector<vector<unsigned int> > outputRoutes(numTestCases);
-	vector<vector<unsigned int> > outputRoutes_LT(numTestCases);
-	vector<vector<unsigned int> > outputRoutes_UT(numTestCases);
+	vector<vector<int> > outputRoutes(numTestCases);
+	vector<vector<int> > outputRoutes_LT(numTestCases);
+	vector<vector<int> > outputRoutes_UT(numTestCases);
 	for (int i = 0; i < numTestCases; ++i)
 	{
 		shortestDistances[i] = exampleGraph.ShortestDistance(startVertices[i], endVertices[i], outputRoutes[i]);

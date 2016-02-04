@@ -33,7 +33,7 @@ using namespace std;
  * It also initialises the adjacency matrix using the distance matrix.
  *
  */
-CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<unsigned int> vertexLabels)
+CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>& vertexLabels)
 		: m_Order { (unsigned int)distanceMatrix.size() }, m_InternalToExternal { vertexLabels }
 {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,15 +141,18 @@ CGraph::~CGraph()
  *            This is passed as a reference and updated by the function to contain the corresponding
  *            external labels.
  */
-unsigned int CGraph::InternalToExternal(const unsigned int vertex) const
+int CGraph::InternalToExternal(const unsigned int vertex) const
 {
 	return m_InternalToExternal.at(vertex);
 }
 
-void CGraph::InternalToExternal(vector<unsigned int>& vertices) const
+void CGraph::InternalToExternal(const vector<unsigned int>& vertices_internal, vector<int>& vertices_external) const
 {
-	for (long unsigned int i = 0; i < vertices.size(); ++i)
-		vertices[i] = m_InternalToExternal.at(vertices[i]);
+	vertices_external.clear();
+	vertices_external.reserve(vertices_internal.size());
+
+	for (long unsigned int i = 0; i < vertices_internal.size(); ++i)
+		vertices_external.push_back(m_InternalToExternal.at(vertices_internal[i]));
 }
 
 
@@ -169,15 +172,18 @@ void CGraph::InternalToExternal(vector<unsigned int>& vertices) const
  *            This is passed as a reference and updated by the function to contain the corresponding
  *            internal labels.
  */
-unsigned int CGraph::ExternalToInternal(const unsigned int vertex) const
+unsigned int CGraph::ExternalToInternal(const int vertex) const
 {
 	return m_ExternalToInternal.at(vertex);
 }
 
-void CGraph::ExternalToInternal(vector<unsigned int>& vertices) const
+void CGraph::ExternalToInternal(const vector<int>& vertices_external, vector<unsigned int>& vertices_internal) const
 {
-	for (long unsigned int i = 0; i < vertices.size(); ++i)
-		vertices[i] = m_ExternalToInternal.at(vertices[i]);
+	vertices_internal.clear();
+	vertices_internal.reserve(vertices_external.size());
+
+	for (long unsigned int i = 0; i < vertices_external.size(); ++i)
+		vertices_internal.push_back(m_ExternalToInternal.at(vertices_external[i]));
 }
 
 
@@ -208,7 +214,7 @@ void CGraph::ExternalToInternal(vector<unsigned int>& vertices) const
  *                    outputRoute.back() == endVertex
  *
  */
-double CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, vector<unsigned int>& outputRoute)
+double CGraph::ShortestDistance(const int& startVertex, const int& endVertex, const bool& preferStartVertex, vector<int>& outputRoute)
 {
 	// Convert to internal vertex numbering (and check valid start and end vertices)
 	unsigned int iStartVertex, iEndVertex;
@@ -224,15 +230,16 @@ double CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned 
 
 	// Do the work
 	double shortestDistance;
-	InternalShortestDistance(iStartVertex, iEndVertex, preferStartVertex, shortestDistance, outputRoute);
+	vector<unsigned int> outputRoute_internal;
+	InternalShortestDistance(iStartVertex, iEndVertex, preferStartVertex, shortestDistance, outputRoute_internal);
 
 	// Convert to external vertex numbering
-	InternalToExternal(outputRoute);
+	InternalToExternal(outputRoute_internal, outputRoute);
 
 	return shortestDistance;
 }
 
-double CGraph::ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, vector<unsigned int>& outputRoute)
+double CGraph::ShortestDistance(const int& startVertex, const int& endVertex, vector<int>& outputRoute)
 {
 	return ShortestDistance(startVertex, endVertex, false, outputRoute);
 }
@@ -299,7 +306,7 @@ void CGraph::InternalShortestDistance(const unsigned int& startVertex, const uns
 		while (reverseOutputRoute.back() != startVertex)
 			reverseOutputRoute.push_back(m_DijkstraOutputRoutes[index][reverseOutputRoute.back()]);
 
-		// Set outputRoute as reverse of outputRoute
+		// Set outputRoute as reverse of reverseOutputRoute
 		outputRoute = vector<unsigned int> (reverseOutputRoute.rbegin(), reverseOutputRoute.rend());
 //		outputRoute = vector<unsigned int> (reverseOutputRoute.size());
 //		for (unsigned int i = 0; i < reverseOutputRoute.size(); ++i)

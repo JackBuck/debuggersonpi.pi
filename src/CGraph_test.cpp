@@ -98,9 +98,9 @@ int CGraph_test()
 	vector<vector<unsigned int> > outputRoutes_UT(numTestCases);
 	for (int i = 0; i < numTestCases; ++i)
 	{
-		exampleGraph.ShortestDistance(startVertices[i], endVertices[i], shortestDistances[i], outputRoutes[i]);
-		exampleGraph_LT.ShortestDistance(startVertices[i], endVertices[i], shortestDistances_LT[i], outputRoutes_LT[i]);
-		exampleGraph_UT.ShortestDistance(startVertices[i], endVertices[i], shortestDistances_UT[i], outputRoutes_UT[i]);
+		shortestDistances[i] = exampleGraph.ShortestDistance(startVertices[i], endVertices[i], outputRoutes[i]);
+		shortestDistances_LT[i] = exampleGraph_LT.ShortestDistance(startVertices[i], endVertices[i], outputRoutes_LT[i]);
+		shortestDistances_UT[i] = exampleGraph_UT.ShortestDistance(startVertices[i], endVertices[i], outputRoutes_UT[i]);
 	}
 
 	// 4 - Compare output with expected output

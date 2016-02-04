@@ -98,7 +98,7 @@ class CGraph
 {
 public:
 	// === Constructors and Destructors =============================================================
-	explicit CGraph(const std::vector<std::vector<double> >& distanceMatrix, const std::vector<unsigned int> vertexLabels);
+	explicit CGraph(const std::vector<std::vector<double> >& distanceMatrix, const std::vector<int>& vertexLabels);
 	~CGraph();
 
 	// === Public Functions =========================================================================
@@ -106,8 +106,8 @@ public:
 	unsigned int GetOrder() const {return m_Order;}
 
 	// Dijkstra functions
-	double ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, std::vector<unsigned int>& outputRoute);
-	double ShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, std::vector<unsigned int>& outputRoute);
+	double ShortestDistance(const int& startVertex, const int& endVertex, std::vector<int>& outputRoute);
+	double ShortestDistance(const int& startVertex, const int& endVertex, const bool& preferStartVertex, std::vector<int>& outputRoute);
 
 	// === Exceptions ===============================================================================
 	// TODO Derive these exceptions from a standard exception so they can be caught by generic exception handlers?
@@ -146,17 +146,18 @@ public:
 	};
 	struct InputVertexLabels_RepeatedLabel
 	{
-		std::vector<unsigned int> mm_vertexLabels;
-		InputVertexLabels_RepeatedLabel(std::vector<unsigned int> vertexLabels)
+		std::vector<int> mm_vertexLabels;
+		InputVertexLabels_RepeatedLabel(std::vector<int> vertexLabels)
 				: mm_vertexLabels { vertexLabels }
 		{
 		}
 	};
 	struct ShortestDistance_InvalidVertex
 	{
-		unsigned int mm_startVertex;
-		unsigned int mm_endVertex;
-		ShortestDistance_InvalidVertex(unsigned int startVertex, unsigned int endVertex)
+		// The mm_startVertex and mm_endVertex here use the external labelling
+		int mm_startVertex;
+		int mm_endVertex;
+		ShortestDistance_InvalidVertex(int startVertex, int endVertex)
 				: mm_startVertex { startVertex }, mm_endVertex { endVertex }
 		{
 		}
@@ -173,10 +174,10 @@ public:
 private:
 	// === Private Functions ========================================================================
 	// External look-up functions
-	unsigned int InternalToExternal(const unsigned int) const;
-	void InternalToExternal(std::vector<unsigned int>&) const;
-	unsigned int ExternalToInternal(const unsigned int) const;
-	void ExternalToInternal(std::vector<unsigned int>&) const;
+	int InternalToExternal(const unsigned int) const;
+	void InternalToExternal(const std::vector<unsigned int>&, std::vector<int>&) const;
+	unsigned int ExternalToInternal(const int) const;
+	void ExternalToInternal(const std::vector<int>&, std::vector<unsigned int>&) const;
 
 	// Dijkstra functions
 	void InternalShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, std::vector<unsigned int>& outputRoute);
@@ -192,8 +193,8 @@ private:
 	unsigned int m_Order;
 
 	// External vertex numbering look-up table
-	std::map<unsigned int, unsigned int> m_ExternalToInternal;
-	std::vector<unsigned int> m_InternalToExternal;
+	std::map<int, unsigned int> m_ExternalToInternal;
+	std::vector<int> m_InternalToExternal;
 
 	// Saved Dijkstra output
 	std::vector<std::vector<unsigned int> > m_DijkstraOutputRoutes;

@@ -8,6 +8,11 @@
 #ifndef SRC_CMAZEMAPPER_H_
 #define SRC_CMAZEMAPPER_H_
 
+// ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#include "EnumsHeader.h"
+#include "CMap.h"
+#include <vector>
+
 /* ~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This is a class to plan the route when mapping the maze in challenge two.
  */

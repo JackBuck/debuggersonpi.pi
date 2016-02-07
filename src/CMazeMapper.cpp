@@ -7,7 +7,7 @@
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "CMazeMapper.h"
-#include "EnumsHeader.h"
+#include "CGraph.h"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -52,7 +52,7 @@ void CMazeMapper::ComputeNextVertex(const CMap& currentMap, const int& currentVe
 	double currentFastestDist = currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[0], true, outputRoute);
 	for (unsigned int i = 1; i < m_vertsToExplore.size(); ++i)
 	{
-		vector<vector<int> > newOutputRoute;
+		vector<int> newOutputRoute;
 		double newDist = currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[i], true, newOutputRoute);
 
 		if (newDist < currentFastestDist)

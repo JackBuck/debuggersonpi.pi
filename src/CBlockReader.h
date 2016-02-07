@@ -55,7 +55,7 @@ public:
 
 	// === Public Functions =========================================================================
 	int CountSpots();
-	bool ComputeBlockLocation(double& blockRelPosn_x, double& blockRelPosn_y);
+	bool ComputeBlockLocation(double& blockRelPosn_x, double& blockRelPosn_y) const;
 	bool TakePhoto(const std::string saveLocation);
 
 	// === Exceptions ===============================================================================
@@ -71,12 +71,23 @@ public:
 private:
 	// === Private Functions ========================================================================
 	void DetectSpots();
-	bool VerifySpotArrangement();
-	bool VerifySpotNbhdVisible();
+	bool VerifySpotArrangement() const;
+	bool VerifySpotNbhdVisible() const;
 
 	// === Member Variables =========================================================================
 	cv::Mat m_Image;
 	std::vector<cv::KeyPoint> m_Spots;
+
+	// === Member classes ===========================================================================
+	class CompareByAngleThenRadius
+	{
+	public:
+		CompareByAngleThenRadius(double angTol, double radTol);
+		bool operator()(const cv::Point2f, const cv::Point2f) const;
+	private:
+		double m_AngTol;
+		double m_RadTol;
+	};
 
 };
 

@@ -7,7 +7,7 @@
 /src/CImageAnalysis.cpp
 /src/CImageAnalysis.h
 /TestData/CameraPhotos/
-
+/core
 
 
 ## Ignore Visual Studio temporary files, build results, and
@@ -222,3 +222,4 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+

@@ -87,7 +87,7 @@ CMap::CMap(string filepath)
 // This function is a constructor for the CMap Class, it takes the array of ones and zeros stored in 
 // rows, and the room indices of the rooms on the map that are adjacent to the start and finish. 
 // It is assumed that the array in of the correct form (i.e. can be subdivided into rooms of 3x3 cells)
-CMap::CMap(vector<vector<int>> inputMap, int start, int finish)
+CMap::CMap(vector<vector<int> > inputMap, int start, int finish)
 {
 
 	m_cellMap = inputMap;
@@ -270,14 +270,14 @@ void CMap::ComputeCellMapSize()
 }
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-vector<vector<ERoom>> CMap::GetRoomMap()
+vector<vector<ERoom> > CMap::GetRoomMap() const
 {
 	return m_roomMap;
 }
 
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-vector<vector<int>> CMap::GetCellMap()
+vector<vector<int>> CMap::GetCellMap() const
 {
 	return m_cellMap;
 }

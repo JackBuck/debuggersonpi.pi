@@ -3,6 +3,11 @@
 /.settings/
 /.cproject
 /.project
+/TestData/CameraPhotos
+/src/CImageAnalysis_test.cpp
+/src/CImageAnalysis.cpp
+/src/CImageAnalysis.h
+/core
 
 
 ## Ignore Visual Studio temporary files, build results, and

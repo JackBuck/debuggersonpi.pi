@@ -20,6 +20,7 @@
 #include <vector>
 #include <string>
 
+// ~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class CSVRow
 {
 public:
@@ -40,10 +41,7 @@ private:
 
 };
 
-std::istream& operator>>(std::istream& str,CSVRow& data)
-{
-    data.readNextRow(str);
-    return str;
-}
+// ~~~ OPERATOR OVERLOAD ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+std::istream& operator>>(std::istream& str,CSVRow& data);
 
 #endif /* SRC_CSVROW_H_ */

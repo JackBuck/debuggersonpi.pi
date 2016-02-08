@@ -28,6 +28,7 @@ int main()
 #include "CSVRow.h"
 using namespace std;
 
+// ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void CSVRow::readNextRow(istream& str)
 {
 	string line;
@@ -41,4 +42,11 @@ void CSVRow::readNextRow(istream& str)
 	{
 		m_data.push_back(cell);
 	}
+}
+
+// ~~~ OPERATOR (overload) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+std::istream& operator>>(std::istream& str,CSVRow& data)
+{
+    data.readNextRow(str);
+    return str;
 }

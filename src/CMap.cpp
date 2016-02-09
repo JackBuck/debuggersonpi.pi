@@ -8,6 +8,7 @@
 
 #include "CMap.h"
 #include "Signals.h"
+#include "Manouvre.h"
 #include<iostream>
 #include<fstream>
 #include "EnumsHeader.h"
@@ -598,6 +599,11 @@ int CMap::GetCurrentRoom()
 	return m_currentRoom;
 }
 
+int CMap::SetCurrentVertex(int new_vertex)
+{
+	return 0;
+}
+
 std::vector<int> CMap::RoomIndextoCoord(int room_index)
 {
 	int row_index = room_index/(2*m_cellwidth +1);
@@ -607,12 +613,26 @@ std::vector<int> CMap::RoomIndextoCoord(int room_index)
 	return roomCoord;
 }
 
-void CMap::FollowInstructions(std::vector<EInstruction> instructionList)
+
+void CMap::FollowInstructions(CInstructions &inputInstructions)
 {
 	//////////////////////////////////////////////////////////////////////////////////////
 	// Check we are at start vertex.
 
 	int current_vertex = GetCurrentVertex();
+
+	std::vector<EInstruction> instructionList = inputInstructions.GetInstructions();
+	std::vector<ERoom> roomList = inputInstructions.GetRoom();
+	std::vector<EOrientation> oreintationList = inputInstructions.GetOrientation();
+
+	if(current_vertex != instructionList[0]) CSignals::Error();
+
+	for(int i=0; i<instructionList.size(); i++)
+	{
+		CManouvre::InstructionToManouvre(instructionList[i]);
+
+		
+	}
 
 
 }

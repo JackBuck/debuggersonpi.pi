@@ -23,7 +23,7 @@ using namespace std;
 // This function is a constructor for the CInstructor Class. It takes the filepath of the raw input data
 // and from this creates an instance of the class.
 
-CInstructions::CInstructions(const std::vector<unsigned int> &vertexList, const int map_width)
+CInstructions::CInstructions(const std::vector<int> &vertexList, const int map_width)
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	// This vector contains the list of rooms that will be moved through during each instruction.
@@ -279,17 +279,17 @@ CInstructions::CInstructions(const std::vector<unsigned int> &vertexList, const 
 
 std::vector<EInstruction> CInstructions::GetInstructions()
 {
-	return std::vector<EInstruction>();
+	return m_instructions;
 }
 
 std::vector<ERoom> CInstructions::GetRoomList()
 {
-	return std::vector<ERoom>();
+	return m_roomList;
 }
 
 std::vector<EOrientation> CInstructions::GetOrientations()
 {
-	return std::vector<EOrientation>();
+	return m_orientationBetweenInstructions;
 }
 
 

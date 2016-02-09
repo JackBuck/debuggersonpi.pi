@@ -65,7 +65,8 @@ public:
 	void UpdateCellMap();
 	void CalculateBlockRooms(std::vector<int> *pBlockRooms);
 	std::vector<int> CalculateRoomVertices(int room_index);
-	void FollowInstructions(std::vector<EInstruction> instructionList);
+	void FollowInstructions(CInstructions inputInstructions);
+
 
 
 	// === Private Functions ========================================================================

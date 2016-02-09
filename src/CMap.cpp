@@ -6,12 +6,13 @@
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#include "CMap.h"
+#include "Instructions.h"
 #include "Signals.h"
 #include "Manouvre.h"
 #include<iostream>
 #include<fstream>
 #include "EnumsHeader.h"
+#include "CMap.h"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -269,8 +270,8 @@ vector<vector<ERoom>> CMap::GetRoomMap()
 
 ERoom CMap::GetRoomType(int room_index)
 {
-	int row_index;
-	return ERoom();
+	std::vector<int> coords = RoomIndextoCoord(room_index);
+	return m_roomMap[coords[0]][coords[1]];
 }
 
 
@@ -599,9 +600,14 @@ int CMap::GetCurrentRoom()
 	return m_currentRoom;
 }
 
-int CMap::SetCurrentVertex(int new_vertex)
+void CMap::SetCurrentRoom(int new_room)
 {
-	return 0;
+	m_currentRoom = new_room;
+}
+
+void CMap::SetCurrentVertex(int new_vertex)
+{
+	m_currentVertex = new_vertex;
 }
 
 std::vector<int> CMap::RoomIndextoCoord(int room_index)
@@ -622,8 +628,8 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 	int current_vertex = GetCurrentVertex();
 
 	std::vector<EInstruction> instructionList = inputInstructions.GetInstructions();
-	std::vector<ERoom> roomList = inputInstructions.GetRoom();
-	std::vector<EOrientation> oreintationList = inputInstructions.GetOrientation();
+	std::vector<ERoom> roomList = inputInstructions.GetRoomList();
+	std::vector<EOrientation> oreintationList = inputInstructions.GetOrientations();
 
 	if(current_vertex != instructionList[0]) CSignals::Error();
 

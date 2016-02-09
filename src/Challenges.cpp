@@ -62,7 +62,7 @@ void CChallenges::ChallengeThree()
 	int exit_vertex = aMap.GetExitVertex();
 
 	std::vector<std::vector<double>> distanceMatrix;
-	std::vector<unsigned int> labels;
+	std::vector<int> labels;
 	///////////////////////////// Call Johns Function to populate these
 
 
@@ -76,14 +76,14 @@ void CChallenges::ChallengeThree()
 	// Calculate shortest route from start to finish.
 
 
-	std::vector<unsigned int> outputRoute;
+	std::vector<int> outputRoute;
 	aGraph.ShortestDistance(entrance_vertex, exit_vertex, outputRoute);
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Compute macro instructions.
 
-	CInstructions aInstructions = CInstructions(labels, outputRoute, 10);
+	CInstructions aInstructions = CInstructions(outputRoute, 10);
 
 	std::vector<EInstruction> macroInstructions = aInstructions.GetInstructions();
 
@@ -121,7 +121,7 @@ void CChallenges::ChallengeFour()
 
 	///////////////////////////////////////////////////////////////////////
 	// Set start_vertex as entrance vertex.
-	int start_vertex = aMap.GetEntranceVertex;
+	int start_vertex = aMap.GetEntranceVertex();
 
 	///////////////////////////////////////////////////////////////////////
 	// The value on the current block of interest.
@@ -149,18 +149,20 @@ void CChallenges::ChallengeFour()
 
 		std::vector<int> planned_path;
 
+		std::vector<std::vector<double>> distanceMatrix;
+		std::vector<int> labels;
+
+
+		// Calculated by Johns function.
+
+		CGraph aGraph = CGraph::CGraph(distanceMatrix, labels);
+
 		//////////////////////////////////////////////////////////////////////
 		// Check if location of next block is known.
 
 		if(block_location[next_value] == LOCATION_UNKNOWN)
 		{
-			std::vector<std::vector<double>> distanceMatrix;
-			std::vector<unsigned int> labels;
-
 			
-			// Calculated by Johns function.
-
-			CGraph aGraph = CGraph::CGraph(distanceMatrix, labels);
 
 			///////////////////////////////////////////////////////////////////////////////////
 			// TODO this could be moved onto the CGraph class.
@@ -224,7 +226,7 @@ void CChallenges::ChallengeFour()
 						if(existingVerticesOfRoom[j] == 0) continue;
 
 						std::vector<int> current_shortest_path;
-						int current_shortest_distance = aGraph.ShortestDistance(current_vertex, room_vertices[j], current_shortest_path);
+						double current_shortest_distance = aGraph.ShortestDistance(current_vertex, room_vertices[j], current_shortest_path);
 
 						if(current_shortest_distance < shortest_distance)
 						{
@@ -299,7 +301,7 @@ void CChallenges::ChallengeFour()
 					if(existingVerticesOfRoom[j] == 0) continue;
 
 					std::vector<int> current_shortest_path;
-					int current_shortest_distance = aGraph.ShortestDistance(current_vertex, room_vertices[j], current_shortest_path);
+					double current_shortest_distance = aGraph.ShortestDistance(current_vertex, room_vertices[j], current_shortest_path);
 
 					if(current_shortest_distance < shortest_distance)
 					{
@@ -320,13 +322,10 @@ void CChallenges::ChallengeFour()
 
 		CInstructions aInstructions = CInstructions(planned_path, 10);
 
-		std::vector<EInstruction> macroInstructions = aInstructions.GetInstructions();
-
-
 		//////////////////////////////////////////////////////////////////////////////////////////////
 		// Now we know our route, execute it
 
-		aMap.FollowInstructions(macroInstructions);
+		aMap.FollowInstructions(aInstructions);
 	}
 	
 	CGoodsOut::Stop();

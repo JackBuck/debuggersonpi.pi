@@ -12,6 +12,7 @@
 //~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #include "EnumsHeader.h"
+#include "Instructions.h"
 #include<vector>
 #include<string>
 
@@ -57,6 +58,9 @@ public:
 	int GetCurrentVertex();
 	int GetCurrentRoom();
 
+	void SetCurrentRoom(int new_room);
+	void SetCurrentVertex(int new_vertex);
+
 
 
 	// === Public Functions =========================================================================
@@ -65,7 +69,7 @@ public:
 	void UpdateCellMap();
 	void CalculateBlockRooms(std::vector<int> *pBlockRooms);
 	std::vector<int> CalculateRoomVertices(int room_index);
-	void FollowInstructions(CInstructions inputInstructions);
+	void FollowInstructions(CInstructions &inputInstructions);
 
 
 

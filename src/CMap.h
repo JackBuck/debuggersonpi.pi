@@ -39,7 +39,7 @@ private:
 
 	int m_currentRoom;
 	int m_currentVertex;
-	
+
 
 	// === Accessor Functions =========================================================================
 public:

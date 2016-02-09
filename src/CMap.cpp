@@ -82,7 +82,7 @@ CMap::CMap(string filepath)
 	// Assume positioned at start.
 
 	m_currentVertex = GetEntranceVertex();
-
+	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Current room is entrance room which is not defined in our map so set to 
 	m_currentRoom = ENTRANCEPORCHROOM;
@@ -108,7 +108,7 @@ CMap::CMap(int room_height, int room_width)
 			m_cellMap[3*i+2][3*j+1] = -1;
 			m_cellMap[3*i + 1][3*j] = -1;
 
-		}
+}
 	}
 }
 

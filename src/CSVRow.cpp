@@ -29,7 +29,7 @@ int main()
 using namespace std;
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void CSVRow::readNextRow(istream& str)
+void CSVRow::ReadNextRow(istream& str)
 {
 	string line;
 	getline(str, line);
@@ -47,6 +47,6 @@ void CSVRow::readNextRow(istream& str)
 // ~~~ OPERATOR (overload) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 std::istream& operator>>(std::istream& str,CSVRow& data)
 {
-    data.readNextRow(str);
+    data.ReadNextRow(str);
     return str;
 }

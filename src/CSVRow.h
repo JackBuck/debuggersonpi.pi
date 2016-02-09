@@ -25,7 +25,7 @@ class CSVRow
 {
 public:
 	std::string const& operator[](std::size_t index) const
-			{
+	{
 		return m_data[index];
 	}
 
@@ -34,7 +34,7 @@ public:
 		return m_data.size();
 	}
 
-	void readNextRow(std::istream& str);
+	void ReadNextRow(std::istream& str);
 
 private:
 	std::vector<std::string> m_data;

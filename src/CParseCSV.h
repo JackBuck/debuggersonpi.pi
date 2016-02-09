@@ -21,6 +21,24 @@ public:
 	static std::vector<std::vector<int> > ReadCSV_int(const std::string& filePath);
 	static std::vector<std::vector<double> > ReadCSV_double(const std::string& filePath);
 
+	static void WriteCSV(const std::vector<std::vector<int> >& lines, const std::string& filePath);
+	static void WriteCSV(const std::vector<std::vector<double> >& lines, const std::string& filePath);
+
+	static void AppendCSV(const std::vector<int>& line, const std::string& filePath);
+	static void AppendCSV(const std::vector<double>& line, const std::string& filePath);
+	static void AppendCSV(const std::vector<std::vector<int> >& lines, const std::string& filePath);
+	static void AppendCSV(const std::vector<std::vector<double> >& lines, const std::string& filePath);
+
+	// === Exceptions ======================================================================================
+	struct Exception_CantOpenFile
+	{
+		std::string m_filePath;
+		Exception_CantOpenFile(std::string filePath)
+				: m_filePath {filePath}
+		{
+		}
+	};
+
 private:
 	// === Constructors and Destructors ====================================================================
 	CParseCSV() {}

@@ -27,37 +27,54 @@ public:
 	// === Member Variables =========================================================================
 private:
 	std::vector<std::vector<int>> m_cellMap;
-	int m_start;
-	int m_finish;
-	int m_height;
-	int m_width;
 	std::vector<std::vector<ERoom>> m_roomMap;
-	std::vector<int[2]> m_currentPath;
-	int m_pathLocation;
+	int m_cellheight;
+	int m_cellwidth;
+	int m_firstRoom;
+	int m_exitRoom;
+	std::vector<int> m_entranceCell;
+	std::vector<int> m_exitCell;
+
+	// === Location Tracking ==========================================================================
+
+	int m_currentRoom;
+	int m_currentVertex;
+	
+
+	// === Accessor Functions =========================================================================
+public:
+	std::vector<std::vector<ERoom>>	GetRoomMap();
+	ERoom GetRoomType(int room_index);
+	std::vector<std::vector<int>> GetCellMap();
+	int GetEntranceRoom();
+	int GetExitRoom();
+	std::vector<int> GetEntranceCell();
+	std::vector<int> GetExitCell();
+	static std::vector<int> GetRoomVertices(ERoom room_type);
+	int GetEntranceVertex();
+	int GetExitVertex();
+
+	int GetCurrentVertex();
+	int GetCurrentRoom();
+
 
 
 	// === Public Functions =========================================================================
-public:
-	std::vector<std::vector<ERoom>>	GetRoomMap();
-
-	std::vector<std::vector<int>> GetCellMap();
 
 	void UpdateRoomMap();
-
 	void UpdateCellMap();
+	void CalculateBlockRooms(std::vector<int> *pBlockRooms);
+	std::vector<int> CalculateRoomVertices(int room_index);
+	void FollowInstructions(std::vector<EInstruction> instructionList);
 
-	static std::vector<int> GetRoomVertices(ERoom room_type);
-	
-	/// TODO /////////////////////////////////////////
-	int GetEntranceVertex();
-	int GetExitVertex();
 
 	// === Private Functions ========================================================================
 private:
 	void CreateRoomMap();
 	void ComputeCellMapSize();
+	std::vector<int> CMap::RoomIndextoCoord(int room_index);
+	
 };
-
 
 
 #endif SRC_CMap_H_

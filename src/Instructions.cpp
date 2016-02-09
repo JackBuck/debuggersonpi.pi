@@ -23,7 +23,7 @@ using namespace std;
 // This function is a constructor for the CInstructor Class. It takes the filepath of the raw input data
 // and from this creates an instance of the class.
 
-CInstructions::CInstructions(const std::vector<unsigned int> &labels, const std::vector<unsigned int> &vertexList, const int map_width)
+CInstructions::CInstructions(const std::vector<unsigned int> &vertexList, const int map_width)
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	// This vector contains the list of rooms that will be moved through during each instruction.
@@ -49,8 +49,8 @@ CInstructions::CInstructions(const std::vector<unsigned int> &labels, const std:
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	// The difference between the first two vertex labels tells us the orientation the robot should be
 	// in at the start to be facing the correct way.
-	int num_diff = labels[vertexList[1]] - labels[vertexList[0]];
-	double level_check = labels[vertexList[0]]/2*map_width;
+	int num_diff = vertexList[1] - vertexList[0];
+	double level_check = vertexList[0]/2*map_width;
 	
 	if(num_diff == 1)
 	{ 
@@ -58,7 +58,7 @@ CInstructions::CInstructions(const std::vector<unsigned int> &labels, const std:
 		// If the difference is 1 there are two options moving from West to North (going East) or North to East
 		// (going South) we can distinguish between the two by checking if the the first is even.
 
-		if((static_cast<int>(floor(level_check)) %2) == labels[vertexList[0] % 2]) current_orientation = EOrientation_East;
+		if((static_cast<int>(floor(level_check)) %2) == vertexList[0] % 2) current_orientation = EOrientation_East;
 		else current_orientation = EOrientation_South;
 	}
 	else if(num_diff == -1)
@@ -67,7 +67,7 @@ CInstructions::CInstructions(const std::vector<unsigned int> &labels, const std:
 		// If the difference is -1 there are two options are opposite moving from North to West 
 		// (South) or East to North (West) we can distinguish between the two by checking if the the first is even.
 
-		if((static_cast<int>(floor(level_check)) %2) == labels[vertexList[0] % 2]) current_orientation = EOrientation_West;
+		if((static_cast<int>(floor(level_check)) %2) == vertexList[0] % 2) current_orientation = EOrientation_West;
 		else current_orientation = EOrientation_South;
 	}
 	
@@ -113,7 +113,7 @@ CInstructions::CInstructions(const std::vector<unsigned int> &labels, const std:
 
 	for(size_t i=0; i<vertexList.size()-1; i++)
 	{	
-		num_diff = labels[vertexList[i+1]] - labels[vertexList[i]];
+		num_diff = vertexList[i+1] - vertexList[i];
 		EInstruction current_instruction;
 
 		if(num_diff == 1)
@@ -236,17 +236,17 @@ CInstructions::CInstructions(const std::vector<unsigned int> &labels, const std:
 		//////////////////////////////////////////////////////////////////////////////////////////////
 		// If the remainder after the rows is even we know we are at a vertex on a vertical line i.e. 
 		// an E or W vertex. We can then tell by our orientation which we are at
-		if(static_cast<int>(floor(labels[vertexList[i]]/(2*map_width+1)))  %2)
+		if(static_cast<int>(floor(vertexList[i]/(2*map_width+1)))  %2)
 		{
-			row_index = static_cast<int> (floor(labels[vertexList[i]]/(2*map_width+1)));
+			row_index = static_cast<int> (floor(vertexList[i]/(2*map_width+1)));
 
 			if(current_orientation == EOrientation_East)
 			{
-				col_index = static_cast<int> ((labels[vertexList[i]] % (2*map_width+1))/2 -1);
+				col_index = static_cast<int> ((vertexList[i] % (2*map_width+1))/2 -1);
 			}
 			else if(current_orientation == EOrientation_West)
 			{
-				col_index = static_cast<int> ((labels[vertexList[i]] %(2*map_width+1) -1))/2;	
+				col_index = static_cast<int> ((vertexList[i] %(2*map_width+1) -1))/2;	
 			}
 		}
 		else
@@ -257,16 +257,16 @@ CInstructions::CInstructions(const std::vector<unsigned int> &labels, const std:
 
 			if(current_orientation == EOrientation_North)
 			{
-				row_index = static_cast<int>(floor(labels[vertexList[i]]/2*map_width));
-				col_index = (labels[vertexList[i]] %(2*map_width+1) -1)/2;	
+				row_index = static_cast<int>(floor(vertexList[i]/2*map_width));
+				col_index = (vertexList[i] %(2*map_width+1) -1)/2;	
 			}
 			else if(current_orientation == EOrientation_South)
 			{
 				////////////////////////////////////////////////////////////////////////////////
 				// Note here we have a different row calculation.
 
-				row_index = static_cast<int>(floor(labels[vertexList[i]]/2*map_width)) -1;
-				col_index = (labels[vertexList[i]] %(2*map_width+1) -1)/2;	
+				row_index = static_cast<int>(floor(vertexList[i]/2*map_width)) -1;
+				col_index = (vertexList[i] %(2*map_width+1) -1)/2;	
 			}
 		}
 

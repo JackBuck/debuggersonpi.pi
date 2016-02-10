@@ -349,7 +349,7 @@ void CChallenges::ChallengeFour()
 
 
 
-	if((current_block_number != next_value) && (block_location[next_value] != LOCATION_UNKNOWN));
+	if((current_block_number != next_value) && (block_location[next_value] != LOCATION_UNKNOWN))
 	{
 		////////////////////////////////////////////////////////////////////////////////////////
 		// We have found a block we were not expecting. Reset all blocks that have not been removed
@@ -358,12 +358,15 @@ void CChallenges::ChallengeFour()
 		unknown_block_rooms = rooms_with_a_block;
 	}
 
-	for(int i=0; i<unknown_block_rooms.size(); i++)
+	for(size_t i=0; i<unknown_block_rooms.size(); i++)
 	{
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		// Remove the current room from the list of unknown rooms as we have just discovered which 
 		// block is there.
-		if(unknown_block_rooms[i] = current_room) unknown_block_rooms[unknown_block_rooms.begin + i];
+		if(unknown_block_rooms[i] = current_room) 
+		{
+			unknown_block_rooms.erase(unknown_block_rooms.begin() + i);
+		}
 	}
 
 
@@ -396,7 +399,7 @@ void CChallenges::ChallengeFour()
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Compute macro instructions.
 
-	CInstructions aInstructions = CInstructions(planned_path, 10);
+	aInstructions = CInstructions(planned_path, 10);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	// Now we know our route, execute it

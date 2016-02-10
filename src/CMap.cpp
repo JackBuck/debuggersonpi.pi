@@ -83,6 +83,7 @@ CMap::CMap(string filepath)
 	// Assume positioned at start.
 
 	m_currentVertex = GetEntranceVertex();
+	m_currentOrientation = EOrientation_North;
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Current room is entrance room which is not defined in our map so set to 

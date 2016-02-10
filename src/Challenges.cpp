@@ -388,10 +388,30 @@ void CChallenges::ChallengeFour()
 	CManouvre::ReverseAndUTurn();
 
 	///////////////////////////////////////////////////////////////////////////////////
-	// Return to start.
+	// Compute shortest path to start.
 
+	std::vector<int> shortest_path;
+	aGraph.ShortestDistance(aMap.GetCurrentVertex(), start_vertex, shortest_path);
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// Compute macro instructions.
 
+	CInstructions aInstructions = CInstructions(planned_path, 10);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	// Now we know our route, execute it
+
+	aMap.FollowInstructions(aInstructions);
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	// Exit map and release block.
+
+	CManouvre::ExitMap();
+
+	CManouvre::ReleaseBlock();
+
+	CManouvre::ReverseAndUTurn();
 	}
+
+	CSignals::Complete();
 }

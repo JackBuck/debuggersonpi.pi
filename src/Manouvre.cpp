@@ -108,9 +108,11 @@ void CManouvre::ReleaseBlock()
 {
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////////
-// Turn round and return to entrance vertex ready to re-enter the maze.
-void CManouvre::MakeReadyToReEnter()
+//////////////////////////////////////////////////////////////////////////////////////
+// Reverse the robot away from a block and u turn. (Be careful of block!) 
+// This may also be used when there carrying the block.
+void CManouvre::ReverseAndUTurn()
 {
 }
+
+

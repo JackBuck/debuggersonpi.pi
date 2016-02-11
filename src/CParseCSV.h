@@ -24,13 +24,34 @@ public:
 	static std::vector<std::vector<int> > ReadCSV_int(const std::string& filePath);
 	static std::vector<std::vector<double> > ReadCSV_double(const std::string& filePath);
 
-	static void WriteCSV(const std::vector<std::vector<int> >& lines, const std::string& filePath);
-	static void WriteCSV(const std::vector<std::vector<double> >& lines, const std::string& filePath);
+	/* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		 * This function is included in full in the header because it is templated. It factors out the common
+		 * work for writing csv files.
+		 */
+	template<typename T>
+	static void WriteCSV(const std::vector<std::vector<T> >& lines, const std::string& filePath, std::ios::openmode openMode = std::ios::out)
+	{
+		// Open the file for appending
+		std::ofstream file(filePath, openMode);
+		if (!file.is_open())
+			throw Exception_CantOpenFile { filePath };
 
-	static void AppendCSV(const std::vector<int>& line, const std::string& filePath);
-	static void AppendCSV(const std::vector<double>& line, const std::string& filePath);
-	static void AppendCSV(const std::vector<std::vector<int> >& lines, const std::string& filePath);
-	static void AppendCSV(const std::vector<std::vector<double> >& lines, const std::string& filePath);
+		// Write the lines
+		for (unsigned int i = 0; i < lines.size(); ++i)
+		{
+			// Write the ith line
+			for (unsigned int j = 0; j < lines[i].size() - 1; ++j)
+				file << lines[i][j] << ',';
+			if (lines[i].size() > 0)
+				file << lines[i].back() << std::endl;
+		}
+	}
+
+	template<typename T>
+	static void WriteCSV(const std::vector<T>& lines, const std::string& filePath, std::ios::openmode openMode = std::ios::out)
+	{
+		WriteCSV(std::vector< std::vector<T> > { lines }, filePath, openMode);
+	}
 
 	// === Exceptions ======================================================================================
 	struct Exception_CantOpenFile
@@ -73,6 +94,8 @@ private:
 
 		return parsedFile;
 	}
+
+
 };
 
 

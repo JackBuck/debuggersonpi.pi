@@ -34,7 +34,7 @@ int CParseCSV_test()
 	// Save it
 	string testCSVFilePath {"TestData/TestCSVFile.csv"};
 	CParseCSV::WriteCSV(infoForCSV, testCSVFilePath);
-	CParseCSV::AppendCSV(extraLine, testCSVFilePath);
+	CParseCSV::WriteCSV(extraLine, testCSVFilePath, ios::app);
 
 	// Read it
 	vector<vector<int> > reloadedInfo = CParseCSV::ReadCSV_int(testCSVFilePath);

@@ -3,6 +3,7 @@
 /.settings/
 /.cproject
 /.project
+/TestData/CameraPhotos
 
 
 ## Ignore Visual Studio temporary files, build results, and

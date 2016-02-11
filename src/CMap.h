@@ -77,9 +77,9 @@ public:
 private:
 	void CreateRoomMap();
 	void ComputeCellMapSize();
-	std::vector<int> CMap::RoomIndextoCoord(int room_index);
+	std::vector<int> RoomIndextoCoord(int room_index);
 	
 };
 
 
-#endif SRC_CMap_H_
+#endif /* SRC_CMap_H_ */

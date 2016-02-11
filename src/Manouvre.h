@@ -37,5 +37,5 @@ public:
 };
 
 
-#endif SRC_CChallenges_H_
+#endif /* SRC_CChallenges_H_ */
 

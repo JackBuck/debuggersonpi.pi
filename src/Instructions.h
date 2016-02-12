@@ -15,7 +15,7 @@ class CInstructions
 {
 	// === Constructors and Destructors =============================================================
 public:
-	CInstructions(const std::vector<unsigned int> &labels, const std::vector<unsigned int> &vertexList, const int map_width);
+	CInstructions(const std::vector<int> &vertexList, const int map_width);
 	
 	// === Member Variables =========================================================================
 private:
@@ -38,5 +38,5 @@ public:
 
 
 
-#endif SRC_CINSTRUCTIONS_H_
+#endif /* SRC_CINSTRUCTIONS_H_ */
 

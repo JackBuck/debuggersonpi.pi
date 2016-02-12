@@ -61,4 +61,4 @@ enum EOrientation
 
 
 
-#endif SRC_ENUMS_H_
+#endif /* SRC_ENUMS_H_ */

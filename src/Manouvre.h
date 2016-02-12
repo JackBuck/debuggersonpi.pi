@@ -22,6 +22,7 @@ class CManouvre
 
 	// === Public Functions =========================================================================
 public:
+
 	static void InstructionToManouvre(EInstruction instruction_type);
 	static void MoveToStartVertex();
 	static void ExitMap();
@@ -36,5 +37,5 @@ public:
 };
 
 
-#endif SRC_CChallenges_H_
+#endif /* SRC_CChallenges_H_ */
 

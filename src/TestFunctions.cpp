@@ -13,6 +13,10 @@
 
 int CMap_test();
 int CGraph_test();
+int CGraph_test2();
+int CGraph_test3();
+int CParseCSV_test();
+void CParseCSV_test2();
 
 int TestAllFunctions()
 {
@@ -22,6 +26,14 @@ int TestAllFunctions()
 //	std::cout << '\n';
 	returnVal += CGraph_test();
 	std::cout << '\n';
+	returnVal += CGraph_test2();
+	std::cout << '\n';
+	returnVal += CGraph_test3();
+	std::cout << '\n';
+//	returnVal += CParseCSV_test();
+//	std::cout << '\n';
+//	CParseCSV_test2();
+//	std::cout << '\n';
 
 
 	return returnVal;

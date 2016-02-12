@@ -8,9 +8,10 @@
 #ifndef SRC_CGRAPH_H_
 #define SRC_CGRAPH_H_
 
-#include<string>
-#include<vector>
-#include<map>
+#include <string>
+#include <vector>
+#include <map>
+#include <iostream>
 
 /* ~~~ SIMPLE TYPES USED BY CGRAPH ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * CGraph_DistMatCheckResult defines values returnable by the function CGraph::CheckInput_DistMat(),
@@ -99,7 +100,6 @@ class CGraph
 public:
 	// === Constructors and Destructors =============================================================
 	explicit CGraph(const std::vector<std::vector<double> >& distanceMatrix, const std::vector<int>& vertexLabels);
-	~CGraph();
 
 	// === Public Functions =========================================================================
 	// Access functions
@@ -168,6 +168,7 @@ public:
 		InternalException(std::string message)
 				: mm_message { message }
 		{
+			std::cout << message << std::endl;
 		}
 	};
 

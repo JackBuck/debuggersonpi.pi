@@ -99,7 +99,6 @@ class CGraph
 public:
 	// === Constructors and Destructors =============================================================
 	explicit CGraph(const std::vector<std::vector<double> >& distanceMatrix, const std::vector<int>& vertexLabels);
-	~CGraph();
 
 	// === Public Functions =========================================================================
 	// Access functions

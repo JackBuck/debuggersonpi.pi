@@ -115,14 +115,6 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
 
 }
 
-/* ~~~ FUNCTION (destructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * This function is the destructor for the CGraph class.
- */
-CGraph::~CGraph()
-{
-// TODO Auto-generated destructor stub
-}
-
 
 // -/-/-/-/-/-/-/ INTERNAL NUMBERING FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

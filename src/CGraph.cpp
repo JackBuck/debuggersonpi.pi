@@ -44,7 +44,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
 
 	switch (distanceMatrixType) {
 	case CGraph_DistMatCheckResult::tooLarge:
-		throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), std::numeric_limits<unsigned int>::max() };
+		throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), std::numeric_limits<unsigned int>::max() - 1 };
 		break;
 	case CGraph_DistMatCheckResult::badShape:
 		throw InputDistMat_BadShape{ distanceMatrix };
@@ -108,7 +108,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
 		{
 			if (m_DistanceMatrix[i][j] >= 0 && i != j)
 			{
-				m_AdjacencyMatrix[i][j] =true;
+				m_AdjacencyMatrix[i][j] = true;
 			}
 		}
 	}
@@ -485,9 +485,9 @@ unsigned int CGraph::InternalDijkstra(const unsigned int& startVertex)
 CGraph_DistMatCheckResult CGraph::CheckInput_DistMat(const vector<vector<double> >& distanceMatrix) const
 {
 	// Check distanceMatrix is not too large for m_Order to fit in an unsigned int type
-	// TODO: Can I make this a constexpr?
+	// The value of -1 (i.e. the largest possible unsigned int) is also reserved for special uses in InternalDijkstra.
 	const long unsigned max_unsignedInt = numeric_limits<unsigned int>::max();
-	if (distanceMatrix.size() > max_unsignedInt)
+	if (distanceMatrix.size() > max_unsignedInt - 1)
 		return CGraph_DistMatCheckResult::tooLarge;
 
 	// Get dimensions and check the input is a square or triangular matrix

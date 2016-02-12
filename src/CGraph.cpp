@@ -203,8 +203,8 @@ void CGraph::ExternalToInternal(const vector<int>& vertices_external, vector<uns
  *                     (as opposed to from the end vertex).
  *                     The this argument allows the caller to minimise the calls to InternalDijkstra
  *                     required to return the desired shortest routes through the graph.
- *                     If this argument is omitted then the default of false shall be used (since
- *                     the algorithm in this case is fractionally simpler).
+ *                     If this argument is omitted then the default of true shall be used (since
+ *                     this is usually what the caller will want).
  *
  * INPUT OUTPUTS:
  * shortestDistance = The shortest distance between startVertex and endVertex.
@@ -241,7 +241,7 @@ double CGraph::ShortestDistance(const int& startVertex, const int& endVertex, co
 
 double CGraph::ShortestDistance(const int& startVertex, const int& endVertex, vector<int>& outputRoute)
 {
-	return ShortestDistance(startVertex, endVertex, false, outputRoute);
+	return ShortestDistance(startVertex, endVertex, true, outputRoute);
 }
 
 

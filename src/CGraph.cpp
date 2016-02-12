@@ -482,10 +482,15 @@ CGraph_DistMatCheckResult CGraph::CheckInput_DistMat(const vector<vector<double>
 	if (distanceMatrix.size() > max_unsignedInt - 1)
 		return CGraph_DistMatCheckResult::tooLarge;
 
+	// Check distanceMatrix is not empty
+	if (distanceMatrix.size() == 0)
+		return CGraph_DistMatCheckResult::badShape;
+
 	// Get dimensions and check the input is a square or triangular matrix
 	// Determine shape if possible, and return bad shape if no shape is matched
 	CGraph_DistMatCheckResult matrixShape { CGraph_DistMatCheckResult::undefined };
-	if (distanceMatrix[0].size() == m_Order && distanceMatrix[1].size() == m_Order)
+	if (distanceMatrix[0].size() == m_Order &&
+			(distanceMatrix.size() == 1 || distanceMatrix[1].size() == m_Order))
 		matrixShape = CGraph_DistMatCheckResult::square;
 	else if (distanceMatrix[0].size() == 1 && distanceMatrix[1].size() == 2 )
 		matrixShape = CGraph_DistMatCheckResult::lowerTriangular;

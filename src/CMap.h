@@ -79,7 +79,7 @@ private:
 	void CreateRoomMap();
 	void ComputeCellMapSize();
 	std::vector<int> CalculateRoomVertices(std::vector<int> coord);
-	std::vector<int> CMap::RoomIndextoCoord(int room_index);
+	std::vector<int> RoomIndextoCoord(int room_index);
 	
 };
 

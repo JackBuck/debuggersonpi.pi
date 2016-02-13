@@ -30,7 +30,7 @@ public:
 	static int ApproachAndPhotographBlock();
 	static void CollectBlock();
 	static void ReleaseBlock();
-	static void CManouvre::ReverseAndUTurn();
+	static void ReverseAndUTurn();
 
 	static void StraightAcrossRoom();
 	static void TurnLeftInRoom();

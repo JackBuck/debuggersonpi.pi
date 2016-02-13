@@ -169,7 +169,7 @@ void CChallenges::ChallengeFour()
 
 		// Calculated by Johns function.
 
-		CGraph aGraph = CGraph::CGraph(distanceMatrix, labels);
+		CGraph aGraph { distanceMatrix, labels };
 
 		//////////////////////////////////////////////////////////////////////
 		// Check if location of next block is known.

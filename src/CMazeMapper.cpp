@@ -105,33 +105,30 @@ void CMazeMapper::AnalyseMap(const CMap& newMap)
 			{
 				// Check if it leads into any unknown rooms
 				vector<int> roomExits = CMap::GetRoomVertices(roomMap[i][j]);
+				vector<int> roomVertexLabels = newMap.CalculateRoomVertices(i, j);
 
 				// Check room above
 				if (roomExits[0] == 1 && roomMap.at(i-1)[j] == ERoom_Unknown)
 				{
-					int vertAbove = 0; // TODO: Compute this properly -- use a static method in CMap?
-					m_vertsToExplore.push_back(vertAbove);
+					m_vertsToExplore.push_back(roomVertexLabels[0]);
 				}
 
 				// Check room to the right
 				if (roomExits[1] == 1 && roomMap[i].at(j+1) == ERoom_Unknown)
 				{
-					int vertToRight = 0; // TODO: Compute this properly -- use a static method in CMap?
-					m_vertsToExplore.push_back(vertToRight);
+					m_vertsToExplore.push_back(roomVertexLabels[1]);
 				}
 
 				// Check room below
 				if (roomExits[2] == 1 && roomMap.at(i+1)[j] == ERoom_Unknown)
 				{
-					int vertBelow = 0; // TODO: Compute this properly -- use a static method in CMap?
-					m_vertsToExplore.push_back(vertBelow);
+					m_vertsToExplore.push_back(roomVertexLabels[2]);
 				}
 
 				// Check room to left
 				if (roomExits[3] == 1 && roomMap[i].at(j-1) == ERoom_Unknown)
 				{
-					int vertToLeft = 0; // TODO: Compute this properly -- use a static method in CMap?
-					m_vertsToExplore.push_back(vertToLeft);
+					m_vertsToExplore.push_back(roomVertexLabels[3]);
 				}
 
 			}

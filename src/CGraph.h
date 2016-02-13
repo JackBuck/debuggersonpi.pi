@@ -17,7 +17,7 @@
  * CGraph_DistMatCheckResult defines values returnable by the function CGraph::CheckInput_DistMat(),
  * which checks the format of a supplied distance matrix.
  */
-enum class CGraph_DistMatCheckResult { undefined, square, lowerTriangular, upperTriangular, badShape, invalidElements, tooLarge};
+enum class CGraph_DistMatCheckResult {	undefined, square, lowerTriangular, upperTriangular, badShape, invalidElements, tooLarge };
 
 /* ~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This is a class to represent the mathematical concept of a graph.
@@ -203,5 +203,5 @@ private:
 	std::map<unsigned int, unsigned int> m_DijkstraStartVertices;
 };
 
-#endif // SRC_CGRAPH_H_
+#endif /* SRC_CGRAPH_H_ */
 

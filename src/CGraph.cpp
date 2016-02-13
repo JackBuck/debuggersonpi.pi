@@ -274,7 +274,7 @@ void CGraph::InternalShortestDistance(const unsigned int& startVertex, const uns
 	/*  -- Decide on whether to use Dijkstra from the startVertex or the endVertex -- //
 	 *   - Default is to use endVertex if Dijkstra as already been called for this, and startVertex
 	 *     otherwise.
-	 * Call internalDijkstra if necessary (from startVertex)
+	 * Call internalDijkstra if necessary (from startVertex or endVertex according to preferStartVertex)
 	 */
 	bool fromStartVertex;
 	if (m_DijkstraStartVertices.count(endVertex) > 0)
@@ -304,17 +304,17 @@ void CGraph::InternalShortestDistance(const unsigned int& startVertex, const uns
 
 		// Set the outputRoute
 		if (shortestDistance == -1) // If startVertex and endVertex are not connected
-			outputRoute = vector<unsigned int> ();
+			outputRoute = vector<unsigned int>();
 		else // If startVertex and endVertex are connected
 		{
 			// Set first element in reverseOutputRoute as endVertex.
 			// Then repeatedly push_back the parent vertex of the latest vertex in reverseOutputRoute until we reach startVertex
-			vector<unsigned int> reverseOutputRoute = {endVertex};
+			vector<unsigned int> reverseOutputRoute = { endVertex };
 			while (reverseOutputRoute.back() != startVertex)
 				reverseOutputRoute.push_back(m_DijkstraOutputRoutes[index][reverseOutputRoute.back()]);
 
 			// Set outputRoute as reverse of reverseOutputRoute
-			outputRoute = vector<unsigned int> (reverseOutputRoute.rbegin(), reverseOutputRoute.rend());
+			outputRoute = vector<unsigned int>(reverseOutputRoute.rbegin(), reverseOutputRoute.rend());
 		}
 	}
 	else
@@ -328,12 +328,12 @@ void CGraph::InternalShortestDistance(const unsigned int& startVertex, const uns
 
 		// Set the outputRoute
 		if (shortestDistance == -1)
-			outputRoute = vector<unsigned int> ();
+			outputRoute = vector<unsigned int>();
 		else
 		{
 			// Set first element in outputRoute as startVertex
 			// Then repeatedly push_back the parent vertex of the latest vertex in outputRoute until we reach endVertex
-			outputRoute = vector<unsigned int> {startVertex};
+			outputRoute = vector<unsigned int> { startVertex };
 			while (outputRoute.back() != endVertex)
 				outputRoute.push_back(m_DijkstraOutputRoutes[index][outputRoute.back()]);
 		}

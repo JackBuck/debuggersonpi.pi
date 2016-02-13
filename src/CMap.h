@@ -22,7 +22,6 @@ class CMap
 	// === Constructors and Destructors =============================================================
 public:
 	CMap(std::string filepath);
-	CMap(std::vector<std::vector<int> > inputMap, int start, int finish);
 	CMap(int room_height, int room_width);
 
 	// === Member Variables =========================================================================
@@ -40,6 +39,7 @@ private:
 
 	int m_currentRoom;
 	int m_currentVertex;
+	EOrientation m_currentOrientation;
 
 
 	// === Accessor Functions =========================================================================
@@ -69,6 +69,7 @@ public:
 	void UpdateCellMap();
 	void CalculateBlockRooms(std::vector<int> *pBlockRooms);
 	std::vector<int> CalculateRoomVertices(int room_index);
+	std::vector<int> CalculateRoomVertices(int row, int col);
 	void FollowInstructions(CInstructions &inputInstructions);
 
 
@@ -77,6 +78,7 @@ public:
 private:
 	void CreateRoomMap();
 	void ComputeCellMapSize();
+	std::vector<int> CalculateRoomVertices(std::vector<int> coord);
 	std::vector<int> RoomIndextoCoord(int room_index);
 	
 };

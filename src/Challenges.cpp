@@ -4,6 +4,8 @@
 // Author: Hannah Howell
 //
 
+// ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 #include "Challenges.h"
 #include "CMap.h"
 #include "CGraph.h"
@@ -13,6 +15,9 @@
 #include "GoodsOut.h"
 #include "Manouvre.h"
 #include <climits>
+
+// ~~~ DEFINITIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+int LOCATION_UNKNOWN = -1;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Basic outline of challenge 1 I am not sure how the interupts will work exactly.
@@ -128,9 +133,11 @@ void CChallenges::ChallengeFour()
 	int next_value = 1;
 
 	///////////////////////////////////////////////////////////////////////
-	// Locations of blocks if unknown -1
+	// Locations of blocks, the block with an image of one has its location
+	// stored in the first entry, image of two in the second etc.
+	// if unknown -1 or LOCATION UNKNOWN
 	
-	int LOCATION_UNKNOWN = -1;
+	
 	std::vector<int> block_location;
 	block_location = {LOCATION_UNKNOWN, LOCATION_UNKNOWN, LOCATION_UNKNOWN, LOCATION_UNKNOWN, LOCATION_UNKNOWN};
 
@@ -140,6 +147,13 @@ void CChallenges::ChallengeFour()
 
 	std::vector<int> unknown_block_rooms;
 	aMap.CalculateBlockRooms(&unknown_block_rooms);
+
+	/////////////////////////////////////////////////////////////////////
+	// Rooms which contain a block. These may need 
+	// to be revisited if we get an image wrong.
+
+	std::vector<int> rooms_with_a_block;
+	rooms_with_a_block = unknown_block_rooms;
 
 	
 	while(next_value <=5)
@@ -261,7 +275,7 @@ void CChallenges::ChallengeFour()
 			std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(current_room);
 
 			////////////////////////////////////////////////////////////////////////////////////////////
-			// Check which of these vertices exist.
+			// Check which of these vertices exist for the start room.
 
 			std::vector<int> existingVerticesOfStartRoom;
 			existingVerticesOfStartRoom = aMap.GetRoomVertices(start_room_type);
@@ -279,9 +293,6 @@ void CChallenges::ChallengeFour()
 				if(existingVerticesOfStartRoom[k] == 0) continue;
 
 				int current_vertex = verticesOfStartRoom[k];
-			
-				/////////////////////////////////////////////////////////////////////
-				// Find which of these vertices exist and their labels
 
 				ERoom room_type = aMap.GetRoomType(target_room);
 				std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(target_room);
@@ -326,9 +337,84 @@ void CChallenges::ChallengeFour()
 		// Now we know our route, execute it
 
 		aMap.FollowInstructions(aInstructions);
-	}
 	
 	CGoodsOut::Stop();
 
-	CSignals::Notification2();
+	int current_block_number = CManouvre::ApproachAndPhotographBlock();
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// Update the location vectors
+
+	block_location[next_value] = current_block_number;
+
+
+
+	if((current_block_number != next_value) && (block_location[next_value] != LOCATION_UNKNOWN))
+	{
+		////////////////////////////////////////////////////////////////////////////////////////
+		// We have found a block we were not expecting. Reset all blocks that have not been removed
+		// to unknown.
+
+		unknown_block_rooms = rooms_with_a_block;
+	}
+
+	for(size_t i=0; i<unknown_block_rooms.size(); i++)
+	{
+		/////////////////////////////////////////////////////////////////////////////////////////////
+		// Remove the current room from the list of unknown rooms as we have just discovered which 
+		// block is there.
+		if(unknown_block_rooms[i] = current_room) 
+		{
+			unknown_block_rooms.erase(unknown_block_rooms.begin() + i);
+		}
+	}
+
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	// If the block is not the one we are currently interested continue.
+
+	if(current_block_number != next_value)
+	{
+		CManouvre::ReverseAndUTurn();
+		CSignals::Notification2();
+		continue;
+	}
+
+
+	////////////////////////////////////////////////////////////////////////////////////
+	// We are interested in this block collect it.
+
+	CSignals::Notification3();
+
+	CManouvre::CollectBlock();
+
+	CManouvre::ReverseAndUTurn();
+
+	///////////////////////////////////////////////////////////////////////////////////
+	// Compute shortest path to start.
+
+	std::vector<int> shortest_path;
+	aGraph.ShortestDistance(aMap.GetCurrentVertex(), start_vertex, shortest_path);
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// Compute macro instructions.
+
+	aInstructions = CInstructions(planned_path, 10);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	// Now we know our route, execute it
+
+	aMap.FollowInstructions(aInstructions);
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	// Exit map and release block.
+
+	CManouvre::ExitMap();
+
+	CManouvre::ReleaseBlock();
+
+	CManouvre::ReverseAndUTurn();
+	}
+
+	CSignals::Complete();
 }

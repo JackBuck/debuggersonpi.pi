@@ -7,7 +7,6 @@
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "CMazeMapper.h"
-#include "CGraph.h"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -16,10 +15,9 @@ using namespace std;
  *
  *
  */
-CMazeMapper::CMazeMapper()
+CMazeMapper::CMazeMapper(const CMap& maze)
 {
-	// TODO Auto-generated constructor stub
-
+	Update(maze);
 }
 
 /* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,26 +32,21 @@ CMazeMapper::CMazeMapper()
  *		vertex to explore.
  *
  */
-void CMazeMapper::ComputeNextVertex(const CMap& currentMap, const int& currentVertex, std::vector<int>& outputRoute)
+void CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& outputRoute)
 {
 	/* Algorithm outline
-	 * - Either: generate graph from CMap, get passed graph instead of CMap or access graph as member variable of CMap
 	 * - Find closest of vertices left to explore. Compute shortest routes as you go along.
 	 */
 
-	// Get CGraph somehow!
-	// TODO: Fix this when you now how you will generate the graph / receive the map
-	vector< vector<double> > distanceMatrix;
-	vector<int> vertexLabels;
-	CGraph currentGraph {distanceMatrix, vertexLabels};
+
 
 	// Find closest of vertices left to explore
 	int nextVertex {m_vertsToExplore[0]};
-	double currentFastestDist = currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[0], true, outputRoute);
+	double currentFastestDist = m_currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[0], true, outputRoute);
 	for (unsigned int i = 1; i < m_vertsToExplore.size(); ++i)
 	{
 		vector<int> newOutputRoute;
-		double newDist = currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[i], true, newOutputRoute);
+		double newDist = m_currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[i], true, newOutputRoute);
 
 		if (newDist < currentFastestDist)
 		{
@@ -74,7 +67,29 @@ void CMazeMapper::ComputeNextVertex(const CMap& currentMap, const int& currentVe
 
 }
 
-/* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function updates the CMazeMapper with the new map.
+ * It will
+ * 	- Generate a graph from the CMap
+ * 	- Generate a list of vertices to explore from the CMap
+ *
+ * INPUTS:
+ * newMap - The new CMap object.
+ *
+ */
+void CMazeMapper::Update(const CMap& newMap)
+{
+	// Generate graph from the maze
+	// TODO: Fix this when you now how you will generate the graph / receive the map
+	vector< vector<double> > distanceMatrix;
+	vector<int> vertexLabels;
+	m_currentGraph = CGraph { distanceMatrix, vertexLabels };
+
+	// Update list of vertices to explore
+	FindVertsToExplore(newMap);
+}
+
+/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function analyses a map and computes a vector of vertices to explore.
  *
  * A vertex is added to the vector if it joins a room of unknown type to a room with known type.
@@ -96,7 +111,7 @@ void CMazeMapper::ComputeNextVertex(const CMap& currentMap, const int& currentVe
  * 	to a room of known type.
  *
  */
-void CMazeMapper::AnalyseMap(const CMap& newMap)
+void CMazeMapper::FindVertsToExplore(const CMap& newMap)
 {
 	m_vertsToExplore.clear();
 

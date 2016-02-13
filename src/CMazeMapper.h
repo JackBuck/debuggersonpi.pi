@@ -11,6 +11,7 @@
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "EnumsHeader.h"
 #include "CMap.h"
+#include "CGraph.h"
 #include <vector>
 
 /* ~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,13 +20,21 @@
 class CMazeMapper
 {
 public:
-	CMazeMapper();
+	// === Constructor and Destructors ==============================================================
+	CMazeMapper(const CMap&);
 
-	void ComputeNextVertex(const CMap& currentMap, const int& currentVertex, std::vector<int>& outputRoute);
-	void AnalyseMap(const CMap& newMap);
+	// === Public Functions =========================================================================
+	void ComputeNextVertex(const int& currentVertex, std::vector<int>& outputRoute);
+	void Update(const CMap& newMap);
 
 private:
+	// === Member Variables =========================================================================
 	std::vector<int> m_vertsToExplore;
+	CGraph m_currentGraph;
+
+	// === Private Functions ========================================================================
+	void FindVertsToExplore(const CMap& newMap);
+
 };
 
 #endif /* SRC_CMAZEMAPPER_H_ */

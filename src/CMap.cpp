@@ -271,7 +271,7 @@ vector<vector<ERoom>> CMap::GetRoomMap()
 
 ERoom CMap::GetRoomType(int room_index)
 {
-	std::vector<int> coords = RoomIndextoCoord(room_index);
+	vector<int> coords = RoomIndextoCoord(room_index);
 	return m_roomMap[coords[0]][coords[1]];
 }
 
@@ -292,12 +292,12 @@ int CMap::GetExitRoom()
 	return m_exitRoom;
 }
 
-std::vector<int> CMap::GetEntranceCell()
+vector<int> CMap::GetEntranceCell()
 {
 	return m_entranceCell;
 }
 
-std::vector<int> CMap::GetExitCell()
+vector<int> CMap::GetExitCell()
 {
 	return m_exitCell;
 }
@@ -438,16 +438,16 @@ void CMap::UpdateCellMap()
 			{
 				for (unsigned int j = 0; j<m_cellMap[i].size(); j++)
 				{
-					std::cout << m_cellMap[i][j];
+					cout << m_cellMap[i][j];
 				}
-				std::cout << std::endl;
+				cout << endl;
 				
 			}
-			std::cout << std::endl;
+			cout << endl;
 		}
 	}
 }
-void CMap::CalculateBlockRooms(std::vector<int>* pBlockRooms)
+void CMap::CalculateBlockRooms(vector<int>* pBlockRooms)
 {
 	pBlockRooms->clear();
 
@@ -492,9 +492,9 @@ vector<int> CMap::CalculateRoomVertices(vector<int> coord)
 // This functions take a Room Enum and returns the vertices of the room in a vector with 1 for vertex
 // 0 for no vertex and -1 for unknown. The order of the vertices in the vector is
 // North East South West.
-std::vector<int> CMap::GetRoomVertices(ERoom room_type)
+vector<int> CMap::GetRoomVertices(ERoom room_type)
 {
-	std::vector<int> vertex_flag;
+	vector<int> vertex_flag;
 
 	switch (room_type)
 	{
@@ -588,14 +588,14 @@ std::vector<int> CMap::GetRoomVertices(ERoom room_type)
 
 int CMap::GetEntranceVertex()
 {
-	std::vector<int> coord = {m_cellwidth/3, 0};
+	vector<int> coord = {m_cellwidth/3, 0};
 
 	return (coord[0]+1)*(2*m_cellwidth+1) + 2*coord[1] +1;
 }
 
 int CMap::GetExitVertex()
 {
-	std::vector<int> coord = {0, m_cellwidth/3};
+	vector<int> coord = {0, m_cellwidth/3};
 
 	return (coord[0])*(2*m_cellwidth+1) + 2*coord[1] +2;
 }
@@ -620,12 +620,12 @@ void CMap::SetCurrentVertex(int new_vertex)
 	m_currentVertex = new_vertex;
 }
 
-std::vector<int> CMap::RoomIndextoCoord(int room_index)
+vector<int> CMap::RoomIndextoCoord(int room_index)
 {
 	int row_index = room_index/(2*m_cellwidth +1);
 	int col_index = room_index % (2*m_cellwidth +1);
 
-	std::vector<int> roomCoord = {row_index, col_index};
+	vector<int> roomCoord = {row_index, col_index};
 	return roomCoord;
 }
 
@@ -637,9 +637,9 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 
 	int current_vertex = GetCurrentVertex();
 
-	std::vector<EInstruction> instructionList = inputInstructions.GetInstructions();
-	std::vector<ERoom> roomList = inputInstructions.GetRoomList();
-	std::vector<EOrientation> oreintationList = inputInstructions.GetOrientations();
+	vector<EInstruction> instructionList = inputInstructions.GetInstructions();
+	vector<ERoom> roomList = inputInstructions.GetRoomList();
+	vector<EOrientation> oreintationList = inputInstructions.GetOrientations();
 
 	if(current_vertex != instructionList[0]) CSignals::Error();
 

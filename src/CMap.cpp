@@ -474,6 +474,9 @@ void CMap::CalculateBlockRooms(vector<int>* pBlockRooms)
  * row - The row index of the room
  * col - The column index of the room
  *
+ * INPUTS (overload 3 - private):
+ * coord - A two element vector containing the row index, followed by the column index.
+ *
  * RETURN VALUE:
  * A 4-element vector of integers representing the indices of the vertices which could border the
  * room (no check is performed to ensure that the vertices exist!)

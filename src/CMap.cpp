@@ -463,12 +463,21 @@ void CMap::CalculateBlockRooms(std::vector<int>* pBlockRooms)
 	}
 }
 
-std::vector<int>  CMap::CalculateRoomVertices(int room_index)
+vector<int> CMap::CalculateRoomVertices(int room_index)
 {
-	std::vector<int> roomVertices;
+	vector<int> coord = RoomIndextoCoord(room_index);
+	return CalculateRoomVertices(coord);
+}
 
+vector<int> CMap::CalculateRoomVertices(int row, int col)
+{
+	vector<int> coord { row, col };
+	return CalculateRoomVertices(coord);
+}
 
-	std::vector<int> coord = RoomIndextoCoord(room_index);
+vector<int> CMap::CalculateRoomVertices(vector<int> coord)
+{
+	vector<int> roomVertices;
 
 	roomVertices.push_back(coord[0]*(2*(m_cellwidth/3)+1) +2*coord[1]);
 	roomVertices.push_back(coord[0]*(2*(m_cellwidth/3)+1) +2*coord[1] +1);

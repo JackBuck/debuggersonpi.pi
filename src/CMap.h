@@ -69,6 +69,7 @@ public:
 	void UpdateCellMap();
 	void CalculateBlockRooms(std::vector<int> *pBlockRooms);
 	std::vector<int> CalculateRoomVertices(int room_index);
+	std::vector<int> CalculateRoomVertices(int row, int col);
 	void FollowInstructions(CInstructions &inputInstructions);
 
 
@@ -77,6 +78,7 @@ public:
 private:
 	void CreateRoomMap();
 	void ComputeCellMapSize();
+	std::vector<int> CalculateRoomVertices(std::vector<int> coord);
 	std::vector<int> CMap::RoomIndextoCoord(int room_index);
 	
 };

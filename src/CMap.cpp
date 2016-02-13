@@ -463,6 +463,23 @@ void CMap::CalculateBlockRooms(vector<int>* pBlockRooms)
 	}
 }
 
+/* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function computes a the indices of the vertices bordering a room.
+ * WARNING: It does not check whether the vertices actually exist!
+ *
+ * INPUTS (overload 1):
+ * room_index - The index of the room in the linear room indexing.
+ *
+ * INPUTS (overload 2):
+ * row - The row index of the room
+ * col - The column index of the room
+ *
+ * RETURN VALUE:
+ * A 4-element vector of integers representing the indices of the vertices which could border the
+ * room (no check is performed to ensure that the vertices exist!)
+ * The vertices are returned in the order North, East, South, West.
+ *
+ */
 vector<int> CMap::CalculateRoomVertices(int room_index)
 {
 	vector<int> coord = RoomIndextoCoord(room_index);
@@ -479,10 +496,10 @@ vector<int> CMap::CalculateRoomVertices(vector<int> coord)
 {
 	vector<int> roomVertices;
 
-	roomVertices.push_back(coord[0]*(2*(m_cellwidth/3)+1) +2*coord[1]);
-	roomVertices.push_back(coord[0]*(2*(m_cellwidth/3)+1) +2*coord[1] +1);
-	roomVertices.push_back(coord[0]*(2*(m_cellwidth/3)+1) +2*coord[1] +2);
-	roomVertices.push_back((coord[0]+1)*(2*(m_cellwidth/3)+1) +2*coord[1]);
+	roomVertices.push_back(coord[0]*(2*(m_cellwidth/3)+1) +2*coord[1] +1);  // North
+	roomVertices.push_back(coord[0]*(2*(m_cellwidth/3)+1) +2*coord[1] +2);  // East
+	roomVertices.push_back((coord[0]+1)*(2*(m_cellwidth/3)+1) +2*coord[1]); // South
+	roomVertices.push_back(coord[0]*(2*(m_cellwidth/3)+1) +2*coord[1]);     // West
 
 	return roomVertices;
 }

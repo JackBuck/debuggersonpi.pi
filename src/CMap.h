@@ -44,19 +44,19 @@ private:
 
 	// === Accessor Functions =========================================================================
 public:
-	std::vector<std::vector<ERoom> >	GetRoomMap() const;
-	ERoom GetRoomType(int room_index);
-	std::vector<std::vector<int> > GetCellMap() const;
-	int GetEntranceRoom();
-	int GetExitRoom();
-	std::vector<int> GetEntranceCell();
-	std::vector<int> GetExitCell();
+	std::vector<std::vector<ERoom>>	GetRoomMap() const;
+	ERoom GetRoomType(int room_index) const;
+	std::vector<std::vector<int>> GetCellMap() const;
+	int GetEntranceRoom() const;
+	int GetExitRoom() const;
+	std::vector<int> GetEntranceCell() const;
+	std::vector<int> GetExitCell() const;
 	static std::vector<int> GetRoomVertices(ERoom room_type);
-	int GetEntranceVertex();
-	int GetExitVertex();
+	int GetEntranceVertex() const;
+	int GetExitVertex() const;
 
-	int GetCurrentVertex();
-	int GetCurrentRoom();
+	int GetCurrentVertex() const;
+	int GetCurrentRoom() const;
 
 	void SetCurrentRoom(int new_room);
 	void SetCurrentVertex(int new_vertex);
@@ -67,9 +67,9 @@ public:
 
 	void UpdateRoomMap();
 	void UpdateCellMap();
-	void CalculateBlockRooms(std::vector<int> *pBlockRooms);
-	std::vector<int> CalculateRoomVertices(int room_index);
-	std::vector<int> CalculateRoomVertices(int row, int col);
+	void CalculateBlockRooms(std::vector<int> *pBlockRooms) const;
+	std::vector<int> CalculateRoomVertices(int room_index) const;
+	std::vector<int> CalculateRoomVertices(int row, int col) const;
 	void FollowInstructions(CInstructions &inputInstructions);
 
 
@@ -78,8 +78,8 @@ public:
 private:
 	void CreateRoomMap();
 	void ComputeCellMapSize();
-	std::vector<int> CalculateRoomVertices(std::vector<int> coord);
-	std::vector<int> RoomIndextoCoord(int room_index);
+	std::vector<int> CalculateRoomVertices(std::vector<int> coord) const;
+	std::vector<int> RoomIndextoCoord(int room_index) const;
 	
 };
 

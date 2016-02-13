@@ -40,22 +40,22 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
 	//// Check Inputs ////
 
 	// Distance matrix
-	CGraph_DistMatCheckResult distanceMatrixType = CheckInput_DistMat(distanceMatrix);
+	DistMatCheckResult distanceMatrixType = CheckInput_DistMat(distanceMatrix);
 
 	switch (distanceMatrixType) {
-	case CGraph_DistMatCheckResult::tooLarge:
+	case DistMatCheckResult::tooLarge:
 		throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), std::numeric_limits<unsigned int>::max() - 1 };
 		break;
-	case CGraph_DistMatCheckResult::badShape:
+	case DistMatCheckResult::badShape:
 		throw InputDistMat_BadShape{ distanceMatrix };
 		break;
-	case CGraph_DistMatCheckResult::invalidElements:
+	case DistMatCheckResult::invalidElements:
 		throw InputDistMat_InvalidElements { distanceMatrix };
 		break;
-	case CGraph_DistMatCheckResult::square:
+	case DistMatCheckResult::square:
 		m_DistanceMatrix = distanceMatrix;
 		break;
-	case CGraph_DistMatCheckResult::lowerTriangular:
+	case DistMatCheckResult::lowerTriangular:
 		// Define and fill out distance matrix as a square matrix
 		m_DistanceMatrix = vector<vector<double> >(m_Order, vector<double>(m_Order, 0));
 		for (unsigned int i = 0; i < m_Order; ++i)
@@ -69,7 +69,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
 			}
 		}
 		break;
-	case CGraph_DistMatCheckResult::upperTriangular:
+	case DistMatCheckResult::upperTriangular:
 		m_DistanceMatrix = vector<vector<double> >(m_Order, vector<double>(m_Order, 0));
 		for (unsigned int i = 0; i < m_Order; ++i)
 		{
@@ -462,7 +462,7 @@ unsigned int CGraph::InternalDijkstra(const unsigned int& startVertex)
  * distanceMatrix = The distance matrix to check.
  *
  * OUTPUT:
- * This takes one of the values of the enum class CGraph_DistMatCheckResult:
+ * This takes one of the values of the enum class DistMatCheckResult:
  *  - undefined       => An internal error has occurred and the output has not been set.
  *  - square          => The matrix supplied is square.
  *  - lowerTriangular => The matrix supplied is lower triangular.
@@ -474,48 +474,48 @@ unsigned int CGraph::InternalDijkstra(const unsigned int& startVertex)
  *                       into an unsigned int.
  *
  */
-CGraph_DistMatCheckResult CGraph::CheckInput_DistMat(const vector<vector<double> >& distanceMatrix) const
+CGraph::DistMatCheckResult CGraph::CheckInput_DistMat(const vector<vector<double> >& distanceMatrix) const
 {
 	// Check distanceMatrix is not too large for m_Order to fit in an unsigned int type
 	// The value of -1 (i.e. the largest possible unsigned int) is also reserved for special uses in InternalDijkstra.
 	const long unsigned max_unsignedInt = numeric_limits<unsigned int>::max();
 	if (distanceMatrix.size() > max_unsignedInt - 1)
-		return CGraph_DistMatCheckResult::tooLarge;
+		return DistMatCheckResult::tooLarge;
 
 	// Check distanceMatrix is not empty
 	if (distanceMatrix.size() == 0)
-		return CGraph_DistMatCheckResult::badShape;
+		return DistMatCheckResult::badShape;
 
 	// Get dimensions and check the input is a square or triangular matrix
 	// Determine shape if possible, and return bad shape if no shape is matched
-	CGraph_DistMatCheckResult matrixShape { CGraph_DistMatCheckResult::undefined };
+	DistMatCheckResult matrixShape { DistMatCheckResult::undefined };
 	if (distanceMatrix[0].size() == m_Order &&
 			(distanceMatrix.size() == 1 || distanceMatrix[1].size() == m_Order))
-		matrixShape = CGraph_DistMatCheckResult::square;
+		matrixShape = DistMatCheckResult::square;
 	else if (distanceMatrix[0].size() == 1 && distanceMatrix[1].size() == 2 )
-		matrixShape = CGraph_DistMatCheckResult::lowerTriangular;
+		matrixShape = DistMatCheckResult::lowerTriangular;
 	else if (distanceMatrix[0].size() == m_Order && distanceMatrix[1].size() == m_Order - 1)
-		matrixShape = CGraph_DistMatCheckResult::upperTriangular;
+		matrixShape = DistMatCheckResult::upperTriangular;
 	else
-		return CGraph_DistMatCheckResult::badShape;
+		return DistMatCheckResult::badShape;
 
 	// Check rest of matrix agrees with this shape
 	for (unsigned int i = 0; i < m_Order; ++i)
 	{
 		if (distanceMatrix[i].size() > max_unsignedInt)
-			return CGraph_DistMatCheckResult::tooLarge;
+			return DistMatCheckResult::tooLarge;
 
 		unsigned int rowLength = distanceMatrix[i].size();
-		if (matrixShape == CGraph_DistMatCheckResult::square && rowLength != m_Order)
-			return CGraph_DistMatCheckResult::badShape;
-		else if (matrixShape == CGraph_DistMatCheckResult::lowerTriangular && i > 0
+		if (matrixShape == DistMatCheckResult::square && rowLength != m_Order)
+			return DistMatCheckResult::badShape;
+		else if (matrixShape == DistMatCheckResult::lowerTriangular && i > 0
 				&& rowLength != distanceMatrix[i-1].size() + 1)
-			return CGraph_DistMatCheckResult::badShape;
-		else if (matrixShape == CGraph_DistMatCheckResult::upperTriangular && i > 0
+			return DistMatCheckResult::badShape;
+		else if (matrixShape == DistMatCheckResult::upperTriangular && i > 0
 				&& rowLength != distanceMatrix[i-1].size() - 1)
-			return CGraph_DistMatCheckResult::badShape;
+			return DistMatCheckResult::badShape;
 	}
-	if (matrixShape == CGraph_DistMatCheckResult::undefined)
+	if (matrixShape == DistMatCheckResult::undefined)
 		throw InternalException("Code broken internally. Variable matrixShape was not changed from undefined.");
 
 	// Check elements are valid
@@ -524,7 +524,7 @@ CGraph_DistMatCheckResult CGraph::CheckInput_DistMat(const vector<vector<double>
 		for (unsigned int j = 0; j < distanceMatrix[i].size(); ++j)
 		{
 			if (distanceMatrix[i][j] < 0 && distanceMatrix[i][j] != -1)
-				return CGraph_DistMatCheckResult::invalidElements;
+				return DistMatCheckResult::invalidElements;
 		}
 	}
 

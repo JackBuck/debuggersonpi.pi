@@ -78,6 +78,7 @@ void CMazeMapper::ComputeNextVertex(const CMap& currentMap, const int& currentVe
  * This function analyses a map and computes a vector of vertices to explore.
  *
  * A vertex is added to the vector if it joins a room of unknown type to a room with known type.
+ *
  * BE WARNED -- Vertices added need not be in the same connected component as the robot! Indeed,
  *    this will occur if two rooms of CMap of known type are not joined by rooms of known type. For
  *    example, if we add the types of the start and end rooms (to prevent the robot from exploring
@@ -89,6 +90,10 @@ void CMazeMapper::ComputeNextVertex(const CMap& currentMap, const int& currentVe
  *
  * INPUTS:
  * newMap - This should be a CMap from which to compute the next vertices to explore.
+ *
+ * MEMBER VARIABLES SET:
+ * m_vertsToExplore - This is updated with a list of all vertices which join a room of unknown type
+ * 	to a room of known type.
  *
  */
 void CMazeMapper::AnalyseMap(const CMap& newMap)

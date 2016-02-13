@@ -77,6 +77,16 @@ void CMazeMapper::ComputeNextVertex(const CMap& currentMap, const int& currentVe
 /* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function analyses a map and computes a vector of vertices to explore.
  *
+ * A vertex is added to the vector if it joins a room of unknown type to a room with known type.
+ * BE WARNED -- Vertices added need not be in the same connected component as the robot! Indeed,
+ *    this will occur if two rooms of CMap of known type are not joined by rooms of known type. For
+ *    example, if we add the types of the start and end rooms (to prevent the robot from exploring
+ *    them and getting lost over the white spot) then they will initially be unconnected.
+ *
+ * IMPORTANT -- The rooms in the maze which lead to the entrance and exit from the maze should be
+ *    passed with known type. If a room at the edge of the maze leads out of the maze then overflow
+ *    exceptions will occur.
+ *
  * INPUTS:
  * newMap - This should be a CMap from which to compute the next vertices to explore.
  *
@@ -85,7 +95,7 @@ void CMazeMapper::AnalyseMap(const CMap& newMap)
 {
 	m_vertsToExplore.clear();
 
-	vector<vector<ERoom> > roomMap = newMap.GetRoomMap(); // TODO: For some reason the compiler doesn't think this is a vector of vectors of ERooms...
+	vector<vector<ERoom> > roomMap = newMap.GetRoomMap();
 
 	for (unsigned int i = 0; i < roomMap.size(); ++i)
 	{
@@ -97,28 +107,28 @@ void CMazeMapper::AnalyseMap(const CMap& newMap)
 				vector<int> roomExits = CMap::GetRoomVertices(roomMap[i][j]);
 
 				// Check room above
-				if (roomExits[0] == 1 && roomMap[i-1][j] == ERoom_Unknown)
+				if (roomExits[0] == 1 && roomMap.at(i-1)[j] == ERoom_Unknown)
 				{
 					int vertAbove = 0; // TODO: Compute this properly -- use a static method in CMap?
 					m_vertsToExplore.push_back(vertAbove);
 				}
 
 				// Check room to the right
-				if (roomExits[1] == 1 && roomMap[i][j+1] == ERoom_Unknown)
+				if (roomExits[1] == 1 && roomMap[i].at(j+1) == ERoom_Unknown)
 				{
 					int vertToRight = 0; // TODO: Compute this properly -- use a static method in CMap?
 					m_vertsToExplore.push_back(vertToRight);
 				}
 
 				// Check room below
-				if (roomExits[2] == 1 && roomMap[i+1][j] == ERoom_Unknown)
+				if (roomExits[2] == 1 && roomMap.at(i+1)[j] == ERoom_Unknown)
 				{
 					int vertBelow = 0; // TODO: Compute this properly -- use a static method in CMap?
 					m_vertsToExplore.push_back(vertBelow);
 				}
 
 				// Check room to left
-				if (roomExits[3] == 1 && roomMap[i][j-1] == ERoom_Unknown)
+				if (roomExits[3] == 1 && roomMap[i].at(j-1) == ERoom_Unknown)
 				{
 					int vertToLeft = 0; // TODO: Compute this properly -- use a static method in CMap?
 					m_vertsToExplore.push_back(vertToLeft);

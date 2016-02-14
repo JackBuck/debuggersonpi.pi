@@ -51,7 +51,6 @@ public:
 	// === Constructors and Destructors =============================================================
 	CBlockReader();
 	CBlockReader(const std::string imagePath);
-	virtual ~CBlockReader();
 
 	// === Public Functions =========================================================================
 	int CountSpots();

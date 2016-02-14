@@ -42,17 +42,23 @@ CMazeMapper::CMazeMapper(const CMap* pMaze)
  */
 bool CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& outputRoute)
 {
+	// Generate graph from the CMap
+	// TODO: Fix this when you now how you will generate the graph / receive the map
+	vector< vector<double> > distanceMatrix;
+	vector<int> vertexLabels;
+	CGraph currentGraph { distanceMatrix, vertexLabels };
+
 	// Check there remain vertices to explore
 	if (m_vertsToExplore.size() > 0)
 		return false;
 
 	// Find closest of the vertices left to explore
 	int nextVertex { m_vertsToExplore[0] };
-	double currentFastestDist = m_currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[0], true, outputRoute);
+	double currentFastestDist = currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[0], true, outputRoute);
 	for (unsigned int i = 1; i < m_vertsToExplore.size(); ++i)
 	{
 		vector<int> newOutputRoute;
-		double newDist = m_currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[i], true, newOutputRoute);
+		double newDist = currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[i], true, newOutputRoute);
 
 		if (newDist < currentFastestDist)
 		{
@@ -89,13 +95,6 @@ void CMazeMapper::Update(const CMap* pNewMap)
 	if (pNewMap)
 	{
 		m_pCurrentMap = pNewMap;
-
-		// Generate graph from the maze
-		// TODO: Fix this when you now how you will generate the graph / receive the map
-		// TODO: Maybe move this to the ComputeNextVertex routine? => one less member variable! (since you now need to keep a copy of the CMap anyway...)
-		vector< vector<double> > distanceMatrix;
-		vector<int> vertexLabels;
-		m_currentGraph = CGraph { distanceMatrix, vertexLabels };
 
 		// Update list of vertices to explore
 		FindVertsToExplore();

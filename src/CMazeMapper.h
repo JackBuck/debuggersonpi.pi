@@ -33,7 +33,6 @@ public:
 private:
 	// === Member Variables =========================================================================
 	std::vector<int> m_vertsToExplore;
-	CGraph m_currentGraph;
 	const CMap* m_pCurrentMap;
 
 	// === Private Functions ========================================================================

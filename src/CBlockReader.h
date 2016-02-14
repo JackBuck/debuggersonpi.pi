@@ -63,14 +63,8 @@ public:
 	void SetExpectedSpotDistances(const std::vector<std::string>& fileNames) const;
 
 	// === Exceptions ===============================================================================
-	struct InputImagePath_BadFilePath
-	{
-		std::string mm_ImagePath;
-		InputImagePath_BadFilePath(std::string imagePath)
-				: mm_ImagePath { imagePath }
-		{
-		}
-	};
+	struct Exception_InputImagePath_BadFilePath;
+
 
 private:
 	// === Private Functions ========================================================================
@@ -84,8 +78,8 @@ private:
 
 	// === Private Static Data ======================================================================
 	// TODO: Learn how to do filenames portably so that it will run on Windows machines...
-	static constexpr std::string imgExampleFolder = "/Data/SpotImageExamples/"; // In unix it is safe to concatenate filenames with two slashes :D
-	static constexpr std::string expectedSpotDistancesFile = "/Data/Calibration/ExpectedSpotDistances.csv";
+	static const std::string imgExampleFolder;
+	static const std::string expectedSpotDistancesFile;
 
 	// === Member classes ===========================================================================
 	class CompareByAngleThenRadius
@@ -99,5 +93,23 @@ private:
 	};
 
 };
+
+// ~~~ EXCEPTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+struct 	CBlockReader::Exception_InputImagePath_BadFilePath
+{
+	std::vector<std::string> m_ImagePaths;
+
+	Exception_InputImagePath_BadFilePath(std::string imagePath)
+			: m_ImagePaths { std::vector<std::string> { imagePath } }
+	{
+	}
+
+	Exception_InputImagePath_BadFilePath(std::vector<std::string> imagePaths)
+			: m_ImagePaths { imagePaths }
+	{
+	}
+
+};
+
 
 #endif /* SRC_CBLOCKREADER_H_ */

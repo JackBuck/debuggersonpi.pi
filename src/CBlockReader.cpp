@@ -13,6 +13,12 @@
 using namespace std;
 using namespace cv;
 
+// -/-/-/-/-/-/-/ STATIC DATA INITIALISATION /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
+// ~~~ FILE / FOLDER PATHS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+const std::string CBlockReader::imgExampleFolder {"/Data/SpotImageExamples/"}; // In unix it is safe to concatenate filenames with two slashes :D
+const std::string CBlockReader::expectedSpotDistancesFile {"/Data/Calibration/ExpectedSpotDistances.csv"};
+
+
 // -/-/-/-/-/-/-/ CONSTRUCTORS AND DESTRUCTORS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (default constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Initialises m_Image and m_Spots as empty by implicit calls to their default constructors.
@@ -35,7 +41,7 @@ CBlockReader::CBlockReader(string imagePath)
 	Mat image_fullsize = imread(imagePath, IMREAD_GRAYSCALE);
 	if (image_fullsize.empty())
 	{
-		throw InputImagePath_BadFilePath { imagePath };
+		throw Exception_InputImagePath_BadFilePath { imagePath };
 	}
 	else
 	{
@@ -356,7 +362,21 @@ bool CBlockReader::CompareByAngleThenRadius::operator ()(const Point2f point1, c
  */
 void CBlockReader::SetExpectedSpotDistances(const vector<string>& fileNames) const
 {
+	if (fileNames.size() != 5)
+		throw Exception_InputImagePath_BadFilePath { fileNames };
 
+	vector<vector<double>> expectedSpotDistances;
+	for (unsigned int i = 0; i < fileNames.size(); ++i)
+	{
+		// TODO: Extract sorting and distance counting from VerifySpotArrangement.
+		/* Then...
+		 * 	Analyse file i and set m_Spots using DetectSpots
+		 * 	Compute the distances between spots using extracted function - store in expectedSpotDistances
+		 * 	Save the result to CSV using CParseCSV
+		 *
+		 */
+
+	}
 }
 
 

@@ -97,6 +97,8 @@ CMap::CMap(string filepath)
 // Initialiser for unknown map.
 CMap::CMap(int room_height, int room_width)
 {
+	m_cellMap = vector<vector<int>> (room_height * 3, vector<int>(room_width * 3));
+
 	for(int i=0; i<room_height; i++)
 	{
 		for(int j=0; j<room_width; j++)
@@ -641,7 +643,7 @@ vector<int> CMap::GetRoomVertices(ERoom room_type)
 
 int CMap::GetEntranceVertex() const
 {
-	vector<int> coord = {m_cellwidth/3, 0};
+	vector<int> coord = {m_cellwidth/3, 0}; // TODO: should be m_cellheight here? (even if it is academic when they're both equal!)
 
 	return (coord[0]+1)*(2*m_cellwidth+1) + 2*coord[1] +1;
 }
@@ -650,7 +652,7 @@ int CMap::GetExitVertex() const
 {
 	vector<int> coord = {0, m_cellwidth/3};
 
-	return (coord[0])*(2*m_cellwidth+1) + 2*coord[1] +2;
+	return (coord[0])*(2*m_cellwidth+1) + 2*coord[1] +2; // TODO: Should be +1 here? Is the exit not off the top rather than the right?
 }
 
 int CMap::GetCurrentVertex() const

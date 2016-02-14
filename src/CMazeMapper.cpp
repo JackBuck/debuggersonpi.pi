@@ -12,7 +12,8 @@
 using namespace std;
 
 /* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *
+ * This constructor initialises the CMazeMapper with the CMap pointer and calls Update method.
+ * The update method (again!) sets the pMaze pointer and then calls FindVertsToExplore.
  *
  */
 CMazeMapper::CMazeMapper(const CMap* pMaze)
@@ -42,17 +43,23 @@ CMazeMapper::CMazeMapper(const CMap* pMaze)
  */
 bool CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& outputRoute)
 {
+	// Generate graph from the CMap
+	// TODO: Fix this when you now how you will generate the graph / receive the map
+	vector< vector<double> > distanceMatrix;
+	vector<int> vertexLabels;
+	CGraph currentGraph { distanceMatrix, vertexLabels };
+
 	// Check there remain vertices to explore
 	if (m_vertsToExplore.size() > 0)
 		return false;
 
 	// Find closest of the vertices left to explore
 	int nextVertex { m_vertsToExplore[0] };
-	double currentFastestDist = m_currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[0], true, outputRoute);
+	double currentFastestDist = currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[0], true, outputRoute);
 	for (unsigned int i = 1; i < m_vertsToExplore.size(); ++i)
 	{
 		vector<int> newOutputRoute;
-		double newDist = m_currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[i], true, newOutputRoute);
+		double newDist = currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[i], true, newOutputRoute);
 
 		if (newDist < currentFastestDist)
 		{
@@ -74,14 +81,14 @@ bool CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& 
 	return true;
 }
 
-/* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function updates the CMazeMapper with the new map.
  * It will
- * 	- Generate a graph from the CMap
- * 	- Generate a list of vertices to explore from the CMap
+ * 	- Set the pointer to the CMap
+ * 	- Generate a list of vertices to explore from the CMap*
  *
  * INPUTS:
- * newMap - The new CMap object.
+ * pNewMap - The new CMap pointer.
  *
  */
 void CMazeMapper::Update(const CMap* pNewMap)
@@ -90,13 +97,6 @@ void CMazeMapper::Update(const CMap* pNewMap)
 	{
 		m_pCurrentMap = pNewMap;
 
-		// Generate graph from the maze
-		// TODO: Fix this when you now how you will generate the graph / receive the map
-		// TODO: Maybe move this to the ComputeNextVertex routine? => one less member variable! (since you now need to keep a copy of the CMap anyway...)
-		vector< vector<double> > distanceMatrix;
-		vector<int> vertexLabels;
-		m_currentGraph = CGraph { distanceMatrix, vertexLabels };
-
 		// Update list of vertices to explore
 		FindVertsToExplore();
 	}
@@ -104,7 +104,7 @@ void CMazeMapper::Update(const CMap* pNewMap)
 		throw Exception_NullPointer{};
 }
 
-/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function analyses a map and computes a vector of vertices to explore.
  *
  * A vertex is added to the vector if it joins a room of unknown type to a room with known type.
@@ -118,8 +118,6 @@ void CMazeMapper::Update(const CMap* pNewMap)
  *    passed with known type. If a room at the edge of the maze leads out of the maze then overflow
  *    exceptions will occur.
  *
- * INPUTS:
- * newMap - This should be a CMap from which to compute the next vertices to explore.
  *
  * MEMBER VARIABLES SET:
  * m_vertsToExplore - This is updated with a list of all vertices which join a room of unknown type
@@ -171,7 +169,7 @@ void CMazeMapper::FindVertsToExplore()
 	}
 }
 
-/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function computes 'scores' for vertices. It is used by the ComputeNextVertex function to
  * help to decide which vertex to visit next when there is a tie for the closest vertex.
  *

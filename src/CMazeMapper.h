@@ -16,6 +16,21 @@
 
 /* ~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This is a class to plan the route when mapping the maze in challenge two.
+ *
+ * Public Constructors:
+ *    - CMazeMapper(const CMap*) - Initialises the CMazeMapper with a CMap pointer.
+ *
+ * Public Methods:
+ *    - ComputeNextVertex(...) - A method to find the route to the next vertex to explore. Returns
+ *    	false if no more vertices need exploring.
+ *
+ *    - Update(const CMap*) - Updates the CMazeMapper with a new CMap pointer and recomputes the
+ *    	vertices to explore.
+ *
+ * Exceptions:
+ * 	- Exception_NullPointer - Thrown when a null pointer is passed either to the constructor or to
+ * 		the Update method.
+ *
  */
 class CMazeMapper
 {
@@ -33,7 +48,6 @@ public:
 private:
 	// === Member Variables =========================================================================
 	std::vector<int> m_vertsToExplore;
-	CGraph m_currentGraph;
 	const CMap* m_pCurrentMap;
 
 	// === Private Functions ========================================================================

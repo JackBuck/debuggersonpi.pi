@@ -195,7 +195,6 @@ bool CBlockReader::VerifySpotArrangement() const
 		{
 			for (unsigned int j = 0; j < m_Spots.size(); ++j)
 			{
-				// TODO: Check the modular arithmetic is implemented to do what I want here!!
 				match &= abs(expectedSpotDistances[(i+n) % centredSpots.size()][(j+n) % centredSpots.size()] - spotDistances[i][j]) < spotDistTol;
 			}
 		}
@@ -281,7 +280,7 @@ bool CBlockReader::ComputeBlockLocation(double& blockRelPosn_x, double& blockRel
 }
 
 // -/-/-/-/-/-/-/ HELPER FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
-/* ~~~ Struct (emulating private function) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/* ~~~ STRUCT (emulating private function) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function will compare two vectors of cv::Point2f. If one point is further round the circle
  * than the other, then it will be deemed larger. If two points are the same angle round the circle,
  * up to tolerence, then the radius will be used to sort them.
@@ -341,3 +340,24 @@ bool CBlockReader::CompareByAngleThenRadius::operator ()(const Point2f point1, c
 		return false;
 
 }
+
+/* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function (re)writes the file containing the expected distances between spots.
+ *
+ * INPUTS:
+ * fileNames - This should be a 5-element vector of strings. The ith element should contain the
+ *    filename of the ith block. The folder containing these files is specified as a static
+ *    constexpr in the class.
+ *
+ * WRITES FILES:
+ * The program writes the file containing the expected distances between spots. The location of this
+ * 	file is a static constexpr of the class.
+ *
+ */
+void CBlockReader::SetExpectedSpotDistances(const vector<string>& fileNames) const
+{
+
+}
+
+
+

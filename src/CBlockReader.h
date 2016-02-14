@@ -10,6 +10,7 @@
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <string>
+#include <vector>
 #include <opencv2/opencv.hpp>
 
 /* ~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,7 +39,10 @@
  * 		spots.
  *
  * 	ComputeBlockLocation(...) - Outputs the approximate position of the block relative to the
- * 	robot. This allows the caller to reposition the robot for a better photo.
+ * 		robot. This allows the caller to reposition the robot for a better photo.
+ *
+ * 	SetExpectedSpotDistances(...) - (Over)writes the files containing the expected distances
+ * 		between spots. Only call this if you want to rewrite what the spot arrangements look like!
  *
  * 	TakePhoto(...) - This will use the Pi's camera to take a photo. It will save the photo in the
  *			specified location, update m_Image to use this photo and reset all member variables
@@ -56,6 +60,7 @@ public:
 	int CountSpots();
 	bool ComputeBlockLocation(double& blockRelPosn_x, double& blockRelPosn_y) const;
 	bool TakePhoto(const std::string saveLocation);
+	void SetExpectedSpotDistances(const std::vector<std::string>& fileNames) const;
 
 	// === Exceptions ===============================================================================
 	struct InputImagePath_BadFilePath
@@ -76,6 +81,11 @@ private:
 	// === Member Variables =========================================================================
 	cv::Mat m_Image;
 	std::vector<cv::KeyPoint> m_Spots;
+
+	// === Private Static Data ======================================================================
+	// TODO: Learn how to do filenames portably so that it will run on Windows machines...
+	static constexpr std::string imgExampleFolder = "/Data/SpotImageExamples/"; // In unix it is safe to concatenate filenames with two slashes :D
+	static constexpr std::string expectedSpotDistancesFile = "/Data/Calibration/ExpectedSpotDistances.csv";
 
 	// === Member classes ===========================================================================
 	class CompareByAngleThenRadius

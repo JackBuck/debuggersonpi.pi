@@ -24,17 +24,18 @@ public:
 	CMazeMapper(const CMap&);
 
 	// === Public Functions =========================================================================
-	void ComputeNextVertex(const int& currentVertex, std::vector<int>& outputRoute);
+	bool ComputeNextVertex(const int& currentVertex, std::vector<int>& outputRoute);
 	void Update(const CMap& newMap);
 
 private:
 	// === Member Variables =========================================================================
 	std::vector<int> m_vertsToExplore;
 	CGraph m_currentGraph;
+	CMap m_currentMap;
 
 	// === Private Functions ========================================================================
 	void FindVertsToExplore(const CMap& newMap);
-
+	double VertexScore(int vertex);
 };
 
 #endif /* SRC_CMAZEMAPPER_H_ */

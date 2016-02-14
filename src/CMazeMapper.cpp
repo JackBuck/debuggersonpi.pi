@@ -16,7 +16,10 @@ using namespace std;
  *
  */
 CMazeMapper::CMazeMapper(const CMap& maze)
+		: m_currentMap { maze }
 {
+	// TODO: Talk to Hannah about storing a pointer to the CMap.
+	// I would like to be able to change where the pointer points, but not change what the pointer points to...
 	Update(maze);
 }
 
@@ -24,24 +27,26 @@ CMazeMapper::CMazeMapper(const CMap& maze)
  * This function computes the route to the next vertex to explore.
  *
  *	INPUTS:
- *	currentMap - A CMap object representing the best map of the maze we currently have.
  *	currentVertex - The current vertex in the maze.
  *
  *	OUTPUTS:
  *	outputRoute - This will be populated with a fastest route from the current vertex to the next
  *		vertex to explore.
  *
+ *	RETURNS:
+ *	A boolean value.
+ *	If true then there remain vertices to explore and outputRoute is outputted as above.
+ *	If false then there are no more vertices to explore and outputRoute is set to empty.
+ *
  */
-void CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& outputRoute)
+bool CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& outputRoute)
 {
-	/* Algorithm outline
-	 * - Find closest of vertices left to explore. Compute shortest routes as you go along.
-	 */
+	// Check there remain vertices to explore
+	if (m_vertsToExplore.size() > 0)
+		return false;
 
-
-
-	// Find closest of vertices left to explore
-	int nextVertex {m_vertsToExplore[0]};
+	// Find closest of the vertices left to explore
+	int nextVertex { m_vertsToExplore[0] };
 	double currentFastestDist = m_currentGraph.ShortestDistance(currentVertex, m_vertsToExplore[0], true, outputRoute);
 	for (unsigned int i = 1; i < m_vertsToExplore.size(); ++i)
 	{
@@ -54,17 +59,18 @@ void CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& 
 			outputRoute = newOutputRoute;
 			nextVertex = m_vertsToExplore[i];
 		}
-		else if (newDist == currentFastestDist //&& TODO: Fill in this condition once you know how the vertices are numbered
-				/* You could do this using the sum of the coordinates of the vertex in the maze. I.e. Coordinates would be even for room edge and odd for room middle (zero based index), so one coord. in each pair would have to be even.*/
-				)
+		else if (newDist == currentFastestDist
+				&& VertexScore(m_vertsToExplore[i]) < VertexScore(nextVertex))
 		{
 			// If there is a tie in distances, choose the one which is closest to the bottom left of the maze
+			// If this is also a tie then do not update nextVertex. This is equivalent to choosing the vertex
+			// which is closer to the top left.
 			outputRoute = newOutputRoute;
 			nextVertex = m_vertsToExplore[i];
 		}
 	}
 
-
+	return true;
 }
 
 /* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -79,8 +85,11 @@ void CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& 
  */
 void CMazeMapper::Update(const CMap& newMap)
 {
+	m_currentMap = newMap;
+
 	// Generate graph from the maze
 	// TODO: Fix this when you now how you will generate the graph / receive the map
+	// TODO: Maybe move this to the ComputeNextVertex routine? => one less member variable! (since you now need to keep a copy of the CMap anyway...)
 	vector< vector<double> > distanceMatrix;
 	vector<int> vertexLabels;
 	m_currentGraph = CGraph { distanceMatrix, vertexLabels };
@@ -156,3 +165,19 @@ void CMazeMapper::FindVertsToExplore(const CMap& newMap)
 	}
 }
 
+/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function computes 'scores' for vertices. It is used by the ComputeNextVertex function to
+ * help to decide which vertex to visit next when there is a tie for the closest vertex.
+ *
+ * The vertex score is computed by
+ *   - Giving the vertices row and column labels in (1/2)Z
+ *   - Subtracting the row label from the column label for the vertex in question
+ *
+ * NOTE: It *is* possible for two vertices to have the same number.
+ *
+ */
+double CMazeMapper::VertexScore(int vertex)
+{
+	vector<double> coord = m_currentMap.CalculateVertexCoords(vertex);
+	return coord[1] - coord[0];
+}

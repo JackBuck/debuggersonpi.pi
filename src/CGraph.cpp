@@ -15,6 +15,20 @@ using namespace std;
 
 // -/-/-/-/-/-/-/ CONSTRUCTORS AND DESTRUCTORS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This is a default constructor for the CGraph.
+ * It will initialise the graph as an empty graph.
+ *
+ * NOTE: InternalToExternal and ExternalToInternal will throw out_of_range exceptions if called
+ *    since there are no vertices on the graph. Consequently any public functions which cannot cope
+ *    with this (such as ShortestDistance) will also throw exceptions (though in the case of
+ *    shortestDistance this is converted to an ShortestDistance_InvalidVertex exception).
+ */
+CGraph::CGraph()
+{
+	// Default initialisations of member variables as 0 and empty containers does exactly this!
+}
+
+/* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function is a constructor for the CGraph class. It takes inputs for the distance matrix and
  * external labels for the vertices.
  * distanceMatrix[i][j] should be: - the distance from vertex i to vertex j.
@@ -34,7 +48,7 @@ using namespace std;
  *
  */
 CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>& vertexLabels)
-		: m_Order { (unsigned int)distanceMatrix.size() }, m_InternalToExternal { vertexLabels }
+		: m_Order { distanceMatrix.size() }, m_InternalToExternal { vertexLabels }
 {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//// Check Inputs ////

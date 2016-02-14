@@ -24,16 +24,17 @@ class CManouvre
 public:
 
 	static void InstructionToManouvre(EInstruction instruction_type);
+
 	static void MoveToStartVertex();
 	static void ExitMap();
+	static int ApproachAndPhotographBlock();
+	static void CollectBlock();
+	static void ReleaseBlock();
+	static void ReverseAndUTurn();
+
 	static void StraightAcrossRoom();
 	static void TurnLeftInRoom();
 	static void TurnRightInRoom();
-	static int ApproachAndPhotographBlock();
-	static void ApproachBlock();
-	static void CollectBlock();
-	static void ReleaseBlock();
-	static void MakeReadyToReEnter();
 };
 
 

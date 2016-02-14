@@ -68,7 +68,7 @@ int CGraph_test()
 			{                          0 }
 	};
 
-	vector<unsigned int> externalLabelling { 7, 1, 2, 3, 4, 5, 6 };
+	vector<int> externalLabelling { 7, 1, 2, 3, 4, 5, 6 };
 	CGraph exampleGraph { exampleGraph_DistMat, externalLabelling };
 	CGraph exampleGraph_LT { exampleGraph_DistMat_LT, externalLabelling };
 	CGraph exampleGraph_UT { exampleGraph_DistMat_UT, externalLabelling };
@@ -76,10 +76,10 @@ int CGraph_test()
 
 	// 2 - Define hand computed result of Dijkstra manually
 	// TODO: Load these test cases from a file? As well as the above distance matrix?
-	vector<unsigned int> startVertices        { 7, 7, 7, 3, 3, 7 };
-	vector<unsigned int> endVertices          { 7, 3, 5, 7, 6, 3 };
+	vector<int> startVertices                 { 7, 7, 7, 3, 3, 7 };
+	vector<int> endVertices                   { 7, 3, 5, 7, 6, 3 };
 	vector<double> expected_shortestDistances { 0, 3, 3, 3, 1, 3 };
-	vector<vector<unsigned int> > expected_outputRoutes {
+	vector<vector<int> > expected_outputRoutes {
 			{ 7 },
 			{ 7, 1, 2, 3 },
 			{ 7, 1, 2, 6, 5 },
@@ -93,14 +93,14 @@ int CGraph_test()
 	vector<double> shortestDistances(numTestCases);
 	vector<double> shortestDistances_LT(numTestCases);
 	vector<double> shortestDistances_UT(numTestCases);
-	vector<vector<unsigned int> > outputRoutes(numTestCases);
-	vector<vector<unsigned int> > outputRoutes_LT(numTestCases);
-	vector<vector<unsigned int> > outputRoutes_UT(numTestCases);
+	vector<vector<int> > outputRoutes(numTestCases);
+	vector<vector<int> > outputRoutes_LT(numTestCases);
+	vector<vector<int> > outputRoutes_UT(numTestCases);
 	for (int i = 0; i < numTestCases; ++i)
 	{
-		exampleGraph.ShortestDistance(startVertices[i], endVertices[i], shortestDistances[i], outputRoutes[i]);
-		exampleGraph_LT.ShortestDistance(startVertices[i], endVertices[i], shortestDistances_LT[i], outputRoutes_LT[i]);
-		exampleGraph_UT.ShortestDistance(startVertices[i], endVertices[i], shortestDistances_UT[i], outputRoutes_UT[i]);
+		shortestDistances[i] = exampleGraph.ShortestDistance(startVertices[i], endVertices[i], outputRoutes[i]);
+		shortestDistances_LT[i] = exampleGraph_LT.ShortestDistance(startVertices[i], endVertices[i], outputRoutes_LT[i]);
+		shortestDistances_UT[i] = exampleGraph_UT.ShortestDistance(startVertices[i], endVertices[i], outputRoutes_UT[i]);
 	}
 
 	// 4 - Compare output with expected output
@@ -224,4 +224,132 @@ int CGraph_test()
 		cout << "\nFailure!\n";
 		return 1;
 	}
+}
+
+int CGraph_test2()
+{
+	// 1 - Define example of a graph manually
+	// The last two vertices form a second connected component.
+	vector<vector<double> > exampleGraph_DistMat {
+			{  0,  1,  3, -1, -1, -1, -1, -1, -1 },
+			{  1,  0,  1,  4, -1, -1, -1, -1, -1 },
+			{  3,  1,  0,  1,  1, -1,  0, -1, -1 },
+			{ -1,  4,  1,  0,  1,  1, -1, -1, -1 },
+			{ -1, -1,  1,  1,  0, -1, -1, -1, -1 },
+			{ -1, -1, -1,  1, -1,  0,  1, -1, -1 },
+			{ -1, -1,  0, -1, -1,  1,  0, -1, -1 },
+			{ -1, -1, -1, -1, -1, -1, -1,  0,  1 },
+			{ -1, -1, -1, -1, -1, -1, -1,  1,  0 }
+	};
+
+	vector<int> externalLabelling { -1, 1, 2, 3, 4, 5, 6, 7, 8 };
+	CGraph exampleGraph { exampleGraph_DistMat, externalLabelling };
+
+	// 2 - Define the expected result of Dijkstra manually
+	vector<int> startVertices                 { -1, -1, -1,  3,  3, -1,  7,  7 };
+	vector<int> endVertices                   { -1,  3,  5, -1,  6,  3,  8,  1 };
+	vector<double> expected_shortestDistances {  0,  3,  3,  3,  1,  3,  1, -1 };
+	vector<vector<int> > expected_outputRoutes {
+			{ -1 },
+			{ -1,  1,  2,  3 },
+			{ -1,  1,  2,  6,  5 },
+			{  3,  2,  1, -1 },
+			{  3,  2,  6 },
+			{ -1,  1,  2,  3 },
+			{  7,  8 },
+			{ }
+	};
+	int numTestCases = startVertices.size();
+
+	// 3 - Call Dijkstra function in CGraph class
+	vector<double> shortestDistances(numTestCases);
+	vector<vector<int> > outputRoutes(numTestCases);
+	for (int i = 0; i < numTestCases; ++i)
+	{
+		shortestDistances[i] = exampleGraph.ShortestDistance(startVertices[i], endVertices[i], outputRoutes[i]);
+	}
+
+	// 4 - Compare output with expected output
+	bool success = true;
+	if (expected_outputRoutes != outputRoutes)
+		success = false;
+	if (expected_shortestDistances != shortestDistances)
+		success = false;
+
+	// -Display output-
+	cout << "--CGraph_test2--\n\n";
+
+	const int colWidth_startVertex      = 12;
+	const int colWidth_endVertex        = 10;
+	const int colWidth_shortestDistance = 17;
+	const string columnSeparator = "   ";
+
+	// Column headers
+	printElement("Start Vertex", colWidth_startVertex);
+	cout << columnSeparator;
+	printElement("End Vertex", colWidth_endVertex);
+	cout << columnSeparator;
+	printElement("Shortest Distance", colWidth_shortestDistance);
+	cout << columnSeparator;
+	cout << "Output Routes" << '\n';
+
+	// Table contents
+	for (int i = 0; i < numTestCases; ++i)
+	{
+		printElement(startVertices[i], colWidth_startVertex);
+		cout << columnSeparator;
+		printElement(endVertices[i], colWidth_endVertex);
+		cout << columnSeparator;
+		printElement(shortestDistances[i], colWidth_shortestDistance);
+		cout << columnSeparator;
+		for (int j = 0; j < (int) outputRoutes[i].size(); ++j)
+			cout << outputRoutes[i][j] << ' ';
+		cout << " (";
+		for (int j = 0; j < (int) expected_outputRoutes[i].size() - 1; ++j)
+			cout << expected_outputRoutes[i][j] << ' ';
+		if (expected_outputRoutes[i].size() > 0)
+			cout << expected_outputRoutes[i].back();
+		cout << ')' << endl;
+	}
+	cout << endl;
+
+	// Return success or failure
+	if (success)
+	{
+		cout << "\nSuccess!\n";
+		return 0;
+	}
+	else
+	{
+		cout << "\nFailure!\n";
+		return 1;
+	}
+
+}
+
+int CGraph_test3()
+{
+	// Test ShortestDistance with a singleton graph
+	vector<vector<double> > exampleGraph_DistMat {
+		{ 0 }
+	};
+
+	vector<int> externalLabelling { 1 };
+	CGraph exampleGraph { exampleGraph_DistMat, externalLabelling };
+
+	vector<int> outputRoute;
+	double shortestDistance = exampleGraph.ShortestDistance(1, 1, outputRoute);
+
+	cout << "--CGraph_test3--" << endl;
+	if (shortestDistance == 0 && outputRoute.size() == 1 && outputRoute[0] == 1)
+	{
+		cout << "\nSuccess!\n";
+		return 0;
+	}
+	else
+	{
+		cout << "\nFailure!\n";
+		return 1;
+	}
+
 }

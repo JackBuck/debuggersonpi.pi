@@ -9,44 +9,12 @@
 
 
 
-
 //~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#include "EnumsHeader.h"
+#include "Instructions.h"
 #include<vector>
 #include<string>
-
-
-// ~~~ DEFINITIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-enum ERoom
-{
-	ERoom_Empty,
-	ERoom_Cross,
-	ERoom_NorthSouth,
-	ERoom_EastWest,
-	ERoom_EastSouthWest,
-	ERoom_NorthSouthWest,
-	ERoom_NorthEastWest,
-	ERoom_NorthEastSouth,
-	ERoom_NorthWest,
-	ERoom_NorthEast,
-	ERoom_EastSouth,
-	ERoom_SouthWest,
-	ERoom_North,
-	ERoom_East,
-	ERoom_South,
-	ERoom_West
-};
-
-enum EInstruction
-{
-	EInstruction_Stop,
-	EInstruction_Start,
-	EInstruction_Straight,
-	EInstruction_TurnLeft,
-	EInstruction_TurnRight,
-	EInstruction_LAST
-};
 
 //~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class CMap
@@ -54,35 +22,67 @@ class CMap
 	// === Constructors and Destructors =============================================================
 public:
 	CMap(std::string filepath);
-	CMap(std::vector<std::vector<int>> inputMap, int start, int finish);
+	CMap(int room_height, int room_width);
+
 	// === Member Variables =========================================================================
 private:
 	std::vector<std::vector<int>> m_cellMap;
-	int m_start;
-	int m_finish;
-	int m_height;
-	int m_width;
-	std::vector<std::vector<ERoom>> m_roomMap;
-	std::vector<int[2]> m_currentPath;
-	int m_pathLocation;
+	std::vector<std::vector<ERoom> > m_roomMap;
+	int m_cellheight;
+	int m_cellwidth;
+	int m_firstRoom;
+	int m_exitRoom;
+	std::vector<int> m_entranceCell;
+	std::vector<int> m_exitCell;
+
+	// === Location Tracking ==========================================================================
+
+	int m_currentRoom;
+	int m_currentVertex;
+	EOrientation m_currentOrientation;
+
+
+	// === Accessor Functions =========================================================================
+public:
+	std::vector<std::vector<ERoom>>	GetRoomMap() const;
+	ERoom GetRoomType(int room_index) const;
+	std::vector<std::vector<int>> GetCellMap() const;
+	int GetEntranceRoom() const;
+	int GetExitRoom() const;
+	std::vector<int> GetEntranceCell() const;
+	std::vector<int> GetExitCell() const;
+	static std::vector<int> GetRoomVertices(ERoom room_type);
+	int GetEntranceVertex() const;
+	int GetExitVertex() const;
+
+	int GetCurrentVertex() const;
+	int GetCurrentRoom() const;
+
+	void SetCurrentRoom(int new_room);
+	void SetCurrentVertex(int new_vertex);
+
 
 
 	// === Public Functions =========================================================================
-public:
-	std::vector<std::vector<ERoom>>	GetRoomMap();
-
-	std::vector<std::vector<int>> GetCellMap();
 
 	void UpdateRoomMap();
-
 	void UpdateCellMap();
+	void CalculateBlockRooms(std::vector<int> *pBlockRooms) const;
+	std::vector<int> CalculateRoomVertices(int room_index) const;
+	std::vector<int> CalculateRoomVertices(int row, int col) const;
+	std::vector<double> CalculateVertexCoords(int vertex) const;
+	void FollowInstructions(CInstructions &inputInstructions);
+
+
 
 	// === Private Functions ========================================================================
 private:
 	void CreateRoomMap();
 	void ComputeCellMapSize();
+	std::vector<int> CalculateRoomVertices(std::vector<int> coord) const;
+	std::vector<int> RoomIndextoCoord(int room_index) const;
+	
 };
-
 
 
 #endif /* SRC_CMap_H_ */

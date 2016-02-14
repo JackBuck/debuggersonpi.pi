@@ -15,12 +15,13 @@ using namespace std;
  *
  *
  */
-CMazeMapper::CMazeMapper(const CMap& maze)
-		: m_currentMap { maze }
+CMazeMapper::CMazeMapper(const CMap* pMaze)
+		: m_pCurrentMap { pMaze }
 {
-	// TODO: Talk to Hannah about storing a pointer to the CMap.
-	// I would like to be able to change where the pointer points, but not change what the pointer points to...
-	Update(maze);
+	if (pMaze)
+		Update(pMaze);
+	else
+		throw Exception_NullPointer{};
 }
 
 /* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,19 +84,24 @@ bool CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& 
  * newMap - The new CMap object.
  *
  */
-void CMazeMapper::Update(const CMap& newMap)
+void CMazeMapper::Update(const CMap* pNewMap)
 {
-	m_currentMap = newMap;
+	if (pNewMap)
+	{
+		m_pCurrentMap = pNewMap;
 
-	// Generate graph from the maze
-	// TODO: Fix this when you now how you will generate the graph / receive the map
-	// TODO: Maybe move this to the ComputeNextVertex routine? => one less member variable! (since you now need to keep a copy of the CMap anyway...)
-	vector< vector<double> > distanceMatrix;
-	vector<int> vertexLabels;
-	m_currentGraph = CGraph { distanceMatrix, vertexLabels };
+		// Generate graph from the maze
+		// TODO: Fix this when you now how you will generate the graph / receive the map
+		// TODO: Maybe move this to the ComputeNextVertex routine? => one less member variable! (since you now need to keep a copy of the CMap anyway...)
+		vector< vector<double> > distanceMatrix;
+		vector<int> vertexLabels;
+		m_currentGraph = CGraph { distanceMatrix, vertexLabels };
 
-	// Update list of vertices to explore
-	FindVertsToExplore(newMap);
+		// Update list of vertices to explore
+		FindVertsToExplore();
+	}
+	else
+		throw Exception_NullPointer{};
 }
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -120,11 +126,11 @@ void CMazeMapper::Update(const CMap& newMap)
  * 	to a room of known type.
  *
  */
-void CMazeMapper::FindVertsToExplore(const CMap& newMap)
+void CMazeMapper::FindVertsToExplore()
 {
 	m_vertsToExplore.clear();
 
-	vector<vector<ERoom> > roomMap = newMap.GetRoomMap();
+	vector<vector<ERoom> > roomMap = m_pCurrentMap->GetRoomMap();
 
 	for (unsigned int i = 0; i < roomMap.size(); ++i)
 	{
@@ -134,7 +140,7 @@ void CMazeMapper::FindVertsToExplore(const CMap& newMap)
 			{
 				// Check if it leads into any unknown rooms
 				vector<int> roomExits = CMap::GetRoomVertices(roomMap[i][j]);
-				vector<int> roomVertexLabels = newMap.CalculateRoomVertices(i, j);
+				vector<int> roomVertexLabels = m_pCurrentMap->CalculateRoomVertices(i, j);
 
 				// Check room above
 				if (roomExits[0] == 1 && roomMap.at(i-1)[j] == ERoom_Unknown)
@@ -178,6 +184,6 @@ void CMazeMapper::FindVertsToExplore(const CMap& newMap)
  */
 double CMazeMapper::VertexScore(int vertex)
 {
-	vector<double> coord = m_currentMap.CalculateVertexCoords(vertex);
+	vector<double> coord = m_pCurrentMap->CalculateVertexCoords(vertex);
 	return coord[1] - coord[0];
 }

@@ -21,20 +21,23 @@ class CMazeMapper
 {
 public:
 	// === Constructor and Destructors ==============================================================
-	CMazeMapper(const CMap&);
+	CMazeMapper(const CMap*);
 
 	// === Public Functions =========================================================================
 	bool ComputeNextVertex(const int& currentVertex, std::vector<int>& outputRoute);
-	void Update(const CMap& newMap);
+	void Update(const CMap* newMap);
+
+	// === Exceptions ===============================================================================
+	struct Exception_NullPointer {};
 
 private:
 	// === Member Variables =========================================================================
 	std::vector<int> m_vertsToExplore;
 	CGraph m_currentGraph;
-	CMap m_currentMap;
+	const CMap* m_pCurrentMap;
 
 	// === Private Functions ========================================================================
-	void FindVertsToExplore(const CMap& newMap);
+	void FindVertsToExplore();
 	double VertexScore(int vertex);
 };
 

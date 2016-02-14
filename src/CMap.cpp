@@ -12,6 +12,7 @@
 #include<iostream>
 #include<fstream>
 #include "EnumsHeader.h"
+#include "DebugLog.hpp"
 #include "CMap.h"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,6 +27,8 @@ int ENTRANCEPORCHROOM = -1;
 // and from this creates an instance of the class.
 CMap::CMap(string filepath)
 {
+	DEBUG_METHOD();
+
 	ifstream myReadFile;
 	myReadFile.open(filepath);
 
@@ -96,6 +99,8 @@ CMap::CMap(string filepath)
 // Initialiser for unknown map.
 CMap::CMap(int room_height, int room_width)
 {
+	DEBUG_METHOD();
+
 	for(int i=0; i<room_height; i++)
 	{
 		for(int j=0; j<room_width; j++)
@@ -118,6 +123,8 @@ CMap::CMap(int room_height, int room_width)
 // This function creates the room map from a cell map.
 void CMap::CreateRoomMap()
 {
+
+	DEBUG_METHOD();
 
 	int room_height = m_cellheight/3;
 	int room_width = m_cellwidth/3;
@@ -259,6 +266,8 @@ void CMap::CreateRoomMap()
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void CMap::ComputeCellMapSize()
 {
+	DEBUG_METHOD();
+
 	m_cellheight= m_cellMap.size();
 	if(m_cellheight > 0)	m_cellwidth = m_cellMap[0].size();
 }
@@ -266,11 +275,15 @@ void CMap::ComputeCellMapSize()
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 vector<vector<ERoom>> CMap::GetRoomMap() const
 {
+	DEBUG_METHOD();
+
 	return m_roomMap;
 }
 
 ERoom CMap::GetRoomType(int room_index) const
 {
+	DEBUG_METHOD();
+
 	vector<int> coords = RoomIndextoCoord(room_index);
 	return m_roomMap[coords[0]][coords[1]];
 }
@@ -279,16 +292,22 @@ ERoom CMap::GetRoomType(int room_index) const
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 vector<vector<int>> CMap::GetCellMap() const
 {
+	DEBUG_METHOD();
+	
 	return m_cellMap;
 }
 
 int CMap::GetEntranceRoom() const
 {
+	DEBUG_METHOD();
+
 	return m_firstRoom;
 }
 
 int CMap::GetExitRoom() const
 {
+	DEBUG_METHOD();
+	
 	return m_exitRoom;
 }
 
@@ -433,17 +452,6 @@ void CMap::UpdateCellMap()
 					break;
 				}
 			}
-
-			for (unsigned int i = 0; i<m_cellMap.size(); i++)
-			{
-				for (unsigned int j = 0; j<m_cellMap[i].size(); j++)
-				{
-					cout << m_cellMap[i][j];
-				}
-				cout << endl;
-				
-			}
-			cout << endl;
 		}
 	}
 }

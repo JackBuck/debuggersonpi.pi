@@ -23,6 +23,7 @@ int LOCATION_UNKNOWN = -1;
 // Basic outline of challenge 1 I am not sure how the interupts will work exactly.
 void CChallenges::ChallengeOne()
 {
+
 	CSignals::Start();
 
 	bool interrupt = false;

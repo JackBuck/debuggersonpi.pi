@@ -4,13 +4,15 @@
 
 int CMap_test()
 {
-	std::string filepath = "TestData/5x5testmap1.txt";
+	std::string filepath = "5x5testmap1.txt";
 	CMap Maze(filepath);
 
 	std::ofstream myfile;
-	myfile.open("TestData/example.txt", std::fstream::out);
+	myfile.open("example.txt", std::fstream::out);
 	if (myfile.is_open())
 	{
+		std::cout << "--CMap_test--\n\n";
+
 		std::vector<std::vector<ERoom>> roomMap = Maze.GetRoomMap();
 
 		Maze.UpdateCellMap();

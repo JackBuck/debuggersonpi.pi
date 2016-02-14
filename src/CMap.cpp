@@ -11,6 +11,7 @@
 #include "Manouvre.h"
 #include<iostream>
 #include<fstream>
+#include <cmath>
 #include "EnumsHeader.h"
 #include "CMap.h"
 
@@ -507,6 +508,38 @@ vector<int> CMap::CalculateRoomVertices(vector<int> coord) const
 	return roomVertices;
 }
 
+/* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function calculates coordinates for a given vertex.
+ *
+ * The coordinate of a vertex is derived from the (row,column) 'coordinates' in the room map.
+ *
+ * The vertex above a room has the same row as that room.
+ * It will necessarily be in the middle of the room as far as columns are concerned, and is given
+ * column index 0.5 greater than its adjacent rooms.
+ *
+ * The vertex to the left of a room has the same column as that room.
+ * It will necessarily be in the middle of the room as far as rows are concerned, and is given row
+ * index 0.5 greater than its adjacent rooms.
+ *
+ * INPUTS:
+ * vertex - The vertex linear index. This MUST be non-negative (since the C++ integer arithmetic
+ * 	doesn't do what you'd expect for negative numbers!)
+ *
+ * RETURNS:
+ * A two element vector containing the row and column indices of the vector (in that order).
+ *
+ */
+vector<double> CMap::CalculateVertexCoords(int vertex) const
+{
+	int roomWidth = m_cellwidth / 3;
+
+	double row = floor(vertex / (2*roomWidth+1));
+	double col = ( vertex % (2*roomWidth+1) ) / 2.0;
+
+	row += 0.5 * ( 1 - (vertex % (2*roomWidth+1)) % 2 );
+
+	return vector<double> { row, col };
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // This functions take a Room Enum and returns the vertices of the room in a vector with 1 for vertex
@@ -671,6 +704,6 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 	}
 
 
+	
 }
-
 

@@ -70,6 +70,7 @@ public:
 	void CalculateBlockRooms(std::vector<int> *pBlockRooms) const;
 	std::vector<int> CalculateRoomVertices(int room_index) const;
 	std::vector<int> CalculateRoomVertices(int row, int col) const;
+	std::vector<double> CalculateVertexCoords(int vertex) const;
 	void FollowInstructions(CInstructions &inputInstructions);
 
 

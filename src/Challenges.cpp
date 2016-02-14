@@ -363,7 +363,7 @@ void CChallenges::ChallengeFour()
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		// Remove the current room from the list of unknown rooms as we have just discovered which 
 		// block is there.
-		if(unknown_block_rooms[i] = current_room) 
+		if(unknown_block_rooms[i] == current_room)
 		{
 			unknown_block_rooms.erase(unknown_block_rooms.begin() + i);
 		}

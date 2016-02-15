@@ -16,8 +16,8 @@ using namespace cv;
 
 // -/-/-/-/-/-/-/ STATIC DATA INITIALISATION /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 // ~~~ FILE / FOLDER PATHS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-const std::string CBlockReader::imgExampleFolder {"/Data/SpotImageExamples/"}; // In unix it is safe to concatenate filenames with two slashes :D
-const std::string CBlockReader::expectedSpotDistancesFile {"/Data/Calibration/ExpectedSpotDistances.csv"};
+const std::string CBlockReader::imgExampleFolder {"Data/SpotImageExamples/"}; // In unix it is safe to concatenate filenames with two slashes :D
+const std::string CBlockReader::expectedSpotDistancesFile {"Data/Calibration/ExpectedSpotDistances.csv"};
 
 
 // -/-/-/-/-/-/-/ CONSTRUCTORS AND DESTRUCTORS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/

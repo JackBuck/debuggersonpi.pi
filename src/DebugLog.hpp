@@ -1,4 +1,10 @@
+#ifndef DEBUG
 
+
+#define DEBUG_LOG_ENABLE
+#define DEBUG_SHOW_FUNCTIONS
+#define DEBUG_LOG_ENABLE_TIMING
+#define DEBUG_LOG_ENABLE_TYPE_OUTPUT
 
 #ifndef DEBUG_LOG_ENABLE
 
@@ -145,5 +151,30 @@ namespace bornander
 		}
 	}
 }
+
+class CRedirecter
+{
+public:
+	// Constructing an instance of this class causes
+	// anything written to the source stream to be redirected
+	// to the destination stream.
+	CRedirecter(std::ostream & dst, std::ostream & src)
+		: src(src)
+		, srcbuf(src.rdbuf())
+	{
+		src.rdbuf(dst.rdbuf());
+	}
+
+	// The destructor restores the original source stream buffer
+	~CRedirecter()
+	{
+		src.rdbuf(srcbuf);
+	}
+private:
+	std::ostream & src;
+	std::streambuf * const srcbuf;
+};
+
+#endif
 
 #endif

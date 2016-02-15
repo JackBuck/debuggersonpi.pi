@@ -1,6 +1,6 @@
 #include "DebugLog.hpp"
 
-#if DEBUG_LOG_ENABLE
+#ifdef DEBUG_LOG_ENABLE
 
 #include <exception>
 
@@ -17,17 +17,21 @@ namespace bornander
 			, start_time(clock())
 #endif
 		{
+#ifdef DEBUG_SHOW_FUNCTIONS
 			write_indentation();
 			*stream << "--> " << context << std::endl;
 			++indentation;
 			stream->flush();
+#endif
 		}
 
 		log::~log()
 		{
+#ifdef  DEBUG_SHOW_FUNCTIONS
 			--indentation;
 			write_indentation(std::uncaught_exception() ? '*' : ' ');
 			*stream << "<-- " << context;
+#endif
 #ifdef DEBUG_LOG_ENABLE_TIMING
 			*stream << " in " << ((double)(clock() - start_time) / CLOCKS_PER_SEC) << "s";
 #endif

@@ -16,8 +16,16 @@
  *
  */
 
+#define DEBUG_LOG_ENABLE
+#define DEBUG_LOG_SHOW_FUNCTIONS
+#define DEBUG_LOG_ENABLE_TIMING
+#define DEBUG_LOG_ENABLE_TYPE_OUTPUT
+
+
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include<iostream>
+#include<fstream>
+#include "DebugLog.hpp"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -38,6 +46,10 @@ inline void keep_window_open()
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main() {
+
+	std::ofstream log("DebuggersOnPi.log");
+	CRedirecter redirect(log, std::cout);
+
 	int result = TestAllFunctions();
 	if (!result)
 	{

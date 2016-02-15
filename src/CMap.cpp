@@ -313,11 +313,15 @@ int CMap::GetExitRoom() const
 
 vector<int> CMap::GetEntranceCell() const
 {
+	DEBUG_METHOD();
+
 	return m_entranceCell;
 }
 
 vector<int> CMap::GetExitCell() const
 {
+	DEBUG_METHOD();
+
 	return m_exitCell;
 }
 
@@ -325,6 +329,7 @@ vector<int> CMap::GetExitCell() const
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void CMap::UpdateRoomMap()
 {
+	DEBUG_METHOD();
 	CreateRoomMap();
 }
 
@@ -332,6 +337,7 @@ void CMap::UpdateRoomMap()
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void CMap::UpdateCellMap()
 {
+	DEBUG_METHOD();
 	m_cellMap.clear();
 	m_cellMap.resize(m_roomMap.size()*3);
 
@@ -457,6 +463,7 @@ void CMap::UpdateCellMap()
 }
 void CMap::CalculateBlockRooms(vector<int>* pBlockRooms) const
 {
+	DEBUG_METHOD();
 	pBlockRooms->clear();
 
 	for(int i=1; i<m_cellwidth; i+=3)
@@ -493,18 +500,21 @@ void CMap::CalculateBlockRooms(vector<int>* pBlockRooms) const
  */
 vector<int> CMap::CalculateRoomVertices(int room_index) const
 {
+	DEBUG_METHOD();
 	vector<int> coord = RoomIndextoCoord(room_index);
 	return CalculateRoomVertices(coord);
 }
 
 vector<int> CMap::CalculateRoomVertices(int row, int col) const
 {
+	DEBUG_METHOD();
 	vector<int> coord { row, col };
 	return CalculateRoomVertices(coord);
 }
 
 vector<int> CMap::CalculateRoomVertices(vector<int> coord) const
 {
+	DEBUG_METHOD();
 	vector<int> roomVertices;
 
 	roomVertices.push_back(coord[0]*(2*(m_cellwidth/3)+1) +2*coord[1] +1);  // North
@@ -522,6 +532,7 @@ vector<int> CMap::CalculateRoomVertices(vector<int> coord) const
 // North East South West.
 vector<int> CMap::GetRoomVertices(ERoom room_type)
 {
+	DEBUG_METHOD();
 	vector<int> vertex_flag;
 
 	switch (room_type)
@@ -616,6 +627,7 @@ vector<int> CMap::GetRoomVertices(ERoom room_type)
 
 int CMap::GetEntranceVertex() const
 {
+	DEBUG_METHOD();
 	vector<int> coord = {m_cellwidth/3, 0};
 
 	return (coord[0]+1)*(2*m_cellwidth+1) + 2*coord[1] +1;
@@ -623,6 +635,7 @@ int CMap::GetEntranceVertex() const
 
 int CMap::GetExitVertex() const
 {
+	DEBUG_METHOD();
 	vector<int> coord = {0, m_cellwidth/3};
 
 	return (coord[0])*(2*m_cellwidth+1) + 2*coord[1] +2;
@@ -630,26 +643,31 @@ int CMap::GetExitVertex() const
 
 int CMap::GetCurrentVertex() const
 {
+	DEBUG_METHOD();
 	return m_currentVertex;
 }
 
 int CMap::GetCurrentRoom() const
 {
+	DEBUG_METHOD();
 	return m_currentRoom;
 }
 
 void CMap::SetCurrentRoom(int new_room)
 {
+	DEBUG_METHOD();
 	m_currentRoom = new_room;
 }
 
 void CMap::SetCurrentVertex(int new_vertex)
 {
+	DEBUG_METHOD();
 	m_currentVertex = new_vertex;
 }
 
 vector<int> CMap::RoomIndextoCoord(int room_index) const
 {
+	DEBUG_METHOD();
 	int row_index = room_index/(2*m_cellwidth +1);
 	int col_index = room_index % (2*m_cellwidth +1);
 
@@ -660,6 +678,7 @@ vector<int> CMap::RoomIndextoCoord(int room_index) const
 
 void CMap::FollowInstructions(CInstructions &inputInstructions)
 {
+	DEBUG_METHOD();
 	//////////////////////////////////////////////////////////////////////////////////////
 	// Check we are at start vertex.
 

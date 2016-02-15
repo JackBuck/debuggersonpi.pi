@@ -1,9 +1,11 @@
 #include "CMap.h"
 #include<iostream>
 #include<fstream>
+#include "DebugLog.hpp"
 
 int CMap_test()
 {
+	DEBUG_METHOD();
 	std::string filepath = "5x5testmap1.txt";
 	CMap Maze(filepath);
 

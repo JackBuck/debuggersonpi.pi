@@ -120,6 +120,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\CGraph.h" />
     <ClInclude Include="..\..\src\Challenges.h" />
+    <ClInclude Include="..\..\src\CMazeMapper.h" />
     <ClInclude Include="..\..\src\CParseCSV.h" />
     <ClInclude Include="..\..\src\CSVRow.h" />
     <ClInclude Include="..\..\src\DebugLog.hpp" />
@@ -134,6 +135,8 @@
     <ClCompile Include="..\..\src\CGraph.cpp" />
     <ClCompile Include="..\..\src\CGraph_test.cpp" />
     <ClCompile Include="..\..\src\Challenges.cpp" />
+    <ClCompile Include="..\..\src\CMazeMapper.cpp" />
+    <ClCompile Include="..\..\src\CMazeMapper_test.cpp" />
     <ClCompile Include="..\..\src\CParseCSV.cpp" />
     <ClCompile Include="..\..\src\CParseCSV_test.cpp" />
     <ClCompile Include="..\..\src\CSVRow.cpp" />

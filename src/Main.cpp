@@ -16,11 +16,6 @@
  *
  */
 
-#define DEBUG_LOG_ENABLE
-#define DEBUG_LOG_SHOW_FUNCTIONS
-#define DEBUG_LOG_ENABLE_TIMING
-#define DEBUG_LOG_ENABLE_TYPE_OUTPUT
-
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include<iostream>

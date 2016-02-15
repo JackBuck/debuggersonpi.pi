@@ -8,15 +8,10 @@
 #ifndef SRC_CGRAPH_H_
 #define SRC_CGRAPH_H_
 
-#include<string>
-#include<vector>
-#include<map>
-
-/* ~~~ SIMPLE TYPES USED BY CGRAPH ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * CGraph_DistMatCheckResult defines values returnable by the function CGraph::CheckInput_DistMat(),
- * which checks the format of a supplied distance matrix.
- */
-enum class CGraph_DistMatCheckResult { undefined, square, lowerTriangular, upperTriangular, badShape, invalidElements, tooLarge};
+#include <string>
+#include <vector>
+#include <map>
+#include <iostream>
 
 /* ~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This is a class to represent the mathematical concept of a graph.
@@ -98,8 +93,8 @@ class CGraph
 {
 public:
 	// === Constructors and Destructors =============================================================
+	CGraph();
 	explicit CGraph(const std::vector<std::vector<double> >& distanceMatrix, const std::vector<int>& vertexLabels);
-	~CGraph();
 
 	// === Public Functions =========================================================================
 	// Access functions
@@ -168,10 +163,14 @@ public:
 		InternalException(std::string message)
 				: mm_message { message }
 		{
+			std::cout << message << std::endl;
 		}
 	};
 
 private:
+	// === Private Types ============================================================================
+	enum class DistMatCheckResult { undefined, square, lowerTriangular, upperTriangular, badShape, invalidElements, tooLarge };
+
 	// === Private Functions ========================================================================
 	// External look-up functions
 	int InternalToExternal(const unsigned int) const;
@@ -184,7 +183,7 @@ private:
 	unsigned int InternalDijkstra(const unsigned int& startVertex);
 
 	// Helper functions
-	CGraph_DistMatCheckResult CheckInput_DistMat(const std::vector<std::vector<double> >& distanceMatrix) const;
+	DistMatCheckResult CheckInput_DistMat(const std::vector<std::vector<double> >& distanceMatrix) const;
 
 	// === Member Variables =========================================================================
 	// Graph properties
@@ -200,7 +199,8 @@ private:
 	std::vector<std::vector<unsigned int> > m_DijkstraOutputRoutes;
 	std::vector<std::vector<double> > m_DijkstraShortestDistances;
 	std::map<unsigned int, unsigned int> m_DijkstraStartVertices;
+
 };
 
-#endif // SRC_CGRAPH_H_
+#endif /* SRC_CGRAPH_H_ */
 

@@ -1,6 +1,5 @@
 #ifndef DEBUG
 
-
 #define DEBUG_LOG_ENABLE
 #define DEBUG_SHOW_FUNCTIONS
 #define DEBUG_LOG_ENABLE_TIMING

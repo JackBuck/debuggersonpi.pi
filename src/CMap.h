@@ -27,7 +27,7 @@ public:
 	// === Member Variables =========================================================================
 private:
 	std::vector<std::vector<int>> m_cellMap;
-	std::vector<std::vector<ERoom>> m_roomMap;
+	std::vector<std::vector<ERoom> > m_roomMap;
 	int m_cellheight;
 	int m_cellwidth;
 	int m_firstRoom;
@@ -70,7 +70,10 @@ public:
 	void CalculateBlockRooms(std::vector<int> *pBlockRooms) const;
 	std::vector<int> CalculateRoomVertices(int room_index) const;
 	std::vector<int> CalculateRoomVertices(int row, int col) const;
+	std::vector<double> CalculateVertexCoords(int vertex) const;
 	void FollowInstructions(CInstructions &inputInstructions);
+
+	void WriteCellMap(std::string filepath);
 
 
 
@@ -84,4 +87,4 @@ private:
 };
 
 
-#endif SRC_CMap_H_
+#endif /* SRC_CMap_H_ */

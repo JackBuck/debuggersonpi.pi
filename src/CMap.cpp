@@ -11,9 +11,11 @@
 #include "Manouvre.h"
 #include<iostream>
 #include<fstream>
+#include <cmath>
 #include "EnumsHeader.h"
 #include "DebugLog.hpp"
 #include "CMap.h"
+#include "CParseCSV.h"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -22,6 +24,8 @@ using namespace std;
 
 int ENTRANCEPORCHROOM = -1;
 
+
+
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // This function is a constructor for the CMap Class. It takes the filepath of the raw input data
 // and from this creates an instance of the class.
@@ -29,46 +33,10 @@ CMap::CMap(string filepath)
 {
 	DEBUG_METHOD();
 
-	ifstream myReadFile;
-	myReadFile.open(filepath);
+	std::vector<std::vector<int>> m_cellMap = CParseCSV::ReadCSV_int(filepath);
 
 
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	// Check file has been correctly opened
-
-	if (myReadFile.is_open())
-	{
-		myReadFile >> m_cellwidth >> m_cellheight;
-
-		for(int i=0; i<m_cellheight; i++)
-		{ 
-
-			/////////////////////////////////////////////////////////////////////////////////////
-			// Add new vector for new row of map
-
-			int temp_int;
-			vector<int> temp_vec;
-			myReadFile >> temp_int;
-			temp_vec.push_back(temp_int);
-			m_cellMap.push_back(temp_vec);
-
-			
-
-			for(int j=1; j<m_cellwidth; j++)
-			{
-				/////////////////////////////////////////////////////////////////////////////////////
-				// Fill row of array
-
-				myReadFile >> temp_int;
-				m_cellMap[i].push_back(temp_int);
-			}
-		}
-	}
-	else
-	{
-		CSignals::Error();
-		cout << "unable to open file"; // EXCEPTION - eventually this will need to throw a proper exception
-	}
+	
 
 	CreateRoomMap();
 	ComputeCellMapSize();
@@ -100,6 +68,8 @@ CMap::CMap(string filepath)
 CMap::CMap(int room_height, int room_width)
 {
 	DEBUG_METHOD();
+
+	m_cellMap = vector<vector<int>> (room_height * 3, vector<int>(room_width * 3));
 
 	for(int i=0; i<room_height; i++)
 	{
@@ -458,9 +428,12 @@ void CMap::UpdateCellMap()
 					break;
 				}
 			}
+			
 		}
 	}
 }
+
+
 void CMap::CalculateBlockRooms(vector<int>* pBlockRooms) const
 {
 	DEBUG_METHOD();
@@ -525,6 +498,38 @@ vector<int> CMap::CalculateRoomVertices(vector<int> coord) const
 	return roomVertices;
 }
 
+/* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function calculates coordinates for a given vertex.
+ *
+ * The coordinate of a vertex is derived from the (row,column) 'coordinates' in the room map.
+ *
+ * The vertex above a room has the same row as that room.
+ * It will necessarily be in the middle of the room as far as columns are concerned, and is given
+ * column index 0.5 greater than its adjacent rooms.
+ *
+ * The vertex to the left of a room has the same column as that room.
+ * It will necessarily be in the middle of the room as far as rows are concerned, and is given row
+ * index 0.5 greater than its adjacent rooms.
+ *
+ * INPUTS:
+ * vertex - The vertex linear index. This MUST be non-negative (since the C++ integer arithmetic
+ * 	doesn't do what you'd expect for negative numbers!)
+ *
+ * RETURNS:
+ * A two element vector containing the row and column indices of the vector (in that order).
+ *
+ */
+vector<double> CMap::CalculateVertexCoords(int vertex) const
+{
+	int roomWidth = m_cellwidth / 3;
+
+	double row = floor(vertex / (2*roomWidth+1));
+	double col = ( vertex % (2*roomWidth+1) ) / 2.0;
+
+	row += 0.5 * ( 1 - (vertex % (2*roomWidth+1)) % 2 );
+
+	return vector<double> { row, col };
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // This functions take a Room Enum and returns the vertices of the room in a vector with 1 for vertex
@@ -628,7 +633,7 @@ vector<int> CMap::GetRoomVertices(ERoom room_type)
 int CMap::GetEntranceVertex() const
 {
 	DEBUG_METHOD();
-	vector<int> coord = {m_cellwidth/3, 0};
+	vector<int> coord = {m_cellwidth/3, 0}; // TODO: should be m_cellheight here? (even if it is academic when they're both equal!)
 
 	return (coord[0]+1)*(2*m_cellwidth+1) + 2*coord[1] +1;
 }
@@ -638,7 +643,7 @@ int CMap::GetExitVertex() const
 	DEBUG_METHOD();
 	vector<int> coord = {0, m_cellwidth/3};
 
-	return (coord[0])*(2*m_cellwidth+1) + 2*coord[1] +2;
+	return (coord[0])*(2*m_cellwidth+1) + 2*coord[1] +2; // TODO: Should be +1 here? Is the exit not off the top rather than the right?
 }
 
 int CMap::GetCurrentVertex() const
@@ -692,12 +697,12 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 
 	for(int i=0; i<instructionList.size(); i++)
 	{
-		CManouvre::InstructionToManouvre(instructionList[i]);
-
-		
+		CManouvre::InstructionToManouvre(instructionList[i]);	
 	}
-
-
 }
 
+void CMap::WriteCellMap(std::string filepath)
+{
+	CParseCSV::WriteCSV(m_cellMap, filepath, ios::app);
+}
 

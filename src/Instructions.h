@@ -38,5 +38,5 @@ public:
 
 
 
-#endif SRC_CINSTRUCTIONS_H_
+#endif /* SRC_CINSTRUCTIONS_H_ */
 

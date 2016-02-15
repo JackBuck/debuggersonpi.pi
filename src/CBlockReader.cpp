@@ -283,7 +283,7 @@ void CBlockReader::SetExpectedSpotDistances(const vector<string>& fileNames)
 	vector<vector<double>> expectedSpotDistances;
 	for (unsigned int i = 0; i < 5; ++i)
 	{
-		LoadImgFromFile(fileNames[i]);
+		LoadImgFromFile(imgExampleFolder+fileNames[i]);
 		DetectSpots();
 		SortAndComputeSpotDists();
 

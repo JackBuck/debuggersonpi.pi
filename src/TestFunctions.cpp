@@ -27,16 +27,16 @@ int TestAllFunctions()
 	std::cout << '\n';
 	returnVal += CGraph_test();
 	std::cout << '\n';
-//	returnVal += CGraph_test2();
-//	std::cout << '\n';
-//	returnVal += CGraph_test3();
-//	std::cout << '\n';
-//	returnVal += CParseCSV_test();
-//	std::cout << '\n';
-//	CParseCSV_test2();
-//	std::cout << '\n';
-	//returnVal += CMazeMapper_test();
+	returnVal += CGraph_test2();
 	std::cout << '\n';
+	returnVal += CGraph_test3();
+	std::cout << '\n';
+	returnVal += CParseCSV_test();
+	std::cout << '\n';
+	CParseCSV_test2();
+	std::cout << '\n';
+//	returnVal += CMazeMapper_test();
+//	std::cout << '\n';
 
 	return returnVal;
 }

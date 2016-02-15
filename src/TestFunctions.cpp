@@ -18,7 +18,8 @@ int CGraph_test3();
 int CParseCSV_test();
 void CParseCSV_test2();
 int CMazeMapper_test();
-int CImageanalysis_test();
+void CBlockReader_test();
+int CBlockReader_test2();
 
 int TestAllFunctions()
 {
@@ -38,8 +39,11 @@ int TestAllFunctions()
 //	std::cout << '\n';
 //	returnVal += CMazeMapper_test();
 //	std::cout << '\n';
-	returnVal += CImageAnalysis_test();
-	std::cout << '\n';
+CBlockReader_test();
+std::cout << '\n';
+returnVal += CBlockReader_test2();
+std::cout << '\n';
+
 
 	return returnVal;
 }

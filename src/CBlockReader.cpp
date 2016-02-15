@@ -7,6 +7,7 @@
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "CBlockReader.h"
+#include "CParseCSV.h"
 #include <cmath>
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,6 +39,22 @@ CBlockReader::CBlockReader()
  */
 CBlockReader::CBlockReader(string imagePath)
 {
+	LoadImgFromFile(imagePath);
+}
+
+
+// -/-/-/-/-/-/-/ INITIALISER FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
+/* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Initialises m_Image from a specified file.
+ *
+ * The image is resized immediately after loading.
+ * The constructor throws an exception if the image could not be loaded.
+ *
+ * INPUTS:
+ * 	imagePath - A string containing the path to an image to use to initialise the class instance.
+ */
+void CBlockReader::LoadImgFromFile(string imagePath)
+{
 	Mat image_fullsize = imread(imagePath, IMREAD_GRAYSCALE);
 	if (image_fullsize.empty())
 	{
@@ -50,7 +67,6 @@ CBlockReader::CBlockReader(string imagePath)
 }
 
 
-// -/-/-/-/-/-/-/ INITIALISER FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
 /* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *	This function uses the Pi's camera to take a photo. It will save the photo, update m_Image to use
  *	this photo and reset all member variables calculated using any previous image.
@@ -58,10 +74,11 @@ CBlockReader::CBlockReader(string imagePath)
  *	INPUTS:
  *	saveLocation - This should contain the path at which to save the photo.
  */
-bool CBlockReader::TakePhoto(const std::string saveLocation)
+bool CBlockReader::TakePhoto(std::string saveLocation)
 {
 	// TODO: Find out how to take a photo with the PI camera and then implement CBlockReader::TakePhoto
 }
+
 
 // -/-/-/-/-/-/-/ SPOT COUNTING FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-
 /* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,7 +86,7 @@ bool CBlockReader::TakePhoto(const std::string saveLocation)
  * picture. It calls VerifySpotNbhdVisible() and VerifySpotArrangement() to check that the number
  * counted can be trusted. A value of -1 is returned instead if not.
  */
-int CBlockReader::CountSpots()
+ int CBlockReader::CountSpots()
 {
 	DetectSpots();
 
@@ -78,6 +95,7 @@ int CBlockReader::CountSpots()
 	else
 		return -1;
 }
+
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function uses the opencv SimpleBlobDetector to identify the spots in the picture. The spots
@@ -139,58 +157,14 @@ void CBlockReader::DetectSpots()
  * with split groups to fail the test (which they should!).
  *
  */
-bool CBlockReader::VerifySpotArrangement() const
+bool CBlockReader::VerifySpotArrangement()
 {
-	// Compute mean spot location
-	double meanLoc_x {0};
-	double meanLoc_y {0};
-	for (unsigned int i = 0; i < m_Spots.size(); ++i)
-	{
-		meanLoc_x += m_Spots[i].pt.x;
-		meanLoc_y += m_Spots[i].pt.y;
-	}
-
-	if (m_Spots.size() == 0)
-		return false;
-	else
-	{
-		meanLoc_x /= m_Spots.size();
-		meanLoc_y /= m_Spots.size();
-	}
-
-	// Centre points by subtracting mean
-	vector<Point2f> centredSpots {};
-	centredSpots.reserve(m_Spots.size());
-	for (unsigned int i = 0; i < m_Spots.size(); ++i)
-	{
-		// TODO: Check that I can update the coordinates of aSpot like this...
-		Point2f aSpot = m_Spots[i].pt;
-		aSpot.x -= meanLoc_x;
-		aSpot.y -= meanLoc_y;
-		centredSpots.push_back(aSpot);
-	}
-
-	// Sort centredSpots
-	double angTol = 0.05; // radians
-	double radTol = 5; // pixels
-	sort(centredSpots.begin(), centredSpots.end(), CompareByAngleThenRadius(angTol, radTol));
-
-	// Compute distances between spots
-	vector<vector<double> > spotDistances(centredSpots.size(), vector<double>(centredSpots.size(), -1));
-	for (unsigned int i = 0; i < spotDistances.size(); ++i)
-	{
-		for (unsigned int j = 0; j < spotDistances.size(); ++j)
-		{
-			double xDiff = centredSpots[i].x - centredSpots[j].x;
-			double yDiff = centredSpots[i].y - centredSpots[j].y;
-
-			spotDistances[i][j] = sqrt(xDiff * xDiff + yDiff * yDiff);
-		}
-	}
-
 	// Load expected spot distances
-	// TODO: Load expected spot distances
-	vector<vector<double> > expectedSpotDistances(centredSpots.size(), vector<double>(centredSpots.size(), -1));
+	vector<vector<double>> allExpectedSpotDistances =	CParseCSV::ReadCSV_double(expectedSpotDistancesFile);
+	int startInd = m_Spots.size() * (m_Spots.size() - 1) / 2;
+	int endInd = m_Spots.size() * (m_Spots.size() + 1) / 2 - 1;
+	vector<vector<double>> expectedSpotDistances(allExpectedSpotDistances.begin() + startInd, allExpectedSpotDistances.begin() + endInd);
+
 
 	// Compare with expected spot distances
 	double spotDistTol = 1; // temporary value -- use proportion of spot size? // TODO: Set spotDistTol as a member variable?
@@ -201,7 +175,7 @@ bool CBlockReader::VerifySpotArrangement() const
 		{
 			for (unsigned int j = 0; j < m_Spots.size(); ++j)
 			{
-				match &= abs(expectedSpotDistances[(i+n) % centredSpots.size()][(j+n) % centredSpots.size()] - spotDistances[i][j]) < spotDistTol;
+				match &= abs(expectedSpotDistances[(i+n) % m_SpotDists.size()][(j+n) % m_SpotDists.size()] - m_SpotDists[i][j]) < spotDistTol;
 			}
 		}
 
@@ -285,6 +259,39 @@ bool CBlockReader::ComputeBlockLocation(double& blockRelPosn_x, double& blockRel
 
 }
 
+
+// -/-/-/-/-/-/-/ CALIBRATION FUNCTIONS -/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
+/* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function (re)writes the file containing the expected distances between spots.
+ *
+ * INPUTS:
+ * fileNames - This should be a 5-element vector of strings. The ith element should contain the
+ *    filename of the ith block. The folder containing these files is specified as a static
+ *    constexpr in the class.
+ *
+ * WRITES FILES:
+ * The program writes the file containing the expected distances between spots. The location of this
+ * 	file is a static constexpr of the class.
+ *
+ */
+void CBlockReader::SetExpectedSpotDistances(const vector<string>& fileNames)
+{
+	if (fileNames.size() != 5)
+		throw Exception_InputImagePath_BadFilePath { fileNames };
+
+	CParseCSV::WriteCSV(vector<double>(), expectedSpotDistancesFile, ios::out);
+	vector<vector<double>> expectedSpotDistances;
+	for (unsigned int i = 0; i < 5; ++i)
+	{
+		LoadImgFromFile(fileNames[i]);
+		DetectSpots();
+		SortAndComputeSpotDists();
+
+		CParseCSV::WriteCSV(m_SpotDists, expectedSpotDistancesFile, ios::app);
+	}
+}
+
+
 // -/-/-/-/-/-/-/ HELPER FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ STRUCT (emulating private function) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function will compare two vectors of cv::Point2f. If one point is further round the circle
@@ -307,6 +314,7 @@ bool CBlockReader::ComputeBlockLocation(double& blockRelPosn_x, double& blockRel
 CBlockReader::CompareByAngleThenRadius::CompareByAngleThenRadius(double angTol, double radTol)
 		: m_AngTol { angTol }, m_RadTol { radTol }
 {
+	// TODO: Get constructor to load automatically from the member variables...
 	if (m_AngTol < 0) {/* TODO: Throw exception*/}
 	if (m_RadTol < 0) {/* TODO: Throw exception*/}
 }
@@ -330,9 +338,8 @@ bool CBlockReader::CompareByAngleThenRadius::operator ()(const Point2f point1, c
 	// TODO: Declare and check errorno - see page 918 of C++ book
 
 	// Compare angles
-	double pi = 3.14; // TODO: Find out how to get PI properly!
 	if (abs(point1_ang - point2_ang) < m_AngTol
-			|| abs(point1_ang - point2_ang > pi - m_AngTol))
+			|| abs(point1_ang - point2_ang > M_PI - m_AngTol))
 	{
 		// If the points have the same angle
 		if (point1_rad2 < point2_rad2)
@@ -347,36 +354,72 @@ bool CBlockReader::CompareByAngleThenRadius::operator ()(const Point2f point1, c
 
 }
 
-/* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * This function (re)writes the file containing the expected distances between spots.
+
+/* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function sorts a copy of m_spots (with the mean spot location subtracted), then computes the
+ * distances between them. The sorting is done using CompareByAngleThenRadius.
  *
- * INPUTS:
- * fileNames - This should be a 5-element vector of strings. The ith element should contain the
- *    filename of the ith block. The folder containing these files is specified as a static
- *    constexpr in the class.
+ * MEMBER VARIABLES READ:
+ * m_Spots
  *
- * WRITES FILES:
- * The program writes the file containing the expected distances between spots. The location of this
- * 	file is a static constexpr of the class.
+ *	MEMBER VARIABLES SET:
+ * m_SpotDists - This is updated to include the distances between the spots. Note that since m_Spots
+ * 	isn't itself sorted by this function, the indices in m_SpotDists do not correspond to those in
+ * 	m_Spots.
  *
  */
-void CBlockReader::SetExpectedSpotDistances(const vector<string>& fileNames) const
+bool CBlockReader::SortAndComputeSpotDists()
 {
-	if (fileNames.size() != 5)
-		throw Exception_InputImagePath_BadFilePath { fileNames };
-
-	vector<vector<double>> expectedSpotDistances;
-	for (unsigned int i = 0; i < fileNames.size(); ++i)
+	// Compute mean spot location
+	double meanLoc_x {0};
+	double meanLoc_y {0};
+	for (unsigned int i = 0; i < m_Spots.size(); ++i)
 	{
-		// TODO: Extract sorting and distance counting from VerifySpotArrangement.
-		/* Then...
-		 * 	Analyse file i and set m_Spots using DetectSpots
-		 * 	Compute the distances between spots using extracted function - store in expectedSpotDistances
-		 * 	Save the result to CSV using CParseCSV
-		 *
-		 */
-
+		meanLoc_x += m_Spots[i].pt.x;
+		meanLoc_y += m_Spots[i].pt.y;
 	}
+
+	if (m_Spots.size() == 0)
+	{
+		m_SpotDists.clear();
+		return false;
+	}
+	else
+	{
+		meanLoc_x /= m_Spots.size();
+		meanLoc_y /= m_Spots.size();
+	}
+
+	// Centre points by subtracting mean
+	vector<Point2f> centredSpots {};
+	centredSpots.reserve(m_Spots.size());
+	for (unsigned int i = 0; i < m_Spots.size(); ++i)
+	{
+		// TODO: Check that I can update the coordinates of aSpot like this...
+		Point2f aSpot = m_Spots[i].pt;
+		aSpot.x -= meanLoc_x;
+		aSpot.y -= meanLoc_y;
+		centredSpots.push_back(aSpot);
+	}
+
+	// Sort centredSpots
+	sort(centredSpots.begin(), centredSpots.end(), CompareByAngleThenRadius(ANGTOL, RADTOL));
+
+	// Compute distances between spots
+	m_SpotDists = vector<vector<double> > (centredSpots.size(), vector<double>(centredSpots.size(), -1));
+	for (unsigned int i = 0; i < m_SpotDists.size(); ++i)
+	{
+		for (unsigned int j = 0; j < m_SpotDists.size(); ++j)
+		{
+			double xDiff = centredSpots[i].x - centredSpots[j].x;
+			double yDiff = centredSpots[i].y - centredSpots[j].y;
+
+			m_SpotDists[i][j] = sqrt(xDiff * xDiff + yDiff * yDiff);
+		}
+	}
+
+	// Return success
+	return true;
 }
 
 

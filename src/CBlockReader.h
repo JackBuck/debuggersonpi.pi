@@ -59,8 +59,9 @@ public:
 	// === Public Functions =========================================================================
 	int CountSpots();
 	bool ComputeBlockLocation(double& blockRelPosn_x, double& blockRelPosn_y) const;
-	bool TakePhoto(const std::string saveLocation);
-	void SetExpectedSpotDistances(const std::vector<std::string>& fileNames) const;
+	void LoadImgFromFile(std::string imagePath);
+	bool TakePhoto(std::string saveLocation);
+	void SetExpectedSpotDistances(const std::vector<std::string>& fileNames);
 
 	// === Exceptions ===============================================================================
 	struct Exception_InputImagePath_BadFilePath;
@@ -69,12 +70,16 @@ public:
 private:
 	// === Private Functions ========================================================================
 	void DetectSpots();
-	bool VerifySpotArrangement() const;
+	bool SortAndComputeSpotDists();
+	bool VerifySpotArrangement();
 	bool VerifySpotNbhdVisible() const;
 
 	// === Member Variables =========================================================================
 	cv::Mat m_Image;
 	std::vector<cv::KeyPoint> m_Spots;
+	std::vector<std::vector<double>> m_SpotDists;
+	static constexpr double RADTOL = 0.05; // pixels
+	static constexpr double ANGTOL = 5; // radians
 
 	// === Private Static Data ======================================================================
 	// TODO: Learn how to do filenames portably so that it will run on Windows machines...

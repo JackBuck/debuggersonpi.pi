@@ -78,8 +78,9 @@ private:
 	cv::Mat m_Image;
 	std::vector<cv::KeyPoint> m_Spots;
 	std::vector<std::vector<double>> m_SpotDists;
-	static constexpr double RADTOL = 0.05; // pixels
-	static constexpr double ANGTOL = 5; // radians
+	static constexpr double RADTOL = 5; // pixels
+	static constexpr double ANGTOL = 0.05; // radians
+	static constexpr double SPOTDISTTOL = 0.1; // proportion of average spot size
 
 	// === Private Static Data ======================================================================
 	// TODO: Learn how to do filenames portably so that it will run on Windows machines...
@@ -87,12 +88,12 @@ private:
 	static const std::string expectedSpotDistancesFile;
 
 	// === Member classes ===========================================================================
-	class CompareByAngleThenRadius
+	struct CompareByAngleThenRadius
 	{
-	public:
-		CompareByAngleThenRadius(double angTol, double radTol);
+
+		CompareByAngleThenRadius();
 		bool operator()(const cv::Point2f, const cv::Point2f) const;
-	private:
+
 		double m_AngTol;
 		double m_RadTol;
 	};

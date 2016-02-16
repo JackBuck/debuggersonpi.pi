@@ -169,8 +169,13 @@ bool CBlockReader::VerifySpotArrangement()
 	if (!SortAndComputeSpotDists())
 		return false;
 
+	// Compute average spot size
+	double avSpotSize {0};
+	for (unsigned int i = 0; i < m_Spots.size(); ++i)
+		avSpotSize += m_Spots[i].size;
+	avSpotSize /= m_Spots.size();
+
 	// Compare with expected spot distances
-	double spotDistTol = 1; // temporary value -- use proportion of spot size? // TODO: Set spotDistTol as a member variable?
 	for (unsigned int n = 0; n < m_Spots.size(); ++n) // Permute round circle by n points
 	{
 		bool match = true;
@@ -178,7 +183,7 @@ bool CBlockReader::VerifySpotArrangement()
 		{
 			for (unsigned int j = 0; j < m_Spots.size(); ++j)
 			{
-				match &= abs(expectedSpotDistances[(i+n) % m_SpotDists.size()][(j+n) % m_SpotDists.size()] - m_SpotDists[i][j]) < spotDistTol;
+				match &= abs(expectedSpotDistances[(i+n) % m_SpotDists.size()][(j+n) % m_SpotDists.size()] - m_SpotDists[i][j]) < SPOTDISTTOL * avSpotSize;
 			}
 		}
 
@@ -304,7 +309,7 @@ void CBlockReader::SetExpectedSpotDistances(const vector<string>& fileNames)
  * The angle given to (0,0) (and points within angTol of this) is zero. Hence any such point will be
  * smaller than any non (0,0) point.
  *
- * INPUTS [constructor]:
+ * MEMBER VARIABLES:
  * angTol - If the angle computed (in RADIANS) for the two points is less than angTol then the
  * 	points will be deemed to have the same angle.
  * radTol - If a point has norm less than radTol then it will be deemed to be zero.
@@ -314,12 +319,9 @@ void CBlockReader::SetExpectedSpotDistances(const vector<string>& fileNames)
  * 	returns false.
  *
  */
-CBlockReader::CompareByAngleThenRadius::CompareByAngleThenRadius(double angTol, double radTol)
-		: m_AngTol { angTol }, m_RadTol { radTol }
+CBlockReader::CompareByAngleThenRadius::CompareByAngleThenRadius()
+		: m_AngTol {ANGTOL}, m_RadTol {RADTOL}
 {
-	// TODO: Get constructor to load automatically from the member variables...
-	if (m_AngTol < 0) {/* TODO: Throw exception*/}
-	if (m_RadTol < 0) {/* TODO: Throw exception*/}
 }
 
 bool CBlockReader::CompareByAngleThenRadius::operator ()(const Point2f point1, const Point2f point2) const
@@ -406,7 +408,7 @@ bool CBlockReader::SortAndComputeSpotDists()
 	}
 
 	// Sort centredSpots
-	sort(centredSpots.begin(), centredSpots.end(), CompareByAngleThenRadius(ANGTOL, RADTOL));
+	sort(centredSpots.begin(), centredSpots.end(), CompareByAngleThenRadius {});
 
 	// Compute distances between spots
 	m_SpotDists = vector<vector<double> > (centredSpots.size(), vector<double>(centredSpots.size(), -1));

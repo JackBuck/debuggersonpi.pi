@@ -36,6 +36,8 @@ private:
 	std::vector<int> m_entranceCell;
 	std::vector<int> m_exitCell;
 	std::vector<int[3]> m_distanceMatrixArray;
+	std::vector<std::vector<int>> m_distanceMatrixCoordinateList;
+	std::vector<std::vector<int>> m_distanceMatrix;
 
 	// === Location Tracking ==========================================================================
 
@@ -55,6 +57,8 @@ public:
 	static std::vector<int> GetRoomVertices(ERoom room_type);
 	int GetEntranceVertex();
 	int GetExitVertex();
+	std::vector<std::vector<int>> GetDistanceMatrix();
+	std::vector<std::vector<int>> GetDistanceMatrixCoordinateList();
 	//std::vector<int[3]> GetDistanceMatrixArray();
 
 	int GetCurrentVertex();

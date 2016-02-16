@@ -655,6 +655,7 @@ std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<
 	// x = i(2n + 1) + 2j
 	// y = x + 2n + 2
 
+
 	int i_coordinate = rowCoordinate;
 	int j_coordinate = columnCoordinate;
 
@@ -676,14 +677,6 @@ std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<
 
 	int convertedVertexArray[4] = { NorthVertexCoordinate, EastVertexCoordinate, SouthVertexCoordinate, WestVertexCoordinate };
 
-	// Creating a distanceMatrix of zeros
-	std::vector<std::vector<int>> distanceMatrix(distanceMatrixSize);
-	for (int i = 0; i < distanceMatrixSize; i++) {
-		distanceMatrix[i].resize(distanceMatrixSize);
-	}
-
-	std::vector<std::vector<int>> distanceMatrixCoordinateList;
-
 	// Main body of function:
 
 	for (int i = 0; i < 4; i++)
@@ -693,7 +686,6 @@ std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<
 			// if != 0, the a coordinate is convertedVertexArray[i]
 
 			vertexA_Coordinate = convertedVertexArray[i];
-
 
 			// loop through the rest of the integers in the array to see if any of them are non-zero
 			for (int j = i + 1; j < 4; j++) {
@@ -715,47 +707,28 @@ std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<
 					if (vertexA_Coordinate < vertexB_Coordinate) {
 
 						// Logic needs to be added to discern whether the room is a corner or a straight line
-						distanceMatrix.at(vertexB_Coordinate).at(vertexA_Coordinate) = edge_Magnitude;
+						m_distanceMatrix.at(vertexB_Coordinate).at(vertexA_Coordinate) = edge_Magnitude;
 						std::vector<int> distanceMatrixCoordinate = { vertexB_Coordinate, vertexA_Coordinate, edge_Magnitude };
-						distanceMatrixCoordinateList.push_back(distanceMatrixCoordinate);
+						m_distanceMatrixCoordinateList.push_back(distanceMatrixCoordinate);
 					}
 
 					// Added in case vertexA_Coordinate == vertexB_Coordinate (which should never happen)
 					else if (vertexA_Coordinate > vertexB_Coordinate) {
 
 						// Logic needs to be added to discern whether the room is a corner or a straight line
-						distanceMatrix.at(vertexA_Coordinate).at(vertexB_Coordinate) = edge_Magnitude;
+						m_distanceMatrix.at(vertexA_Coordinate).at(vertexB_Coordinate) = edge_Magnitude;
 						std::vector<int> distanceMatrixCoordinate = { vertexA_Coordinate, vertexB_Coordinate, edge_Magnitude };
-						distanceMatrixCoordinateList.push_back(distanceMatrixCoordinate);
+						m_distanceMatrixCoordinateList.push_back(distanceMatrixCoordinate);
 					}
 				}
-
-
-				// check which is greater than the other.
-				// (a,b) a should be greater than b in all cases
-				// give the room a magnitude
-				// Then populate the distanceMatrix with the magnitude at (a,b)
-				// Then add to the distanceMatrixCoordinateArray the same.
 			}
-		}
-		std::cout << "distance matrix coordinate list: \n";
-		for (int i = 0; i < distanceMatrixCoordinateList.size(); i++) {
-			for (int j = 0; j < 3; j++) {
-				std::cout << distanceMatrixCoordinateList.at(i).at(j) << " ";
-			}
-			std::cout << std::endl;
 		}
 	}
-
-
-	return distanceMatrix;
+	return m_distanceMatrix;
 }
 
 std::vector<std::vector<int>> CMap::DistanceMatrix()
 {
-	// At the moment it just creates a massive empty matrix to start with.
-	// I know this is horrendous, but it's a temporary solution so Hannah has something to work with!
-
 	// x = i(2n + 2j) 
 	// y = x + 2n + 2
 
@@ -763,56 +736,34 @@ std::vector<std::vector<int>> CMap::DistanceMatrix()
 	matrixSize = GetRoomMap().size();
 
 	int n = matrixSize;
-	int distanceMatrixSize = (n - 1) + (2 * n) + 1;
+	int distanceMatrixSize = (n - 1)*(2 * (n + 1) + 1) + (5 * n) - 2;
 
+	m_distanceMatrixCoordinateList.clear();
 	std::vector<std::vector<int>> distanceMatrix(distanceMatrixSize);
 	for (int i = 0; i < distanceMatrixSize; i++) {
 		distanceMatrix[i].resize(distanceMatrixSize);
 	}
+	m_distanceMatrix = distanceMatrix;
 
-	//std::vector<int[3]> distanceMatrixArray;
-
-
-
-	// TODO:
-	// go through each enum & add points to the relevant positions of both on the distanceMatrix
-	// Find a way to effectively add these coordinates to the coordinateMatrix
-
-
-	// Going to be a function called populateDistanceMatrixWithRoom(std::vector<int> roomVector, row, column)
-	// This will populate the values in the distanceMatrix as well as coordinates in the coordinateMatrix
-	// 
-
-		//std::vector<distanceMatrixRow> distanceMatrix(m_width, 0);
-
-	for (int i = 0; i < GetRoomMap().size(); i++)
+	for (int i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < GetRoomMap()[j].size(); j++)
+		for (int j = 0; j < 4; j++)
 		{
-			// ERoom room_type = GetRoomMap()[i]
 			ERoom room_type = GetRoomMap().at(i).at(j);
-			
-			// populateDistanceMatrixFromArray(GetRoomVertices(Room));
 			populateDistanceMatrixFromArray(GetRoomVertices(room_type), i, j);
 		}
 	}
 
+	return m_distanceMatrix;
+}
 
+//std::vector<std::vector<int>> GetDistanceMatrix() {
+//
+//}
 
-	//		 westPoint = i * ((2 * GetRoomMap().size()) + (2 * j));
-	//		 southPoint = (westPoint + 2) * (GetRoomMap().size() + 2);
-	//		if (GetRoomMap()[i][j] == ERoom_Cross)
-	//		{
-	//			//distanceMatrix.at(westPoint).at(southPoint) = 1;
-
-	//		}
-
-
-	//		 //populateDistanceMatrixWithRoom(GetRoomVertices(GetRoomMap()[i][j]));
-	//	}
-	//}
-		//m_distanceMatrixArray = distanceMatrixArray;
-	return distanceMatrix;
+std::vector<std::vector<int>> CMap::GetDistanceMatrixCoordinateList(){
+	DistanceMatrix();
+	return m_distanceMatrixCoordinateList;
 }
 
 

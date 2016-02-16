@@ -77,13 +77,12 @@ private:
 	// === Member Variables =========================================================================
 	cv::Mat m_Image;
 	std::vector<cv::KeyPoint> m_Spots;
-	std::vector<std::vector<double>> m_SpotDists;
+	std::vector<std::vector<double>> m_SpotDists; // units are average spot size
 	static constexpr double RADTOL = 5; // pixels
 	static constexpr double ANGTOL = 0.05; // radians
 	static constexpr double SPOTDISTTOL = 0.1; // proportion of average spot size
 
 	// === Private Static Data ======================================================================
-	// TODO: Learn how to do filenames portably so that it will run on Windows machines...
 	static const std::string imgExampleFolder;
 	static const std::string expectedSpotDistancesFile;
 

@@ -15,7 +15,9 @@ using namespace std;
 using namespace cv;
 
 // -/-/-/-/-/-/-/ STATIC DATA INITIALISATION /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
-// ~~~ FILE / FOLDER PATHS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/* ~~~ FILE / FOLDER PATHS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
+// TODO: Learn how to do filenames portably so that it will run on Windows machines...
 const std::string CBlockReader::imgExampleFolder {"Data/SpotImageExamples/"}; // In unix it is safe to concatenate filenames with two slashes :D
 const std::string CBlockReader::expectedSpotDistancesFile {"Data/Calibration/ExpectedSpotDistances.csv"};
 
@@ -90,7 +92,16 @@ bool CBlockReader::TakePhoto(std::string saveLocation)
 {
 	DetectSpots();
 
-	if (VerifySpotNbhdVisible() & VerifySpotArrangement())
+	bool spotNbhdTest = VerifySpotNbhdVisible();
+	bool spotArrangementTest = VerifySpotArrangement();
+
+	// Temporary logging to console
+	if (!spotNbhdTest)
+		cout << "--Failed nbhd test--";
+	if (!spotArrangementTest)
+		cout << "--Failed arrangement test--";
+
+	if ( spotNbhdTest & spotArrangementTest)
 		return m_Spots.size();
 	else
 		return -1;
@@ -169,12 +180,6 @@ bool CBlockReader::VerifySpotArrangement()
 	if (!SortAndComputeSpotDists())
 		return false;
 
-	// Compute average spot size
-	double avSpotSize {0};
-	for (unsigned int i = 0; i < m_Spots.size(); ++i)
-		avSpotSize += m_Spots[i].size;
-	avSpotSize /= m_Spots.size();
-
 	// Compare with expected spot distances
 	for (unsigned int n = 0; n < m_Spots.size(); ++n) // Permute round circle by n points
 	{
@@ -183,7 +188,7 @@ bool CBlockReader::VerifySpotArrangement()
 		{
 			for (unsigned int j = 0; j < m_Spots.size(); ++j)
 			{
-				match &= abs(expectedSpotDistances[(i+n) % m_SpotDists.size()][(j+n) % m_SpotDists.size()] - m_SpotDists[i][j]) < SPOTDISTTOL * avSpotSize;
+				match &= abs(expectedSpotDistances[(i+n) % m_SpotDists.size()][(j+n) % m_SpotDists.size()] - m_SpotDists[i][j]) < SPOTDISTTOL;
 			}
 		}
 
@@ -400,7 +405,6 @@ bool CBlockReader::SortAndComputeSpotDists()
 	centredSpots.reserve(m_Spots.size());
 	for (unsigned int i = 0; i < m_Spots.size(); ++i)
 	{
-		// TODO: Check that I can update the coordinates of aSpot like this...
 		Point2f aSpot = m_Spots[i].pt;
 		aSpot.x -= meanLoc_x;
 		aSpot.y -= meanLoc_y;
@@ -408,7 +412,14 @@ bool CBlockReader::SortAndComputeSpotDists()
 	}
 
 	// Sort centredSpots
+	// TODO: Debug sorting with testfourh15cm4.jpg
 	sort(centredSpots.begin(), centredSpots.end(), CompareByAngleThenRadius {});
+
+	// Find average spot size
+	double avSpotSize {0};
+	for (unsigned int i = 0; i < m_Spots.size(); ++i)
+		avSpotSize += m_Spots[i].size;
+	avSpotSize /= m_Spots.size();
 
 	// Compute distances between spots
 	m_SpotDists = vector<vector<double> > (centredSpots.size(), vector<double>(centredSpots.size(), -1));
@@ -419,7 +430,7 @@ bool CBlockReader::SortAndComputeSpotDists()
 			double xDiff = centredSpots[i].x - centredSpots[j].x;
 			double yDiff = centredSpots[i].y - centredSpots[j].y;
 
-			m_SpotDists[i][j] = sqrt(xDiff * xDiff + yDiff * yDiff);
+			m_SpotDists[i][j] = sqrt(xDiff * xDiff + yDiff * yDiff) / avSpotSize;
 		}
 	}
 

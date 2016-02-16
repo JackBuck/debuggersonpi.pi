@@ -162,9 +162,12 @@ bool CBlockReader::VerifySpotArrangement()
 	// Load expected spot distances
 	vector<vector<double>> allExpectedSpotDistances =	CParseCSV::ReadCSV_double(expectedSpotDistancesFile);
 	int startInd = m_Spots.size() * (m_Spots.size() - 1) / 2;
-	int endInd = m_Spots.size() * (m_Spots.size() + 1) / 2 - 1;
+	int endInd = m_Spots.size() * (m_Spots.size() + 1) / 2; // Actually one more than the end ind...
 	vector<vector<double>> expectedSpotDistances(allExpectedSpotDistances.begin() + startInd, allExpectedSpotDistances.begin() + endInd);
 
+	// Compute distances between spots - return false if no spots
+	if (!SortAndComputeSpotDists())
+		return false;
 
 	// Compare with expected spot distances
 	double spotDistTol = 1; // temporary value -- use proportion of spot size? // TODO: Set spotDistTol as a member variable?

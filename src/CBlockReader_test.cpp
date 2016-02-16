@@ -33,6 +33,7 @@ void CBlockReader_test()
 int CBlockReader_test2()
 {
 	cout << "--CBlockReader_test2--\n\n";
+	string folderName {"TestData/CameraPhotos/Batch2/"};
 	vector<string> fileNames
 	{
 		"testoneh15cm1.jpg",
@@ -43,10 +44,10 @@ int CBlockReader_test2()
 	};
 
 	bool success = true;
-	for (int i = 0; i < fileNames.size(); ++i)
+	for (unsigned int i = 0; i < fileNames.size(); ++i)
 	{
 		cout << "i = " << i << ",   Num Spots Counted = ";
-		CBlockReader aBlockReader {fileNames[i]};
+		CBlockReader aBlockReader {folderName + fileNames[i]};
 		int numSpots = aBlockReader.CountSpots();
 		cout << numSpots << endl;
 

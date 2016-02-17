@@ -56,6 +56,6 @@ int main() {
 	}
 
 
-	keep_window_open();
+//	keep_window_open();
 	return result;
 }

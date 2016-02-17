@@ -349,7 +349,7 @@ bool CBlockReader::CompareByAngleThenRadius::operator ()(const Point2f point1, c
 
 	// Compare angles
 	if (abs(point1_ang - point2_ang) < m_AngTol
-			|| abs(point1_ang - point2_ang > M_PI - m_AngTol))
+			|| abs(point1_ang - point2_ang) > 2 * M_PI - m_AngTol)
 	{
 		// If the points have the same angle
 		if (point1_rad2 < point2_rad2)

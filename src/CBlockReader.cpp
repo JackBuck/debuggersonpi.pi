@@ -68,7 +68,6 @@ void CBlockReader::LoadImgFromFile(string imagePath)
 	}
 }
 
-
 /* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *	This function uses the Pi's camera to take a photo. It will save the photo, update m_Image to use
  *	this photo and reset all member variables calculated using any previous image.
@@ -106,7 +105,6 @@ bool CBlockReader::TakePhoto(std::string saveLocation)
 	else
 		return -1;
 }
-
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function uses the opencv SimpleBlobDetector to identify the spots in the picture. The spots
@@ -363,7 +361,6 @@ bool CBlockReader::CompareByAngleThenRadius::operator ()(const Point2f point1, c
 		return false;
 
 }
-
 
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This function sorts a copy of m_spots (with the mean spot location subtracted), then computes the

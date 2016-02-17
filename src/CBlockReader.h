@@ -80,7 +80,7 @@ private:
 	std::vector<std::vector<double>> m_SpotDists; // units are average spot size
 	static constexpr double RADTOL = 5; // pixels
 	static constexpr double ANGTOL = 0.05; // radians
-	static constexpr double SPOTDISTTOL = 0.1; // proportion of average spot size
+	static constexpr double SPOTDISTTOL = 0.2; // proportion of average spot size
 
 	// === Private Static Data ======================================================================
 	static const std::string imgExampleFolder;

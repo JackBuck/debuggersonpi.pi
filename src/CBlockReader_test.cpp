@@ -36,11 +36,11 @@ int CBlockReader_test2()
 	string folderName {"TestData/CameraPhotos/Batch2/"};
 	vector<string> fileNames
 	{
-		"testoneh15cm1.jpg",
-		"testtwoh15cm1.jpg",
-		"testthreeh15cm3.jpg",
-		"testfourh15cm4.jpg",
-		"testfiveh15cm4.jpg"
+			"testoneh15cm1.jpg",
+			"testtwoh15cm1.jpg",
+			"testthreeh15cm3.jpg",
+			"testfourh15cm4.jpg",
+			"testfiveh15cm4.jpg"
 	};
 
 	bool success = true;

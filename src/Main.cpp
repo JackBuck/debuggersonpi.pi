@@ -16,8 +16,11 @@
  *
  */
 
+
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include<iostream>
+#include<fstream>
+#include "DebugLog.hpp"
 #include "CMap.h"
 #include<fstream>
 
@@ -51,6 +54,12 @@ void PrintMatrix(std::vector<std::vector<int>> inputMap) {
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main() {
+
+	std::ofstream log("DebuggersOnPi.log");
+	CRedirecter redirect(log, std::cout);
+
+	int result = TestAllFunctions();
+	if (!result)
 	// int result = TestAllFunctions();
 	//if (!result)
 	//{
@@ -101,6 +110,6 @@ int main() {
 
 	//	std::cin.get();
 
-	keep_window_open();
-	//return result;
+//	keep_window_open();
+	return result;
 }

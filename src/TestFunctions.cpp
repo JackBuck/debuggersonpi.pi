@@ -17,24 +17,32 @@ int CGraph_test2();
 int CGraph_test3();
 int CParseCSV_test();
 void CParseCSV_test2();
+int CMazeMapper_test();
+void CBlockReader_test();
+int CBlockReader_test2();
 
 int TestAllFunctions()
 {
 	int returnVal = 0;
 	// TODO It would be useful to produce output to the console to show which functions 'passed' and which 'failed' so that we can look at their output in the future.
-//	returnVal += CMap_test();
-//	std::cout << '\n';
+	returnVal += CMap_test();
+	std::cout << '\n';
 	returnVal += CGraph_test();
 	std::cout << '\n';
 	returnVal += CGraph_test2();
 	std::cout << '\n';
 	returnVal += CGraph_test3();
 	std::cout << '\n';
-//	returnVal += CParseCSV_test();
+	returnVal += CParseCSV_test();
+	std::cout << '\n';
+	CParseCSV_test2();
+	std::cout << '\n';
+//	CBlockReader_test();                // Will fail without images in the Data/SpotImageExamples folder
 //	std::cout << '\n';
-//	CParseCSV_test2();
+//	returnVal += CBlockReader_test2();  // Will fail without images in the Data/SpotImageExamples folder
 //	std::cout << '\n';
-
+//	returnVal += CMazeMapper_test();
+//	std::cout << '\n';
 
 	return returnVal;
 }

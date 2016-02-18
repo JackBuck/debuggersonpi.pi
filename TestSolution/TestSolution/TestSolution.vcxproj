@@ -120,6 +120,10 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\CGraph.h" />
     <ClInclude Include="..\..\src\Challenges.h" />
+    <ClInclude Include="..\..\src\CMazeMapper.h" />
+    <ClInclude Include="..\..\src\CParseCSV.h" />
+    <ClInclude Include="..\..\src\CSVRow.h" />
+    <ClInclude Include="..\..\src\DebugLog.hpp" />
     <ClInclude Include="..\..\src\Instructions.h" />
     <ClInclude Include="..\..\src\Manouvre.h" />
     <ClInclude Include="..\..\src\CMap.h" />
@@ -131,6 +135,12 @@
     <ClCompile Include="..\..\src\CGraph.cpp" />
     <ClCompile Include="..\..\src\CGraph_test.cpp" />
     <ClCompile Include="..\..\src\Challenges.cpp" />
+    <ClCompile Include="..\..\src\CMazeMapper.cpp" />
+    <ClCompile Include="..\..\src\CMazeMapper_test.cpp" />
+    <ClCompile Include="..\..\src\CParseCSV.cpp" />
+    <ClCompile Include="..\..\src\CParseCSV_test.cpp" />
+    <ClCompile Include="..\..\src\CSVRow.cpp" />
+    <ClCompile Include="..\..\src\DebugLog.cpp" />
     <ClCompile Include="..\..\src\Instructions.cpp" />
     <ClCompile Include="..\..\src\CInstruction_test.cpp" />
     <ClCompile Include="..\..\src\Manouvre.cpp" />

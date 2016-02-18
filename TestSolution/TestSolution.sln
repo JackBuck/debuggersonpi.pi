@@ -5,6 +5,13 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestSolution", "TestSolution\TestSolution.vcxproj", "{4CC7E6AE-52F6-4446-8050-4FB1D1189BD3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E7455EB3-9C66-4BF8-9185-2A5973794F1E}"
+	ProjectSection(SolutionItems) = preProject
+		..\src\CParseCSV.cpp = ..\src\CParseCSV.cpp
+		..\src\CParseCSV_test.cpp = ..\src\CParseCSV_test.cpp
+		..\src\CSVRow.cpp = ..\src\CSVRow.cpp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

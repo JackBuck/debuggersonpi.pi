@@ -55,8 +55,8 @@ public:
 	std::vector<int> GetEntranceCell() const;
 	std::vector<int> GetExitCell() const;
 	static std::vector<int> GetRoomVertices(ERoom room_type);
-	int GetEntranceVertex();
-	int GetExitVertex();
+	int GetEntranceVertex() const;
+	int GetExitVertex() const;
 	std::vector<std::vector<int>> GetDistanceMatrix();
 	std::vector<std::vector<int>> GetDistanceMatrixCoordinateList();
 	//std::vector<int[3]> GetDistanceMatrixArray();

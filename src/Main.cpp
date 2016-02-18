@@ -69,9 +69,11 @@ int main() {
 	//{
 	//	cout << "Error! One or more tests failed!\n";
 	//}
-	
-	std::string filepath = "C:/Users/John/Documents/Programming Stuff/HackSpace/HackspaceProject/TestData/5x5testmap1.txt";
+
+	std::string hi = "TestData 5x5testmap1.txt";
+	std::string filepath = "TestData 5x5testmap1.txt";
 	CMap Maze(filepath);
+	
 
 	std::ofstream myfile;
 	myfile.open("C:/Users/John/Documents/Programming Stuff/HackSpace/HackspaceProject/TestData/example.txt", std::fstream::out);

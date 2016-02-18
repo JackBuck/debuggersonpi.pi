@@ -697,8 +697,8 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 	{
 		CManouvre::InstructionToManouvre(instructionList[i]);
 	}
-	}
 }
+
 
 
 std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate) {

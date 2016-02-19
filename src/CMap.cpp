@@ -55,7 +55,7 @@ CMap::CMap(string filepath)
 
 	m_currentVertex = GetEntranceVertex();
 	DEBUG_VALUE_OF_LOCATION(m_currentVertex);
-	
+
 	m_currentOrientation = EOrientation_North;
 	DEBUG_VALUE_OF_LOCATION(m_currentOrientation);
 	
@@ -714,12 +714,6 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 	{
 		CManouvre::InstructionToManouvre(instructionList[i]);
 	}
-
-	}
-
-void CMap::WriteCellMap(std::string filepath)
-{
-	CParseCSV::WriteCSV(m_cellMap, filepath, ios::app);
 }
 
 
@@ -783,7 +777,7 @@ std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<
 					}
 					else if (j == i + 2) {
 						edge_Magnitude = 1;
-					}
+}
 					else { edge_Magnitude = 0; }
 
 
@@ -810,7 +804,10 @@ std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<
 	return m_distanceMatrix;
 }
 
-
+void CMap::WriteCellMap(std::string filepath)
+{
+	CParseCSV::WriteCSV(m_cellMap, filepath);
+}
 
 std::vector<std::vector<int>> CMap::DistanceMatrix()
 {

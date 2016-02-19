@@ -35,6 +35,7 @@ public:
 	static void StraightAcrossRoom();
 	static void TurnLeftInRoom();
 	static void TurnRightInRoom();
+	static ERoom MoveForwardAndDetectRoomType();
 };
 
 

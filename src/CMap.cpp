@@ -58,7 +58,8 @@ CMap::CMap(string filepath)
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Current room is entrance room which is not defined in our map so set to 
-	m_currentRoom = ENTRANCEPORCHROOM;
+	m_currentRoom.resize(2);
+	m_currentRoom[0] = ENTRANCEPORCHROOM;
 	
 }
 
@@ -85,7 +86,7 @@ CMap::CMap(int room_height, int room_width)
 			m_cellMap[3*i+2][3*j+1] = -1;
 			m_cellMap[3*i + 1][3*j] = -1;
 
-}
+		}
 	}
 }
 
@@ -433,6 +434,12 @@ void CMap::UpdateCellMap()
 	}
 }
 
+void CMap::SetCurrentRoomType(ERoom roomType)
+{	
+	m_roomMap[m_currentRoom[0]][m_currentRoom[1]] = roomType;
+	UpdateCellMap();
+}
+
 
 void CMap::CalculateBlockRooms(vector<int>* pBlockRooms) const
 {
@@ -652,22 +659,26 @@ int CMap::GetCurrentVertex() const
 	return m_currentVertex;
 }
 
-int CMap::GetCurrentRoom() const
+std::vector<int> CMap::GetCurrentRoom() const
 {
 	DEBUG_METHOD();
 	return m_currentRoom;
 }
 
-void CMap::SetCurrentRoom(int new_room)
+void CMap::SetCurrentRoom(int new_room_index)
 {
 	DEBUG_METHOD();
-	m_currentRoom = new_room;
+
+	std::vector<int> coord = RoomIndextoCoord(new_room_index);
+
+	m_currentRoom[0] = coord[0];
+	m_currentRoom[1] = coord[1];
 }
 
-void CMap::SetCurrentVertex(int new_vertex)
+void CMap::SetCurrentVertex(int new_vertex_index)
 {
 	DEBUG_METHOD();
-	m_currentVertex = new_vertex;
+	m_currentVertex = new_vertex_index;
 }
 
 vector<int> CMap::RoomIndextoCoord(int room_index) const

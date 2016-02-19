@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////ng////////////////////////////////////////////////////////////////////////////
 // CMap.h
 // Created: 15/11/15
 // Author: Hannah Howell
@@ -37,7 +37,7 @@ private:
 
 	// === Location Tracking ==========================================================================
 
-	int m_currentRoom;
+	std::vector<int> m_currentRoom;
 	int m_currentVertex;
 	EOrientation m_currentOrientation;
 
@@ -56,10 +56,10 @@ public:
 	int GetExitVertex() const;
 
 	int GetCurrentVertex() const;
-	int GetCurrentRoom() const;
+	std::vector<int> GetCurrentRoom() const;
 
-	void SetCurrentRoom(int new_room);
-	void SetCurrentVertex(int new_vertex);
+	void SetCurrentRoom(int new_room_index);
+	void SetCurrentVertex(int new_vertex_index);
 
 
 
@@ -67,6 +67,7 @@ public:
 
 	void UpdateRoomMap();
 	void UpdateCellMap();
+	void SetCurrentRoomType(ERoom roomType);
 	void CalculateBlockRooms(std::vector<int> *pBlockRooms) const;
 	std::vector<int> CalculateRoomVertices(int room_index) const;
 	std::vector<int> CalculateRoomVertices(int row, int col) const;

@@ -16,6 +16,7 @@
 #include "Manouvre.h"
 #include <climits>
 #include "DebugLog.hpp"
+#include "CMazeMapper.h"
 
 // ~~~ DEFINITIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int LOCATION_UNKNOWN = -1;
@@ -33,21 +34,8 @@ void CChallenges::ChallengeOne()
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// Tell pic to follow line forever (or near enough) unless interrupted.
 
-	CGoodsOut::Forward(INT_MIN, true);
+	CGoodsOut::Forward(INT_MAX, true);
 
-	int count = 0;
-
-	while(!interrupt)
-	{
-		count++;
-
-		if(count == 10000)
-		{
-			CSignals::Notification1();
-			count = 0;
-		}
-
-	}
 
 	CGoodsOut::Stop();
 
@@ -58,6 +46,40 @@ void CChallenges::ChallengeTwo()
 {
 	DEBUG_METHOD();
 
+	CMap aMap = CMap(10, 10);
+	bool is_next_vertex;
+
+	do{
+
+	ERoom currentRoomType = CManouvre::MoveForwardAndDetectRoomType();
+
+	aMap.SetCurrentRoom(currentRoomType);
+
+	CMazeMapper aMazeMapper = CMazeMapper(&aMap);
+
+	std::vector<int> outputRoute;
+
+	is_next_vertex = aMazeMapper.ComputeNextVertex(aMap.GetCurrentVertex(), outputRoute);
+
+	if(is_next_vertex)
+	{
+		CInstructions aInstructions = CInstructions(outputRoute, 10);
+
+		aMap.FollowInstructions(aInstructions);
+
+	}
+
+	}
+	while(is_next_vertex);
+
+	std::string(
+	aMap.WriteCellMap(filepath);
+
+	CSignals::Complete();
+
+
+
+
 
 
 }
@@ -66,6 +88,9 @@ void CChallenges::ChallengeThree()
 {
 	DEBUG_METHOD();
 	std::string filepath;
+
+	filepath = std::string("C:\Users\Hannah\Source\Repos\renispace\src")
+
 	CMap aMap = CMap(filepath);
 	int entrance_vertex = aMap.GetEntranceVertex();
 	int exit_vertex = aMap.GetExitVertex();
@@ -349,7 +374,7 @@ void CChallenges::ChallengeFour()
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	// Update the location vectors
-
+	//***************************************************
 	block_location[next_value] = current_block_number;
 
 

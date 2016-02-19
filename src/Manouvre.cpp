@@ -77,6 +77,13 @@ void CManouvre::TurnRightInRoom()
 	CGoodsOut::TurnRight90();
 	CGoodsOut::Forward(HALFROOMLENGTH, false);
 }
+///////////////////////////////////////////////////////////////////////////////////////////////
+// Move forward into room to junction. Detect junction and return room type Enum.
+ERoom CManouvre::MoveForwardAndDetectRoomType()
+{
+
+	return ERoom_Empty;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -92,6 +99,7 @@ int CManouvre::ApproachAndPhotographBlock()
 // Move arm to collect block and move forward to vertex.
 void CManouvre::CollectBlock()
 {
+
 }
 
 
@@ -107,6 +115,7 @@ void CManouvre::ReleaseBlock()
 // This may also be used when there carrying the block.
 void CManouvre::ReverseAndUTurn()
 {
+
 }
 
 

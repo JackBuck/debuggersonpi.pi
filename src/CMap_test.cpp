@@ -7,9 +7,15 @@
 int CMap_test()
 {
 	DEBUG_METHOD();
+
+
+	/////////////////////////////////////////////////////////////
+	// Create instance of CMap 
 	std::string fileInputpath = "5x5testmap1.txt";
 	CMap Maze(fileInputpath);
 
+	/////////////////////////////////////////////////////////////
+	//
 	std::ofstream myfile;
 	myfile.open("example.txt", std::fstream::out);
 	if (myfile.is_open())

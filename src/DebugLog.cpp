@@ -17,7 +17,7 @@ namespace bornander
 			, start_time(clock())
 #endif
 		{
-#ifdef DEBUG_SHOW_FUNCTIONS
+#ifdef DEBUG_SHOW_FUNCTIONS_ENABLE
 			write_indentation();
 			*stream << "--> " << context << std::endl;
 			++indentation;
@@ -27,7 +27,7 @@ namespace bornander
 
 		log::~log()
 		{
-#ifdef  DEBUG_SHOW_FUNCTIONS
+#ifdef  DEBUG_SHOW_FUNCTIONS_ENABLE
 			--indentation;
 			write_indentation(std::uncaught_exception() ? '*' : ' ');
 			*stream << "<-- " << context;

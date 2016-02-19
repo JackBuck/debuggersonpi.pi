@@ -72,7 +72,7 @@ void CChallenges::ChallengeTwo()
 	}
 	while(is_next_vertex);
 
-	std::string(
+	std::string filepath = "example.txt";
 	aMap.WriteCellMap(filepath);
 
 	CSignals::Complete();
@@ -89,7 +89,7 @@ void CChallenges::ChallengeThree()
 	DEBUG_METHOD();
 	std::string filepath;
 
-	filepath = std::string("C:\Users\Hannah\Source\Repos\renispace\src")
+	filepath = std::string("example.txt");
 
 	CMap aMap = CMap(filepath);
 	int entrance_vertex = aMap.GetEntranceVertex();

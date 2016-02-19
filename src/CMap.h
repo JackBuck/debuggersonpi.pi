@@ -34,6 +34,9 @@ private:
 	int m_exitRoom;
 	std::vector<int> m_entranceCell;
 	std::vector<int> m_exitCell;
+	std::vector<int[3]> m_distanceMatrixArray;
+	std::vector<std::vector<int>> m_distanceMatrixCoordinateList;
+	std::vector<std::vector<int>> m_distanceMatrix;
 
 	// === Location Tracking ==========================================================================
 
@@ -55,6 +58,10 @@ public:
 	int GetEntranceVertex() const;
 	int GetExitVertex() const;
 
+	std::vector<std::vector<int>> GetDistanceMatrix();
+	std::vector<std::vector<int>> GetDistanceMatrixCoordinateList();
+	//std::vector<int[3]> GetDistanceMatrixArray();
+
 	int GetCurrentVertex() const;
 	std::vector<int> GetCurrentRoom() const;
 
@@ -73,6 +80,11 @@ public:
 	std::vector<int> CalculateRoomVertices(int row, int col) const;
 	std::vector<double> CalculateVertexCoords(int vertex) const;
 	void FollowInstructions(CInstructions &inputInstructions);
+
+
+
+	std::vector<std::vector<int>> DistanceMatrix();
+	std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate);
 
 	void WriteCellMap(std::string filepath);
 

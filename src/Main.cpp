@@ -21,8 +21,6 @@
 #include<iostream>
 #include<fstream>
 #include "DebugLog.hpp"
-#include "CMap.h"
-#include<fstream>
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -41,77 +39,25 @@ inline void keep_window_open()
 	return;
 }
 
-void PrintMatrix(std::vector<std::vector<int>> inputMap) {
-
-	for (int i = 0; i < inputMap.size(); i++) {
-		for (int j = 0; j < inputMap.size(); j++) {
-			std::cout << inputMap[i][j] << " ";
-		}
-		std::cout << endl;
-	}
-}
-
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main() {
 
-	std::ofstream log("DebuggersOnPi.log");
-	CRedirecter redirect(log, std::cout);
+	ofstream log("DebuggersOnPi.log");
+	CRedirecter redirect(log, cout);
 
 	int result = TestAllFunctions();
 	if (!result)
-	// int result = TestAllFunctions();
-	//if (!result)
-	//{
-	//	cout << "All tests completed successfully!\n";
-	//}
-	//else
-	//{
-	//	cout << "Error! One or more tests failed!\n";
-	//}
-
-	std::string hi = "TestData 5x5testmap1.txt";
-	std::string filepath = "TestData 5x5testmap1.txt";
-	CMap Maze(filepath);
-	
-
-	std::ofstream myfile;
-	myfile.open("C:/Users/John/Documents/Programming Stuff/HackSpace/HackspaceProject/TestData/example.txt", std::fstream::out);
-	if (myfile.is_open())
 	{
-		std::vector<std::vector<ERoom>> roomMap = Maze.GetRoomMap();
-
-		Maze.UpdateCellMap();
-		 
-		std::vector<std::vector<int>> cellMap = Maze.GetCellMap();
+		cout << "All tests completed successfully!\n";
 	}
 	else
 	{
-		std::cout << "Unable to open file \n";
-		//return 1;
+		cout << "Error! One or more tests failed!\n";
 	}
 
-	myfile.close();
 
-	std::cout << "here is a coordinates list: \n";
 
-	std::vector<std::vector<int>> coords = Maze.GetDistanceMatrixCoordinateList();
-
-	// Printing coordinates list
-	for (int i = 0; i < coords.size(); i++) {
-		for (int j = 0; j < 3; j++) {
-			std::cout << coords.at(i).at(j) << " ";
-		}
-		std::cout << std::endl;
-	}
-
-	std::cout << "here is the distanceMatrix: \n";
-
-	// printing distance matrix
-	PrintMatrix(Maze.DistanceMatrix());
-
-	//	std::cin.get();
-
-//	keep_window_open();
+	keep_window_open();
 	return result;
 }

@@ -19,6 +19,8 @@
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include<iostream>
+#include<fstream>
+#include "DebugLog.hpp"
 #include "CMap.h"
 #include<fstream>
 #include<fstream>
@@ -54,22 +56,14 @@ void PrintMatrix(std::vector<std::vector<int>> inputMap) {
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main() {
-	 int result = TestAllFunctions();
-	if (!result)
-	{
-		cout << "All tests completed successfully!\n";
-	}
-	else
-	{
-		cout << "Error! One or more tests failed!\n";
-	}
-	
-	//std::string filepath = "5x5testmap1.txt";
-	//CMap Maze(filepath);
 
-	//std::ofstream myfile;
-	//myfile.open("example.txt", std::fstream::out);
-	//if (myfile.is_open())
+	std::ofstream log("DebuggersOnPi.log");
+	CRedirecter redirect(log, std::cout);
+
+	int result = TestAllFunctions();
+	if (!result)
+	// int result = TestAllFunctions();
+	//if (!result)
 	//{
 	//	std::vector<std::vector<ERoom>> roomMap = Maze.GetRoomMap();
 
@@ -82,10 +76,17 @@ int main() {
 	//	std::cout << "Unable to open file \n";
 	//	//return 1;
 	//}
+	
+	std::string hi = "TestData 5x5testmap1.txt";
+	std::string filepath = "TestData 5x5testmap1.txt";
+	CMap Maze(filepath);
 
-	//myfile.close();
 
-	//std::cout << "here is a coordinates list: \n";
+	std::ofstream myfile;
+	myfile.open("C:/Users/John/Documents/Programming Stuff/HackSpace/HackspaceProject/TestData/example.txt", std::fstream::out);
+	if (myfile.is_open())
+	{
+		std::vector<std::vector<ERoom>> roomMap = Maze.GetRoomMap();
 
 	//std::vector<std::vector<int>> coords = Maze.GetDistanceMatrixCoordinateList();
 
@@ -104,6 +105,6 @@ int main() {
 
 	////	std::cin.get();
 
-	//keep_window_open();
-	////return result;
+//	keep_window_open();
+	return result;
 }

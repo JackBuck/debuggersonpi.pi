@@ -43,7 +43,7 @@ void CChallenges::ChallengeOne()
 }
 
 void CChallenges::ChallengeTwo()
-{
+	{
 	DEBUG_METHOD();
 
 	CMap aMap = CMap(10, 10);
@@ -62,12 +62,12 @@ void CChallenges::ChallengeTwo()
 	is_next_vertex = aMazeMapper.ComputeNextVertex(aMap.GetCurrentVertex(), outputRoute);
 
 	if(is_next_vertex)
-	{
+		{
 		CInstructions aInstructions = CInstructions(outputRoute, 10);
 
 		aMap.FollowInstructions(aInstructions);
 
-	}
+		}
 
 	}
 	while(is_next_vertex);
@@ -77,9 +77,10 @@ void CChallenges::ChallengeTwo()
 
 	CSignals::Complete();
 
-
-
-
+void CChallenges::ChallengeTwo()
+{
+	DEBUG_METHOD();
+	
 
 
 }
@@ -168,6 +169,7 @@ void CChallenges::ChallengeFour()
 	// if unknown -1 or LOCATION UNKNOWN
 	
 	
+	int LOCATION_UNKNOWN = -1;
 	std::vector<int> block_location;
 	block_location = {LOCATION_UNKNOWN, LOCATION_UNKNOWN, LOCATION_UNKNOWN, LOCATION_UNKNOWN, LOCATION_UNKNOWN};
 
@@ -181,7 +183,7 @@ void CChallenges::ChallengeFour()
 	/////////////////////////////////////////////////////////////////////
 	// Rooms which contain a block. These may need 
 	// to be revisited if we get an image wrong.
-
+	
 	std::vector<int> rooms_with_a_block;
 	rooms_with_a_block = unknown_block_rooms;
 
@@ -323,7 +325,7 @@ void CChallenges::ChallengeFour()
 				if(existingVerticesOfStartRoom[k] == 0) continue;
 
 				int current_vertex = verticesOfStartRoom[k];
-
+			
 				ERoom room_type = aMap.GetRoomType(target_room);
 				std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(target_room);
 
@@ -398,6 +400,17 @@ void CChallenges::ChallengeFour()
 			unknown_block_rooms.erase(unknown_block_rooms.begin() + i);
 		}
 	}
+	
+	for(size_t i=0; i<unknown_block_rooms.size(); i++)
+	{
+		/////////////////////////////////////////////////////////////////////////////////////////////
+		// Remove the current room from the list of unknown rooms as we have just discovered which 
+		// block is there.
+		if(unknown_block_rooms[i] == current_room)
+		{
+			unknown_block_rooms.erase(unknown_block_rooms.begin() + i);
+		}
+	}
 
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -406,7 +419,7 @@ void CChallenges::ChallengeFour()
 	if(current_block_number != next_value)
 	{
 		CManouvre::ReverseAndUTurn();
-		CSignals::Notification2();
+	CSignals::Notification2();
 		continue;
 	}
 

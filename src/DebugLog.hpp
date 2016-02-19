@@ -36,6 +36,9 @@
 
 #include <iostream>
 #include <string>
+#ifdef DEBUG_LOG_ENABLE_TYPE_OUTPUT
+#include <typeinfo> // For using typeid
+#endif
 #ifdef DEBUG_LOG_ENABLE_TIMING
 #include <time.h>	
 #endif
@@ -153,9 +156,9 @@ namespace bornander
 
 		template<class T> void log::value_of_collection(const std::string& name, const T& collection, const typename T::size_type max, const list_segment segment, const bool outputTypeInformation)
 		{
-			const T::size_type limit = max != 0 ? std::min<T::size_type>(max, collection.size()) : collection.size();
+			const typename T::size_type limit = max != 0 ? std::min<T::size_type>(max, collection.size()) : collection.size();
 			
-			T::size_type startIndex = 0;
+			typename T::size_type startIndex = 0;
 			switch(segment)
 			{
 			case all:
@@ -167,7 +170,7 @@ namespace bornander
 				break;
 			}
 
-			const T::size_type endIndex = startIndex + limit;
+			const typename T::size_type endIndex = startIndex + limit;
 
 			write_indentation();
 			*stream << "collection(" << name; 
@@ -187,7 +190,7 @@ namespace bornander
 				*stream << "   ..." << std::endl;
 			}
 
-			for(T::size_type i = startIndex; i < endIndex; ++i)
+			for(typename T::size_type i = startIndex; i < endIndex; ++i)
 			{
 				write_indentation();
 				*stream << "   [" << i << "]=[" << collection[i] << "]" << std::endl;

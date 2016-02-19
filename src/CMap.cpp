@@ -63,7 +63,6 @@ CMap::CMap(string filepath)
 	// Current room is entrance room which is not defined in our map so set to 
 	m_currentRoom.resize(2);
 	m_currentRoom[0] = ENTRANCEPORCHROOM;
-	m_currentRoom = ENTRANCEPORCHROOM;
 	DEBUG_VALUE_OF_LOCATION(m_currentRoom);
 	
 }
@@ -724,7 +723,7 @@ void CMap::WriteCellMap(std::string filepath)
 }
 
 
-std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate) {
+
 
 std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate)
 {

@@ -43,7 +43,7 @@ void CChallenges::ChallengeOne()
 }
 
 void CChallenges::ChallengeTwo()
-	{
+{
 	DEBUG_METHOD();
 
 	CMap aMap = CMap(10, 10);
@@ -76,14 +76,8 @@ void CChallenges::ChallengeTwo()
 	aMap.WriteCellMap(filepath);
 
 	CSignals::Complete();
-
-void CChallenges::ChallengeTwo()
-{
-	DEBUG_METHOD();
-	
-
-
 }
+
 
 void CChallenges::ChallengeThree()
 {

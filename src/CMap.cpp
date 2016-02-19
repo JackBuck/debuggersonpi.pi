@@ -790,6 +790,11 @@ std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<
 	return m_distanceMatrix;
 }
 
+void CMap::WriteCellMap(std::string filepath)
+{
+	CParseCSV::WriteCSV(m_cellMap, filepath);
+}
+
 std::vector<std::vector<int>> CMap::DistanceMatrix()
 {
 	// x = i(2n + 2j) 

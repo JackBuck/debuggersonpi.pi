@@ -54,11 +54,15 @@ CMap::CMap(string filepath)
 	// Assume positioned at start.
 
 	m_currentVertex = GetEntranceVertex();
+	DEBUG_VALUE_OF_LOCATION(m_currentVertex);
+
 	m_currentOrientation = EOrientation_North;
+	DEBUG_VALUE_OF_LOCATION(m_currentOrientation);
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Current room is entrance room which is not defined in our map so set to 
 	m_currentRoom = ENTRANCEPORCHROOM;
+	DEBUG_VALUE_OF_LOCATION(m_currentRoom);
 	
 }
 

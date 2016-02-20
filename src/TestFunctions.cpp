@@ -31,8 +31,8 @@ int TestAllFunctions()
 	// TODO It would be useful to produce output to the console to show which functions 'passed' and which 'failed' so that we can look at their output in the future.
 	returnVal += CMap_test();
 	std::cout << '\n';
-	CMap_testJohn();
-	std::cout << '\n';
+//	CMap_testJohn();
+//	std::cout << '\n';
 	returnVal += CGraph_test();
 	std::cout << '\n';
 	returnVal += CGraph_test2();

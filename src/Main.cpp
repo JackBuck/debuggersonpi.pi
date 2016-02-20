@@ -32,8 +32,6 @@ int TestAllFunctions();
 // Keep the window open on windows systems without restricting the program to windows systems
 inline void keep_window_open()
 {
-	DEBUG_METHOD();
-
 	cin.clear();
 	cout << "Please enter a character to exit\n";
 	char ch;
@@ -63,6 +61,6 @@ int main()
 
 
 
-	keep_window_open();
+//	keep_window_open(); // Commented since logger redirects output to file, so you don't see the enter character message!!
 	return result;
 }

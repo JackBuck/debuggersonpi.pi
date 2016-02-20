@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Toggle Data on/off for output to DebuggingLog.txt
 
-//#define DEBUG_LOG_ENABLE                        // Main switch
+#define DEBUG_LOG_ENABLE                        // Main switch
 #define DEBUG_SHOW_FUNCTIONS_ENABLE             // Show entry and exit of functions
 #define DEBUG_VALUE_OF_SENSORS_ENABLE           // Show sensor related variables
 #define DEBUG_VALUE_OF_INSTRUCTIONS_ENABLE      // Show instruction related variables

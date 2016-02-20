@@ -16,8 +16,11 @@
  *
  */
 
+
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include<iostream>
+#include<fstream>
+#include "DebugLog.hpp"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -36,8 +39,13 @@ inline void keep_window_open()
 	return;
 }
 
+
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main() {
+
+	ofstream log("DebuggersOnPi.log");
+	CRedirecter redirect(log, cout);
+
 	int result = TestAllFunctions();
 	if (!result)
 	{
@@ -49,6 +57,7 @@ int main() {
 	}
 
 
-//	keep_window_open();
+
+	keep_window_open();
 	return result;
 }

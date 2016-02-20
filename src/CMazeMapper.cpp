@@ -130,6 +130,10 @@ void CMazeMapper::FindVertsToExplore()
 
 	vector<vector<ERoom> > roomMap = m_pCurrentMap->GetRoomMap();
 
+	// Add entrance vertex
+	m_vertsToExplore.push_back(m_pCurrentMap->GetEntranceVertex());
+
+	// Add vertices which join rooms of known type with those of unknown type
 	for (unsigned int i = 0; i < roomMap.size(); ++i)
 	{
 		for (unsigned int j = 0; j < roomMap[i].size(); ++j)

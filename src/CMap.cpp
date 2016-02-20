@@ -13,7 +13,9 @@
 #include<fstream>
 #include <cmath>
 #include "EnumsHeader.h"
+#include "DebugLog.hpp"
 #include "CMap.h"
+#include "CParseCSV.h"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -27,46 +29,12 @@ int ENTRANCEPORCHROOM = -1;
 // and from this creates an instance of the class.
 CMap::CMap(string filepath)
 {
-	ifstream myReadFile;
-	myReadFile.open(filepath);
+	DEBUG_METHOD();
+
+	std::vector<std::vector<int>> m_cellMap = CParseCSV::ReadCSV_int(filepath);
 
 
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	// Check file has been correctly opened
 
-	if (myReadFile.is_open())
-	{
-		myReadFile >> m_cellwidth >> m_cellheight;
-
-		for(int i=0; i<m_cellheight; i++)
-		{ 
-
-			/////////////////////////////////////////////////////////////////////////////////////
-			// Add new vector for new row of map
-
-			int temp_int;
-			vector<int> temp_vec;
-			myReadFile >> temp_int;
-			temp_vec.push_back(temp_int);
-			m_cellMap.push_back(temp_vec);
-
-			
-
-			for(int j=1; j<m_cellwidth; j++)
-			{
-				/////////////////////////////////////////////////////////////////////////////////////
-				// Fill row of array
-
-				myReadFile >> temp_int;
-				m_cellMap[i].push_back(temp_int);
-			}
-		}
-	}
-	else
-	{
-		CSignals::Error();
-		cout << "unable to open file"; // EXCEPTION - eventually this will need to throw a proper exception
-	}
 
 	CreateRoomMap();
 	ComputeCellMapSize();
@@ -84,11 +52,15 @@ CMap::CMap(string filepath)
 	// Assume positioned at start.
 
 	m_currentVertex = GetEntranceVertex();
+	DEBUG_VALUE_OF_LOCATION(m_currentVertex);
+
 	m_currentOrientation = EOrientation_North;
+	DEBUG_VALUE_OF_LOCATION(m_currentOrientation);
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Current room is entrance room which is not defined in our map so set to 
 	m_currentRoom = ENTRANCEPORCHROOM;
+	DEBUG_VALUE_OF_LOCATION(m_currentRoom);
 	
 }
 
@@ -97,6 +69,8 @@ CMap::CMap(string filepath)
 // Initialiser for unknown map.
 CMap::CMap(int room_height, int room_width)
 {
+	DEBUG_METHOD();
+
 	m_cellMap = vector<vector<int>> (room_height * 3, vector<int>(room_width * 3));
 
 	for(int i=0; i<room_height; i++)
@@ -121,6 +95,8 @@ CMap::CMap(int room_height, int room_width)
 // This function creates the room map from a cell map.
 void CMap::CreateRoomMap()
 {
+
+	DEBUG_METHOD();
 
 	int room_height = m_cellheight/3;
 	int room_width = m_cellwidth/3;
@@ -262,6 +238,8 @@ void CMap::CreateRoomMap()
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void CMap::ComputeCellMapSize()
 {
+	DEBUG_METHOD();
+
 	m_cellheight= m_cellMap.size();
 	if(m_cellheight > 0)	m_cellwidth = m_cellMap[0].size();
 }
@@ -269,11 +247,15 @@ void CMap::ComputeCellMapSize()
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 vector<vector<ERoom>> CMap::GetRoomMap() const
 {
+	DEBUG_METHOD();
+
 	return m_roomMap;
 }
 
 ERoom CMap::GetRoomType(int room_index) const
 {
+	DEBUG_METHOD();
+
 	vector<int> coords = RoomIndextoCoord(room_index);
 	return m_roomMap[coords[0]][coords[1]];
 }
@@ -282,26 +264,36 @@ ERoom CMap::GetRoomType(int room_index) const
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 vector<vector<int>> CMap::GetCellMap() const
 {
+	DEBUG_METHOD();
+	
 	return m_cellMap;
 }
 
 int CMap::GetEntranceRoom() const
 {
+	DEBUG_METHOD();
+
 	return m_firstRoom;
 }
 
 int CMap::GetExitRoom() const
 {
+	DEBUG_METHOD();
+	
 	return m_exitRoom;
 }
 
 vector<int> CMap::GetEntranceCell() const
 {
+	DEBUG_METHOD();
+
 	return m_entranceCell;
 }
 
 vector<int> CMap::GetExitCell() const
 {
+	DEBUG_METHOD();
+
 	return m_exitCell;
 }
 
@@ -309,6 +301,7 @@ vector<int> CMap::GetExitCell() const
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void CMap::UpdateRoomMap()
 {
+	DEBUG_METHOD();
 	CreateRoomMap();
 }
 
@@ -316,6 +309,7 @@ void CMap::UpdateRoomMap()
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void CMap::UpdateCellMap()
 {
+	DEBUG_METHOD();
 	m_cellMap.clear();
 	m_cellMap.resize(m_roomMap.size()*3);
 
@@ -437,21 +431,14 @@ void CMap::UpdateCellMap()
 				}
 			}
 
-			for (unsigned int i = 0; i<m_cellMap.size(); i++)
-			{
-				for (unsigned int j = 0; j<m_cellMap[i].size(); j++)
-				{
-					cout << m_cellMap[i][j];
 				}
-				cout << endl;
-				
 			}
-			cout << endl;
 		}
-	}
-}
+
+
 void CMap::CalculateBlockRooms(vector<int>* pBlockRooms) const
 {
+	DEBUG_METHOD();
 	pBlockRooms->clear();
 
 	for(int i=1; i<m_cellwidth; i+=3)
@@ -488,18 +475,21 @@ void CMap::CalculateBlockRooms(vector<int>* pBlockRooms) const
  */
 vector<int> CMap::CalculateRoomVertices(int room_index) const
 {
+	DEBUG_METHOD();
 	vector<int> coord = RoomIndextoCoord(room_index);
 	return CalculateRoomVertices(coord);
 }
 
 vector<int> CMap::CalculateRoomVertices(int row, int col) const
 {
+	DEBUG_METHOD();
 	vector<int> coord { row, col };
 	return CalculateRoomVertices(coord);
 }
 
 vector<int> CMap::CalculateRoomVertices(vector<int> coord) const
 {
+	DEBUG_METHOD();
 	vector<int> roomVertices;
 
 	roomVertices.push_back(coord[0]*(2*(m_cellwidth/3)+1) +2*coord[1] +1);  // North
@@ -549,6 +539,7 @@ vector<double> CMap::CalculateVertexCoords(int vertex) const
 // North East South West.
 vector<int> CMap::GetRoomVertices(ERoom room_type)
 {
+	DEBUG_METHOD();
 	vector<int> vertex_flag;
 
 	switch (room_type)
@@ -643,6 +634,7 @@ vector<int> CMap::GetRoomVertices(ERoom room_type)
 
 int CMap::GetEntranceVertex() const
 {
+	DEBUG_METHOD();
 	vector<int> coord = {m_cellwidth/3, 0}; // TODO: should be m_cellheight here? (even if it is academic when they're both equal!)
 
 	return (coord[0]+1)*(2*m_cellwidth+1) + 2*coord[1] +1;
@@ -650,6 +642,7 @@ int CMap::GetEntranceVertex() const
 
 int CMap::GetExitVertex() const
 {
+	DEBUG_METHOD();
 	vector<int> coord = {0, m_cellwidth/3};
 
 	return (coord[0])*(2*m_cellwidth+1) + 2*coord[1] +2; // TODO: Should be +1 here? Is the exit not off the top rather than the right?
@@ -657,26 +650,31 @@ int CMap::GetExitVertex() const
 
 int CMap::GetCurrentVertex() const
 {
+	DEBUG_METHOD();
 	return m_currentVertex;
 }
 
 int CMap::GetCurrentRoom() const
 {
+	DEBUG_METHOD();
 	return m_currentRoom;
 }
 
 void CMap::SetCurrentRoom(int new_room)
 {
+	DEBUG_METHOD();
 	m_currentRoom = new_room;
 }
 
 void CMap::SetCurrentVertex(int new_vertex)
 {
+	DEBUG_METHOD();
 	m_currentVertex = new_vertex;
 }
 
 vector<int> CMap::RoomIndextoCoord(int room_index) const
 {
+	DEBUG_METHOD();
 	int row_index = room_index/(2*m_cellwidth +1);
 	int col_index = room_index % (2*m_cellwidth +1);
 
@@ -687,6 +685,7 @@ vector<int> CMap::RoomIndextoCoord(int room_index) const
 
 void CMap::FollowInstructions(CInstructions &inputInstructions)
 {
+	DEBUG_METHOD();
 	//////////////////////////////////////////////////////////////////////////////////////
 	// Check we are at start vertex.
 
@@ -696,16 +695,144 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 	vector<ERoom> roomList = inputInstructions.GetRoomList();
 	vector<EOrientation> oreintationList = inputInstructions.GetOrientations();
 
-	if(current_vertex != instructionList[0]) CSignals::Error();
+	if (current_vertex != instructionList[0]) CSignals::Error();
 
-	for(int i=0; i<instructionList.size(); i++)
+	for (int i = 0; i < instructionList.size(); i++)
 	{
 		CManouvre::InstructionToManouvre(instructionList[i]);
+	}
+}
 
-		
+
+
+std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate) {
+
+	int n = GetRoomMap()[0].size();
+	int distanceMatrixSize = (n - 1)*(2 * (n + 1) + 1) + (5 * n) - 2;
+
+	// TODO:
+	// Ensure every edge is printed in the coordinate list. Currently it seems to only have half of the expected coordinates
+	// ENSURE THAT i & j > n !!!
+	// if so, throw exception "n must be > than row & column coordinates"
+
+	// x = i(2n + 1) + 2j
+	// y = x + 2n + 2
+
+
+	int i_coordinate = rowCoordinate;
+	int j_coordinate = columnCoordinate;
+
+	int vertexA_Coordinate = 0, vertexB_Coordinate = 0;
+	int edge_Magnitude;
+
+	int firstVertexOfRoom = i_coordinate * ((2 * n) + 1) + 2 * j_coordinate;
+
+	int NorthVertexCoordinate = firstVertexOfRoom + 1;
+	int EastVertexCoordinate = firstVertexOfRoom + 2;
+
+	// by default, the southvertex number is the following. However, if the room is on the last row, the equation changes slightly
+	int SouthVertexCoordinate = firstVertexOfRoom + (2 * n) + 2;
+	if (i_coordinate == n - 1) {
+		SouthVertexCoordinate = firstVertexOfRoom + (2 * n) + 1;
 	}
 
+	int WestVertexCoordinate = firstVertexOfRoom;
 
-	
+	int convertedVertexArray[4] = { NorthVertexCoordinate, EastVertexCoordinate, SouthVertexCoordinate, WestVertexCoordinate };
+
+	// Main body of function:
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (exampleArray.at(i) != 0)
+		{
+			// if != 0, the a coordinate is convertedVertexArray[i]
+
+			vertexA_Coordinate = convertedVertexArray[i];
+
+			// loop through the rest of the integers in the array to see if any of them are non-zero
+			for (int j = i + 1; j < 4; j++) {
+
+				// if there is another non-zero value, the b coordinate is convertedVertexArray[j]
+				if (exampleArray.at(j) != 0) {
+					vertexB_Coordinate = convertedVertexArray[j];
+
+					// coordinates are only added if both vertices are non-zero
+					if (j == i + 1 || j == i + 3) {
+						edge_Magnitude = 2;
+					}
+					else if (j == i + 2) {
+						edge_Magnitude = 1;
 }
+					else { edge_Magnitude = 0; }
+
+
+					if (vertexA_Coordinate < vertexB_Coordinate) {
+
+						// Logic needs to be added to discern whether the room is a corner or a straight line
+						m_distanceMatrix.at(vertexB_Coordinate).at(vertexA_Coordinate) = edge_Magnitude;
+						std::vector<int> distanceMatrixCoordinate = { vertexB_Coordinate, vertexA_Coordinate, edge_Magnitude };
+						m_distanceMatrixCoordinateList.push_back(distanceMatrixCoordinate);
+					}
+
+					// Added in case vertexA_Coordinate == vertexB_Coordinate (which should never happen)
+					else if (vertexA_Coordinate > vertexB_Coordinate) {
+
+						// Logic needs to be added to discern whether the room is a corner or a straight line
+						m_distanceMatrix.at(vertexA_Coordinate).at(vertexB_Coordinate) = edge_Magnitude;
+						std::vector<int> distanceMatrixCoordinate = { vertexA_Coordinate, vertexB_Coordinate, edge_Magnitude };
+						m_distanceMatrixCoordinateList.push_back(distanceMatrixCoordinate);
+					}
+				}
+			}
+		}
+	}
+	return m_distanceMatrix;
+}
+
+void CMap::WriteCellMap(std::string filepath)
+{
+	CParseCSV::WriteCSV(m_cellMap, filepath);
+}
+
+std::vector<std::vector<int>> CMap::DistanceMatrix()
+{
+	// x = i(2n + 2j) 
+	// y = x + 2n + 2
+
+	int westPoint, southPoint, matrixSize;
+	matrixSize = GetRoomMap().size();
+
+	int n = matrixSize;
+	int distanceMatrixSize = (n - 1)*(2 * (n + 1) + 1) + (5 * n) - 2;
+
+	m_distanceMatrixCoordinateList.clear();
+	std::vector<std::vector<int>> distanceMatrix(distanceMatrixSize);
+	for (int i = 0; i < distanceMatrixSize; i++) {
+		distanceMatrix[i].resize(distanceMatrixSize);
+	}
+	m_distanceMatrix = distanceMatrix;
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			ERoom room_type = GetRoomMap().at(i).at(j);
+			populateDistanceMatrixFromArray(GetRoomVertices(room_type), i, j);
+		}
+	}
+
+	return m_distanceMatrix;
+}
+
+//std::vector<std::vector<int>> GetDistanceMatrix() {
+//
+//}
+
+std::vector<std::vector<int>> CMap::GetDistanceMatrixCoordinateList(){
+	DistanceMatrix();
+	return m_distanceMatrixCoordinateList;
+}
+
+
 

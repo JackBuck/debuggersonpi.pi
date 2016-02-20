@@ -58,7 +58,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
 
 	switch (distanceMatrixType) {
 	case DistMatCheckResult::tooLarge:
-		//throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), std::numeric_limits<unsigned int>::max() - 1 };
+		throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), std::numeric_limits<unsigned int>::max() - 1 };
 		break;
 	case DistMatCheckResult::badShape:
 		throw InputDistMat_BadShape{ distanceMatrix };
@@ -103,7 +103,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
 
 	// Check and store external-to-internal vertex labels
 	if (m_Order != vertexLabels.size())
-		//throw InputVertexLabels_BadSize { vertexLabels.size() };
+		throw InputVertexLabels_BadSize { vertexLabels.size() };
 	for (unsigned int i = 0; i < vertexLabels.size(); ++i)
 		m_ExternalToInternal[vertexLabels[i]] = i;
 	if (m_Order != m_ExternalToInternal.size())

@@ -9,8 +9,8 @@ One reason for sharing (large) feature branches is to use GitHub as a backup in 
 ### Git config
 In order to set as default that git should no-fastforward local merges, but still fast forward pulls, run the following two commands (in the git BASH if using windows)
 ```
-git config --add merge.ff false
-git config --add pull.ff only
+git config merge.ff false
+git config pull.ff pull
 ```
 
 This will add configurations to your `.git/config` file, which is repository specific.

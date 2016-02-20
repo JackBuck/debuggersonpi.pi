@@ -11,13 +11,13 @@ int CMap_test()
 
 	/////////////////////////////////////////////////////////////
 	// Create instance of CMap 
-	std::string fileInputpath = "5x5testmap1.txt";
+	std::string fileInputpath = "TestData/5x5testmap1.txt";
 	CMap Maze(fileInputpath);
 
 	/////////////////////////////////////////////////////////////
 	//
 	std::ofstream myfile;
-	myfile.open("example.txt", std::fstream::out);
+	myfile.open("TestData/example.txt", std::fstream::out);
 	if (myfile.is_open())
 	{
 		std::cout << "--CMap_test--\n\n";

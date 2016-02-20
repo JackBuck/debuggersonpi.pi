@@ -9,6 +9,7 @@
 #include "CBlockReader.h"
 #include "CParseCSV.h"
 #include <cmath>
+#include "DebugLog.hpp"
 
 //#include <opencv2/opencv.hpp> // Include everything
 //#include <opencv2/core/core_c.h>
@@ -44,6 +45,7 @@ const std::string CBlockReader::expectedSpotDistancesFile {"Data/Calibration/Exp
  */
 CBlockReader::CBlockReader()
 {
+	DEBUG_METHOD();
 }
 
 /* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,6 +59,7 @@ CBlockReader::CBlockReader()
  */
 CBlockReader::CBlockReader(string imagePath)
 {
+	DEBUG_METHOD();
 	LoadImgFromFile(imagePath);
 }
 
@@ -73,6 +76,7 @@ CBlockReader::CBlockReader(string imagePath)
  */
 void CBlockReader::LoadImgFromFile(string imagePath)
 {
+	DEBUG_METHOD();
 	Mat image_fullsize = imread(imagePath, IMREAD_GRAYSCALE);
 	if (image_fullsize.empty())
 	{
@@ -93,6 +97,7 @@ void CBlockReader::LoadImgFromFile(string imagePath)
  */
 bool CBlockReader::TakePhoto(std::string saveLocation)
 {
+	DEBUG_METHOD();
 	// TODO: Find out how to take a photo with the PI camera and then implement CBlockReader::TakePhoto
 }
 
@@ -105,6 +110,8 @@ bool CBlockReader::TakePhoto(std::string saveLocation)
  */
  int CBlockReader::CountSpots()
 {
+	DEBUG_METHOD();
+
 	DetectSpots();
 
 	bool spotNbhdTest = VerifySpotNbhdVisible();
@@ -128,6 +135,8 @@ bool CBlockReader::TakePhoto(std::string saveLocation)
  */
 void CBlockReader::DetectSpots()
 {
+	DEBUG_METHOD();
+
 	////////////////////////////////////////////////////////////
 	// Setup SimpleBlobDetector Parameters.
 
@@ -184,6 +193,8 @@ void CBlockReader::DetectSpots()
  */
 bool CBlockReader::VerifySpotArrangement()
 {
+	DEBUG_METHOD();
+
 	// Load expected spot distances
 	vector<vector<double>> allExpectedSpotDistances =	CParseCSV::ReadCSV_double(expectedSpotDistancesFile);
 	int startInd = m_Spots.size() * (m_Spots.size() - 1) / 2;
@@ -219,6 +230,8 @@ bool CBlockReader::VerifySpotArrangement()
  */
 bool CBlockReader::VerifySpotNbhdVisible() const
 {
+	DEBUG_METHOD();
+
 	double minSpotPadding = 1; // A proportion of the diameter of the spot
 
 	bool result = true;
@@ -266,6 +279,8 @@ bool CBlockReader::VerifySpotNbhdVisible() const
  */
 bool CBlockReader::ComputeBlockLocation(double& blockRelPosn_x, double& blockRelPosn_y) const
 {
+	DEBUG_METHOD();
+
 	blockRelPosn_x = 0;
 	blockRelPosn_y = 0;
 
@@ -303,6 +318,8 @@ bool CBlockReader::ComputeBlockLocation(double& blockRelPosn_x, double& blockRel
  */
 void CBlockReader::SetExpectedSpotDistances(const vector<string>& fileNames)
 {
+	DEBUG_METHOD();
+
 	if (fileNames.size() != 5)
 		throw Exception_InputImagePath_BadFilePath { fileNames };
 
@@ -341,10 +358,13 @@ void CBlockReader::SetExpectedSpotDistances(const vector<string>& fileNames)
 CBlockReader::CompareByAngleThenRadius::CompareByAngleThenRadius()
 		: m_AngTol {ANGTOL}, m_RadTol {RADTOL}
 {
+	DEBUG_METHOD();
 }
 
 bool CBlockReader::CompareByAngleThenRadius::operator ()(const Point2f point1, const Point2f point2) const
 {
+	DEBUG_METHOD();
+
 	// Compute radii squared
 	double point1_rad2 = point1.x * point1.x + point1.y * point1.y;
 	double point2_rad2 = point2.x * point2.x + point2.y * point2.y;
@@ -393,6 +413,8 @@ bool CBlockReader::CompareByAngleThenRadius::operator ()(const Point2f point1, c
  */
 bool CBlockReader::SortAndComputeSpotDists()
 {
+	DEBUG_METHOD();
+
 	// Compute mean spot location
 	double meanLoc_x {0};
 	double meanLoc_y {0};

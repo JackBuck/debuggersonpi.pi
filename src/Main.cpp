@@ -32,6 +32,8 @@ int TestAllFunctions();
 // Keep the window open on windows systems without restricting the program to windows systems
 inline void keep_window_open()
 {
+	DEBUG_METHOD();
+
 	cin.clear();
 	cout << "Please enter a character to exit\n";
 	char ch;
@@ -41,7 +43,8 @@ inline void keep_window_open()
 
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int main() {
+int main()
+{
 
 #ifdef DEBUG_LOG_ENABLE
 	ofstream log("DebuggersOnPi.log");

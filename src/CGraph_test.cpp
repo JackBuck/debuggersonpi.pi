@@ -15,6 +15,8 @@ using namespace std;
 // For printing elements of a table
 template<typename T> void printElement(T t, const int& width)
 {
+	DEBUG_METHOD();
+
 	const char separator = ' ';
 	cout << right << setw(width) << setfill(separator) << t;
 }
@@ -230,6 +232,8 @@ int CGraph_test()
 
 int CGraph_test2()
 {
+	DEBUG_METHOD();
+
 	// 1 - Define example of a graph manually
 	// The last two vertices form a second connected component.
 	vector<vector<double> > exampleGraph_DistMat {
@@ -331,6 +335,8 @@ int CGraph_test2()
 
 int CGraph_test3()
 {
+	DEBUG_METHOD();
+
 	// Test ShortestDistance with a singleton graph
 	vector<vector<double> > exampleGraph_DistMat {
 		{ 0 }

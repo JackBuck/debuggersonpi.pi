@@ -52,7 +52,9 @@ int CMap_test()
 	return 0;
 }
 
-void PrintMatrix(std::vector<std::vector<int>> inputMap) {
+void PrintMatrix(std::vector<std::vector<int>> inputMap)
+{
+	DEBUG_METHOD();
 
 	for (int i = 0; i < inputMap.size(); i++) {
 		for (int j = 0; j < inputMap.size(); j++) {
@@ -64,6 +66,9 @@ void PrintMatrix(std::vector<std::vector<int>> inputMap) {
 
 void CMap_testJohn()
 {
+	DEBUG_METHOD();
+
+
 	std::string filepath = "TestData/5x5testmap1.txt";
 	CMap Maze(filepath);
 

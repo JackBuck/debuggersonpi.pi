@@ -43,8 +43,10 @@ inline void keep_window_open()
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int main() {
 
+#ifdef DEBUG_LOG_ENABLE
 	ofstream log("DebuggersOnPi.log");
 	CRedirecter redirect(log, cout);
+#endif
 
 	int result = TestAllFunctions();
 	if (!result)

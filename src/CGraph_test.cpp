@@ -15,8 +15,6 @@ using namespace std;
 // For printing elements of a table
 template<typename T> void printElement(T t, const int& width)
 {
-	DEBUG_METHOD();
-
 	const char separator = ' ';
 	cout << right << setw(width) << setfill(separator) << t;
 }

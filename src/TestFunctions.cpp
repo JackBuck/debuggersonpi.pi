@@ -43,10 +43,10 @@ int TestAllFunctions()
 	std::cout << '\n';
 	CParseCSV_test2();
 	std::cout << '\n';
-//	CBlockReader_test();                // Will fail without images in the Data/SpotImageExamples folder
-//	std::cout << '\n';
-//	returnVal += CBlockReader_test2();  // Will fail without images in the Data/SpotImageExamples folder
-//	std::cout << '\n';
+	CBlockReader_test();                // Will fail without images in the Data/SpotImageExamples folder
+	std::cout << '\n';
+	returnVal += CBlockReader_test2();  // Will fail without images in the Data/SpotImageExamples folder
+	std::cout << '\n';
 //	returnVal += CMazeMapper_test();
 //	std::cout << '\n';
 

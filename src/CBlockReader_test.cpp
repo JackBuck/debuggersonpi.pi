@@ -6,6 +6,7 @@
  */
 
 #include "CBlockReader.h"
+#include <iostream>
 
 using namespace std;
 

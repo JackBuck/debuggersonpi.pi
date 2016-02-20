@@ -8,15 +8,19 @@
 // need to be checked when the class is completed.
 
 #include "GoodsIn.h"
+#include "DebugLog.hpp"
 
 void CGoodsIn::GetJunctionType()
 {
+	DEBUG_METHOD();
 }
 
 void CGoodsIn::GetRawSensorData()
 {
+	DEBUG_METHOD();
 }
 
 void CGoodsIn::GetRawCompassData()
 {
+	DEBUG_METHOD();
 }

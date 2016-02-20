@@ -41,7 +41,8 @@ inline void keep_window_open()
 
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int main() {
+int main()
+{
 
 #ifdef DEBUG_LOG_ENABLE
 	ofstream log("DebuggersOnPi.log");
@@ -60,6 +61,6 @@ int main() {
 
 
 
-	keep_window_open();
+//	keep_window_open(); // Commented since logger redirects output to file, so you don't see the enter character message!!
 	return result;
 }

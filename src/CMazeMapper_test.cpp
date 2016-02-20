@@ -7,11 +7,14 @@
 
 #include "CMazeMapper.h"
 #include <iostream>
+#include "DebugLog.hpp"
 
 using namespace std;
 
 int CMazeMapper_test()
 {
+	DEBUG_METHOD();
+
 	// Test that the const pointer doesn't require the CMap to be declared const
 	CMap aMap { 30, 30 };
 

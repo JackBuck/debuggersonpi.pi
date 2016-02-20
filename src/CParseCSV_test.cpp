@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "DebugLog.hpp"
 
 
 using namespace std;
@@ -16,6 +17,8 @@ using namespace std;
 // Test the static functions in CParseCSV
 int CParseCSV_test()
 {
+	DEBUG_METHOD();
+
 	cout << "--CParseCSV_test--\n\n";
 
 	// Define something to save (incidentally the distance matrix from CGraph_test()
@@ -85,6 +88,8 @@ int CParseCSV_test()
 
 void CParseCSV_test2()
 {
+	DEBUG_METHOD();
+
 	string filePath = "TestData/PracticeMap.csv";
 
 	vector<vector<int> > practiceMap = CParseCSV::ReadCSV_int(filePath);

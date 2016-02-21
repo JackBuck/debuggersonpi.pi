@@ -103,7 +103,7 @@ bool CBlockReader::TakePhoto(string saveLocation)
 	DEBUG_METHOD();
 
 	int i;
-	printf ("Checking if processor is available...");
+	cout << "Checking if processor is available..." << '\n';
 	if (system(NULL)) cout << "Ok";
 	  else return false;
 

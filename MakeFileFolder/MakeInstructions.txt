@@ -1,6 +1,6 @@
 ---Instructions for using the makefile---
 
-The makefile is linked from the renispace builds directory.
+The makefile is linked in the renispace builds directory.
 This is where the project should be built.
 
 That is, to make the project, run
@@ -16,3 +16,6 @@ make clean
 
 Or to simply remove the object files, run
 make cleanobj
+
+And the dependency files
+make cleand

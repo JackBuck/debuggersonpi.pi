@@ -40,7 +40,7 @@ SRCS  =     CBlockReader.cpp      \
             TestFunctions.cpp
 
 # Define object files (by naming rule)
-OBJS  = $(addprefix $(OBJECTS_FOLDER), $(SRCS:.cpp=.o))
+OBJS  = $(SRCS:.cpp=.o)
 
 # Define include paths
 INCLUDE_DIRS := -I/usr/include/opencv -I $(REPO_DIR)/src
@@ -57,7 +57,7 @@ CXXFLAGS = -std=c++0x -O0 -g0 -Wall -c -fmessage-length=0
 all: renispace
 
 # Tool invocations
-renispace: $(OBJS)
+renispace: $(addprefix $(OBJECTS_FOLDER), $(OBJS))
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
 	g++  -o $(EXECUTABLE_NAME) $^ $(LIBS)
@@ -67,15 +67,15 @@ renispace: $(OBJS)
 # Autogenerate prerequisites for include files. These go into .d files that are included by make, one per file
 # See gnu info on Make: 4.14 Generating Prerequisites Automatically
 
-%.d: %.cpp
+$(OBJECTS_FOLDER)/%.d: %.cpp
 	@echo 'Auto generating $@';
 	@set -e; rm -f $@;
-	$(CXX) -MM $(CPPFLAGS) $< | perl -pe 's/^(\S+).o\s*:/$$1.o $$1.d :/' > $(OBJECTS_FOLDER)$@;
+	$(CXX) -MM $(CPPFLAGS) $< | perl -pe 's/^(\S+).o\s*:/$$1.o $$1.d :/' > $@;
 
--include $(OBJS:.o=.d)
+-include $(addprefix $(OBJECTS_FOLDER), $(OBJS:.o=.d))
 
 # Version without .d files. Doesn't use preprocessor to check for new dependencies / changed header files
-%.o: %.cpp
+$(OBJECTS_FOLDER)/%.o: %.cpp
 	@echo ' '
 	@echo 'Building file: $<'
 #	@echo 'Invoking: GCC C++ Compiler'
@@ -88,9 +88,9 @@ clean: cleanobj cleand
 	rm -f $(EXECUTABLE_NAME)
 
 cleanobj:
-	rm -f $(OBJS)
+	rm -f $(addprefix $(OBJECTS_FOLDER), $(OBJS))
 
 cleand:
-	rm -f $(OBJS:.o=.d)
+	rm -f $(addprefix $(OBJECTS_FOLDER), $(OBJS:.o=.d))
 
 .PHONY: all clean cleanobj cleand

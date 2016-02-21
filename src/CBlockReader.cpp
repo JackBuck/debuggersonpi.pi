@@ -27,7 +27,6 @@
 #include <opencv2/highgui/highgui.hpp>
 //#include <opencv2/contrib/contrib.hpp>
 
-#include <cstdio>   /* printf */
 #include <cstdlib> /* system, NULL, EXIT_FAILURE */
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,19 +96,32 @@ void CBlockReader::LoadImgFromFile(string imagePath)
  *
  *	INPUTS:
  *	saveLocation - This should contain the path at which to save the photo.
+ *
+ *	RETURNS:
+ *	true if photo was taken successfully. False otherwise.
+ *
  */
+bool CBlockReader::TakePhoto()
+{
+	return TakePhoto("Data/MostRecentPhoto.bmp");
+}
+
 bool CBlockReader::TakePhoto(string saveLocation)
 {
 	DEBUG_METHOD();
 
+	// Check we can use system()
 	int i;
-	cout << "Checking if processor is available..." << '\n';
-	if (system(NULL)) cout << "Ok";
-	  else return false;
+	if (!system(NULL))
+	{
+		cout << "Unable to use system() to call other processes.\n";
+		return false;
+	}
 
-	cout << "Executing command DIR...\n";
-	i=system ("dir");
-	cout << "The value returned was: " << i << '\n';
+	// Take a photo
+	string command = "raspistill -o " + saveLocation + " -e bmp";
+	int result = system(command.c_str());
+
 	return true;
 }
 

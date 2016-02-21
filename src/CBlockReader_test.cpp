@@ -81,7 +81,7 @@ int CBlockReader_test3()
 
 	CBlockReader aBlockReader;
 
-	if (aBlockReader.TakePhoto(""))
+	if (aBlockReader.TakePhoto())
 		return 0;
 	else
 		return 1;

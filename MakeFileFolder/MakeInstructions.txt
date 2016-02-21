@@ -1,0 +1,18 @@
+---Instructions for using the makefile---
+
+The makefile is linked from the renispace builds directory.
+This is where the project should be built.
+
+That is, to make the project, run
+cd ~/renispace_build
+make all
+
+The executable created is called renispace.
+
+NOTE: If any new .cpp files have been added to the project then they will need to be added to the SRCS variable in the makefile to be part of the build.
+
+In order to clean the build, run
+make clean
+
+Or to simply remove the object files, run
+make cleanobj

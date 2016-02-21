@@ -125,6 +125,7 @@ bool CBlockReader::TakePhoto(string saveLocation)
 	command += " --output " + saveLocation;
 	command += " --encoding png";
 
+	DEBUG_VALUE_OF_BLOCKS(command);
 
 	int result = system(command.c_str());
 

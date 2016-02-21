@@ -51,7 +51,7 @@ LIBS := -lopencv_core -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_v
 
 # Executable destination - the executable will be copied here
 EXECUTABLE_NAME        := renispace
-EXECUTABLE_DESTINATION := /home/pi/
+#EXECUTABLE_DESTINATION := /home/pi/
 
 # All target
 all: renispace
@@ -63,7 +63,7 @@ renispace: $(OBJS)
 	g++  -o $(EXECUTABLE_NAME) $^ $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
-	cp $(EXECUTABLE_NAME) $(EXECUTABLE_DESTINATION)
+	#cp $(EXECUTABLE_NAME) $(EXECUTABLE_DESTINATION)
 
 %.o: %.cpp
 	@echo 'Building file: $<'
@@ -75,7 +75,7 @@ renispace: $(OBJS)
 # Other Targets
 clean: cleanobj
 	rm $(EXECUTABLE_NAME)
-	rm $(EXECUTABLE_DESTINATION)/$(EXECUTABLE_NAME)
+	#rm $(EXECUTABLE_DESTINATION)/$(EXECUTABLE_NAME)
 
 cleanobj:
 	rm $(OBJS)

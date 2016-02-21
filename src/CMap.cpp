@@ -31,10 +31,7 @@ CMap::CMap(string filepath)
 {
 	DEBUG_METHOD();
 
-	std::vector<std::vector<int>> m_cellMap = CParseCSV::ReadCSV_int(filepath);
-
-
-
+	m_cellMap = CParseCSV::ReadCSV_int(filepath);
 
 	CreateRoomMap();
 	ComputeCellMapSize();

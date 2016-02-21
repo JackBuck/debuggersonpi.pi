@@ -103,7 +103,9 @@ void CBlockReader::LoadImgFromFile(string imagePath)
  */
 bool CBlockReader::TakePhoto()
 {
-	return TakePhoto("Data/MostRecentPhoto.bmp");
+	DEBUG_METHOD();
+
+	return TakePhoto("Data/MostRecentPhoto.jpg");
 }
 
 bool CBlockReader::TakePhoto(string saveLocation)
@@ -111,7 +113,6 @@ bool CBlockReader::TakePhoto(string saveLocation)
 	DEBUG_METHOD();
 
 	// Check we can use system()
-	int i;
 	if (!system(NULL))
 	{
 		cout << "Unable to use system() to call other processes.\n";
@@ -119,7 +120,12 @@ bool CBlockReader::TakePhoto(string saveLocation)
 	}
 
 	// Take a photo
-	string command = "raspistill -o " + saveLocation + " -e bmp";
+	string command = "raspistill";
+	command += " --nopreview";
+	command += " --output " + saveLocation;
+	command += " --encoding jpg";
+
+
 	int result = system(command.c_str());
 
 	return true;

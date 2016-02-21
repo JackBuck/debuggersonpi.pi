@@ -35,8 +35,8 @@ using namespace cv;
 /* ~~~ FILE / FOLDER PATHS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 // TODO: Learn how to do filenames portably so that it will run on Windows machines...
-const std::string CBlockReader::imgExampleFolder {"Data/SpotImageExamples/"}; // In unix it is safe to concatenate filenames with two slashes :D
-const std::string CBlockReader::expectedSpotDistancesFile {"Data/Calibration/ExpectedSpotDistances.csv"};
+const string CBlockReader::imgExampleFolder {"Data/SpotImageExamples/"}; // In unix it is safe to concatenate filenames with two slashes :D
+const string CBlockReader::expectedSpotDistancesFile {"Data/Calibration/ExpectedSpotDistances.csv"};
 
 
 // -/-/-/-/-/-/-/ CONSTRUCTORS AND DESTRUCTORS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
@@ -95,7 +95,7 @@ void CBlockReader::LoadImgFromFile(string imagePath)
  *	INPUTS:
  *	saveLocation - This should contain the path at which to save the photo.
  */
-bool CBlockReader::TakePhoto(std::string saveLocation)
+bool CBlockReader::TakePhoto(string saveLocation)
 {
 	DEBUG_METHOD();
 	// TODO: Find out how to take a photo with the PI camera and then implement CBlockReader::TakePhoto

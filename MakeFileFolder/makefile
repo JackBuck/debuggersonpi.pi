@@ -70,7 +70,7 @@ renispace: $(addprefix $(OBJECTS_FOLDER), $(OBJS))
 $(OBJECTS_FOLDER)%.d: %.cpp
 	@echo 'Auto generating $@';
 	@set -e; rm -f $@;
-	$(CXX) -MM $(CPPFLAGS) $< | perl -pe 's/^(\S+).o\s*:/$(OBJECTS_FOLDER)$$1.o $(OBJECTS_FOLDER)$$1.d :/' > $@;
+	$(CXX) -MM $(CPPFLAGS) $< | perl -pe 's!^(\S+).o\s*:!$(OBJECTS_FOLDER)$$1.o $(OBJECTS_FOLDER)$$1.d :!' > $@;
 
 -include $(addprefix $(OBJECTS_FOLDER), $(OBJS:.o=.d))
 

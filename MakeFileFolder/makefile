@@ -7,6 +7,9 @@
 REPO_DIR := /home/pi/renispace_source
 #REPO_DIR := /home/pi/swDev/Source/Repos/renispace
 
+# Output names and locations
+EXECUTABLE_NAME := renispace
+OBJECTS_FOLDER  := objects/
 
 # Define search path for source files
 #SRC_DIR := $(REPO_DIR)/src
@@ -37,7 +40,7 @@ SRCS  =     CBlockReader.cpp      \
             TestFunctions.cpp
 
 # Define object files (by naming rule)
-OBJS  = $(SRCS:.cpp=.o)
+OBJS  = $(addprefix $(OBJECTS_FOLDER), $(SRCS:.cpp=.o))
 
 # Define include paths
 INCLUDE_DIRS := -I/usr/include/opencv -I $(REPO_DIR)/src
@@ -49,9 +52,6 @@ LIBS := -lopencv_core -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_v
 CXX = g++
 CPPFLAGS = $(INCLUDE_DIRS)
 CXXFLAGS = -std=c++0x -O0 -g0 -Wall -c -fmessage-length=0
-
-# Executable destination - the executable will be copied here
-EXECUTABLE_NAME        := renispace
 
 # All target
 all: renispace
@@ -70,14 +70,15 @@ renispace: $(OBJS)
 %.d: %.cpp
 	@echo 'Auto generating $@';
 	@set -e; rm -f $@;
-	$(CXX) -MM $(CPPFLAGS) $< | perl -pe 's/^(\S+).o\s*:/$$1.o $$1.d :/' > $@;
+	$(CXX) -MM $(CPPFLAGS) $< | perl -pe 's/^(\S+).o\s*:/$$1.o $$1.d :/' > $(OBJECTS_FOLDER)$@;
 
--include $(SRCS:.cpp=.d)
+-include $(OBJS:.o=.d)
 
 # Version without .d files. Doesn't use preprocessor to check for new dependencies / changed header files
-# %.o: %.cpp
-# 	@echo 'Building file: $<'
-# 	@echo 'Invoking: GCC C++ Compiler'
+%.o: %.cpp
+	@echo ' '
+	@echo 'Building file: $<'
+#	@echo 'Invoking: GCC C++ Compiler'
 # 	g++ -std=c++0x $(INCLUDE_DIRS) -O0 -g0 -Wall -c -fmessage-length=0 -o "$@" "$<"
 # 	@echo 'Finished building: $<'
 # 	@echo ' '
@@ -90,6 +91,6 @@ cleanobj:
 	rm -f $(OBJS)
 
 cleand:
-	rm -f $(SRCS:.cpp=.d)
+	rm -f $(OBJS:.o=.d)
 
 .PHONY: all clean cleanobj cleand

@@ -49,6 +49,10 @@ LIBS := -lopencv_core -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_v
 # CXX := g++
 # CXXFLAGS := -std=c++0x $(INCLUDE_DIRS) -O0 -g0 -Wall -c -fmessage-length=0
 
+# Executable destination - the executable will be copied here
+EXECUTABLE_NAME        := renispace
+EXECUTABLE_DESTINATION := /home/pi/
+
 # All target
 all: renispace
 
@@ -56,9 +60,10 @@ all: renispace
 renispace: $(OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++  -o "renispace" $^ $(LIBS)
+	g++  -o $(EXECUTABLE_NAME) $^ $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
+	cp $(EXECUTABLE_NAME) $(EXECUTABLE_DESTINATION)
 
 %.o: %.cpp
 	@echo 'Building file: $<'
@@ -69,7 +74,8 @@ renispace: $(OBJS)
 
 # Other Targets
 clean: cleanobj
-	rm renispace
+	rm $(EXECUTABLE_NAME)
+	rm $(EXECUTABLE_DESTINATION)/$(EXECUTABLE_NAME)
 
 cleanobj:
 	rm $(OBJS)

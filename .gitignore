@@ -3,7 +3,6 @@
 /.settings/
 /.cproject
 /.project
-/TestData/CameraPhotos
 /src/CImageAnalysis.h
 /src/CImageAnalysis.cpp
 /src/CImageAnalysis_test.cpp

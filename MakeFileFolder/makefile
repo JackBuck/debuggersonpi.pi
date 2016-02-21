@@ -3,12 +3,15 @@
 #
 ########################################################################
 
-# Define repository location on the pi (~/renispace is a symbolic link)
-REPO_DIR := ~/renispace
-#REPO_DIR := swDev/Source/Repos/renispace
+# Define repository location on the pi (~/renispace_source is a symbolic link on the pi)
+REPO_DIR := /home/pi/renispace_source
+#REPO_DIR := /home/pi/swDev/Source/Repos/renispace
+
 
 # Define search path for source files
+#SRC_DIR := $(REPO_DIR)/src
 vpath %.cpp   $(REPO_DIR)/src
+
 
 # Define source files
 SRCS  =     CBlockReader.cpp      \
@@ -41,6 +44,10 @@ INCLUDE_DIRS := -I/usr/include/opencv
 
 # Define linker flags for libraries
 LIBS := -lopencv_core -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_video -lopencv_highgui -lopencv_features2d
+
+# # Implicit rule variables
+# CXX := g++
+# CXXFLAGS := -std=c++0x $(INCLUDE_DIRS) -O0 -g0 -Wall -c -fmessage-length=0
 
 # All target
 all: renispace

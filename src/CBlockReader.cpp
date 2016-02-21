@@ -105,7 +105,7 @@ bool CBlockReader::TakePhoto()
 {
 	DEBUG_METHOD();
 
-	return TakePhoto("Data/MostRecentPhoto.jpg");
+	return TakePhoto("Data/MostRecentPhoto.bmp");
 }
 
 bool CBlockReader::TakePhoto(string saveLocation)
@@ -123,7 +123,7 @@ bool CBlockReader::TakePhoto(string saveLocation)
 	string command = "raspistill";
 	command += " --nopreview";
 	command += " --output " + saveLocation;
-	command += " --encoding jpg";
+	command += " --encoding bmp";
 
 
 	int result = system(command.c_str());

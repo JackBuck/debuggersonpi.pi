@@ -10,7 +10,7 @@ REPO_DIR := /home/pi/renispace_source
 
 # Define search path for source files
 #SRC_DIR := $(REPO_DIR)/src
-vpath %.cpp   $(REPO_DIR)/src
+vpath %.cpp $(REPO_DIR)/src
 
 
 # Define source files
@@ -40,14 +40,15 @@ SRCS  =     CBlockReader.cpp      \
 OBJS  = $(SRCS:.cpp=.o)
 
 # Define include paths
-INCLUDE_DIRS := -I/usr/include/opencv
+INCLUDE_DIRS := -I/usr/include/opencv -I $(REPO_DIR)/src
 
 # Define linker flags for libraries
 LIBS := -lopencv_core -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_video -lopencv_highgui -lopencv_features2d
 
 # # Implicit rule variables
-# CXX := g++
-# CXXFLAGS := -std=c++0x $(INCLUDE_DIRS) -O0 -g0 -Wall -c -fmessage-length=0
+CXX = g++
+CPPFLAGS = $(INCLUDE_DIRS)
+CXXFLAGS = -std=c++0x -O0 -g0 -Wall -c -fmessage-length=0
 
 # Executable destination - the executable will be copied here
 EXECUTABLE_NAME        := renispace
@@ -63,18 +64,32 @@ renispace: $(OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-%.o: %.cpp
-	@echo 'Building file: $<'
-	@echo 'Invoking: GCC C++ Compiler'
-	g++ -std=c++0x $(INCLUDE_DIRS) -O0 -g0 -Wall -c -fmessage-length=0 -o "$@" "$<"
-	@echo 'Finished building: $<'
-	@echo ' '
+# Autogenerate prerequisites for include files. These go into .d files that are included by make, one per file
+# See gnu info on Make: 4.14 Generating Prerequisites Automatically
+
+%.d: %.cpp
+	@echo 'Auto generating $@';
+	@set -e; rm -f $@;
+	$(CXX) -MM $(CPPFLAGS) $< | perl -pe 's/^(\S+).o\s*:/$$1.o $$1.d :/' > $@;
+
+-include $(SRCS:.cpp=.d)
+
+# Version without .d files. Doesn't use preprocessor to check for new dependencies / changed header files
+# %.o: %.cpp
+# 	@echo 'Building file: $<'
+# 	@echo 'Invoking: GCC C++ Compiler'
+# 	g++ -std=c++0x $(INCLUDE_DIRS) -O0 -g0 -Wall -c -fmessage-length=0 -o "$@" "$<"
+# 	@echo 'Finished building: $<'
+# 	@echo ' '
 
 # Other Targets
-clean: cleanobj
-	rm $(EXECUTABLE_NAME)
+clean: cleanobj cleand
+	rm -f $(EXECUTABLE_NAME)
 
 cleanobj:
-	rm $(OBJS)
+	rm -f $(OBJS)
 
-.PHONY: all clean cleanobj
+cleand:
+	rm -f $(SRCS:.cpp=.d)
+
+.PHONY: all clean cleanobj cleand

@@ -10,8 +10,10 @@
  */
 
 #include<iostream>
+#include "DebugLog.hpp"
 
 int CMap_test();
+void CMap_testJohn();
 int CGraph_test();
 int CGraph_test2();
 int CGraph_test3();
@@ -23,10 +25,14 @@ int CBlockReader_test2();
 
 int TestAllFunctions()
 {
+	DEBUG_METHOD();
+
 	int returnVal = 0;
 	// TODO It would be useful to produce output to the console to show which functions 'passed' and which 'failed' so that we can look at their output in the future.
 	returnVal += CMap_test();
 	std::cout << '\n';
+//	CMap_testJohn();
+//	std::cout << '\n';
 	returnVal += CGraph_test();
 	std::cout << '\n';
 	//returnVal += CGraph_test();

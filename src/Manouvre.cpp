@@ -11,17 +11,15 @@
 //~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "Manouvre.h"
 #include "GoodsOut.h"
-
-
-
-
-
+#include "DebugLog.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 void CManouvre::InstructionToManouvre(EInstruction instruction_type)
 {
+	DEBUG_METHOD();
+
 	switch(instruction_type)
 	{
 	case EInstruction_Straight:
@@ -43,20 +41,22 @@ void CManouvre::InstructionToManouvre(EInstruction instruction_type)
 // Move into the maze to entrance vertex (edge of first room).
 void CManouvre::MoveToStartVertex()
 {
-
+	DEBUG_METHOD();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Move out of map from exit vertex.
 void CManouvre::ExitMap()
 {
-
+	DEBUG_METHOD();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Move straight across a room from one vertex to another.
 void CManouvre::StraightAcrossRoom()
 {
+	DEBUG_METHOD();
+
 	CGoodsOut::Forward(ROOMLENGTH, false);
 }
 
@@ -64,6 +64,8 @@ void CManouvre::StraightAcrossRoom()
 // Move across the room from vertex to another by turning left
 void CManouvre::TurnLeftInRoom()
 {
+	DEBUG_METHOD();
+
 	CGoodsOut::Forward(HALFROOMLENGTH, true);
 	CGoodsOut::TurnLeft90();
 	CGoodsOut::Forward(HALFROOMLENGTH, false);
@@ -73,6 +75,8 @@ void CManouvre::TurnLeftInRoom()
 // Move across the room from vertex to another by turning left
 void CManouvre::TurnRightInRoom()
 {
+	DEBUG_METHOD();
+
 	CGoodsOut::Forward(HALFROOMLENGTH, true);
 	CGoodsOut::TurnRight90();
 	CGoodsOut::Forward(HALFROOMLENGTH, false);
@@ -92,24 +96,24 @@ ERoom CManouvre::MoveForwardAndDetectRoomType()
 // Approach a block from vertex of room and take photograph and return block number.
 int CManouvre::ApproachAndPhotographBlock()
 {
+	DEBUG_METHOD();
+
 	return 0;
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // Move arm to collect block and move forward to vertex.
 void CManouvre::CollectBlock()
 {
-
+	DEBUG_METHOD();
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // Move arm to release block
 void CManouvre::ReleaseBlock()
 {
+	DEBUG_METHOD();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -117,7 +121,7 @@ void CManouvre::ReleaseBlock()
 // This may also be used when there carrying the block.
 void CManouvre::ReverseAndUTurn()
 {
-
+	DEBUG_METHOD();
 }
 
 

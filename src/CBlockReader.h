@@ -11,7 +11,9 @@
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include <string>
 #include <vector>
-#include <opencv2/opencv.hpp>
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/features2d/features2d.hpp>
 
 /* ~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This class will encapsulate the algorithms required to analyse the spots on a single still image

@@ -8,28 +8,35 @@
 // need to be checked when the class is completed.
 
 #include "GoodsOut.h"
+#include "DebugLog.hpp"
 
 void CGoodsOut::Forward(double distance, bool watch_sensors)
 {
+	DEBUG_METHOD();
 }
 
 void CGoodsOut::Reverse(double distance, bool watch_sensors)
 {
+	DEBUG_METHOD();
 }
 
 void CGoodsOut::TurnLeft90()
 {
+	DEBUG_METHOD();
 }
 
 void CGoodsOut::TurnRight90()
 {
+	DEBUG_METHOD();
 }
 
 void CGoodsOut::Stop()
 {
+	DEBUG_METHOD();
 }
 
 ERoom CGoodsOut::GetCurrentRoomType()
 {
+	DEBUG_METHOD();
 	return ERoom();
 }

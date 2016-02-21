@@ -11,13 +11,13 @@ int CMap_test()
 
 	/////////////////////////////////////////////////////////////
 	// Create instance of CMap 
-	std::string fileInputpath = "5x5testmap1.txt";
+	std::string fileInputpath = "TestData/5x5testmap1.txt";
 	CMap Maze(fileInputpath);
 
 	/////////////////////////////////////////////////////////////
 	//
 	std::ofstream myfile;
-	myfile.open("example.txt", std::fstream::out);
+	myfile.open("TestData/example.txt", std::fstream::out);
 	if (myfile.is_open())
 	{
 		std::cout << "--CMap_test--\n\n";
@@ -52,7 +52,9 @@ int CMap_test()
 	return 0;
 }
 
-void PrintMatrix(std::vector<std::vector<int>> inputMap) {
+void PrintMatrix(std::vector<std::vector<int>> inputMap)
+{
+	DEBUG_METHOD();
 
 	for (int i = 0; i < inputMap.size(); i++) {
 		for (int j = 0; j < inputMap.size(); j++) {
@@ -64,6 +66,9 @@ void PrintMatrix(std::vector<std::vector<int>> inputMap) {
 
 void CMap_testJohn()
 {
+	DEBUG_METHOD();
+
+
 	std::string filepath = "TestData/5x5testmap1.txt";
 	CMap Maze(filepath);
 

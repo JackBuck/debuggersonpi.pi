@@ -7,12 +7,15 @@
 
 #include "CBlockReader.h"
 #include <iostream>
+#include "DebugLog.hpp"
 
 using namespace std;
 
 // This test generates the spot distances calibration file
 void CBlockReader_test()
 {
+	DEBUG_METHOD();
+
 	cout << "--CBlockReader_test--\n\n";
 
 	vector<string> fileNames
@@ -33,6 +36,8 @@ void CBlockReader_test()
 
 int CBlockReader_test2()
 {
+	DEBUG_METHOD();
+
 	cout << "--CBlockReader_test2--\n\n";
 	string folderName {"TestData/CameraPhotos/Batch2/"};
 	vector<string> fileNames
@@ -47,9 +52,9 @@ int CBlockReader_test2()
 	bool success = true;
 	for (unsigned int i = 0; i < fileNames.size(); ++i)
 	{
-		cout << "i+1 = " << i+1 << ",   Num Spots Counted = ";
 		CBlockReader aBlockReader {folderName + fileNames[i]};
 		int numSpots = aBlockReader.CountSpots();
+		cout << "i+1 = " << i+1 << ",   Num Spots Counted = ";
 		cout << numSpots << endl;
 
 		if (i+1 != numSpots)

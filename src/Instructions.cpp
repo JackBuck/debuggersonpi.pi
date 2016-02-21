@@ -13,6 +13,7 @@
 #include<string>
 #include<math.h>
 #include "Instructions.h"
+#include "DebugLog.hpp"
 
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,6 +26,8 @@ using namespace std;
 
 CInstructions::CInstructions(const std::vector<int> &vertexList, const int map_width)
 {
+	DEBUG_METHOD();
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	// This vector contains the list of rooms that will be moved through during each instruction.
 
@@ -277,18 +280,24 @@ CInstructions::CInstructions(const std::vector<int> &vertexList, const int map_w
 }
 
 
-std::vector<EInstruction> CInstructions::GetInstructions()
+vector<EInstruction> CInstructions::GetInstructions()
 {
+	DEBUG_METHOD();
+
 	return m_instructions;
 }
 
-std::vector<ERoom> CInstructions::GetRoomList()
+vector<ERoom> CInstructions::GetRoomList()
 {
+	DEBUG_METHOD();
+
 	return m_roomList;
 }
 
-std::vector<EOrientation> CInstructions::GetOrientations()
+vector<EOrientation> CInstructions::GetOrientations()
 {
+	DEBUG_METHOD();
+
 	return m_orientationBetweenInstructions;
 }
 
@@ -297,6 +306,8 @@ std::vector<EOrientation> CInstructions::GetOrientations()
 // This function truncates instructions if they go through the room of interest.
 void CInstructions::TruncateAtRoom(int room_index)
 {
+	DEBUG_METHOD();
+
 	for(size_t i=0; i<m_instructions.size(); i++)
 	{
 		if(m_roomList[i] == room_index)

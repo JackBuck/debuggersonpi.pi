@@ -9,6 +9,7 @@
 #include "CGraph.h"
 #include <limits>
 #include <stdexcept>
+#include "DebugLog.hpp"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -25,6 +26,7 @@ using namespace std;
  */
 CGraph::CGraph()
 {
+	DEBUG_METHOD();
 	// Default initialisations of member variables as 0 and empty containers does exactly this!
 }
 
@@ -50,6 +52,8 @@ CGraph::CGraph()
 CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>& vertexLabels)
 		: m_Order { distanceMatrix.size() }, m_InternalToExternal { vertexLabels }
 {
+	DEBUG_METHOD();
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//// Check Inputs ////
 
@@ -58,7 +62,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
 
 	switch (distanceMatrixType) {
 	case DistMatCheckResult::tooLarge:
-		//throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), std::numeric_limits<unsigned int>::max() - 1 };
+		throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), std::numeric_limits<unsigned int>::max() - 1 };
 		break;
 	case DistMatCheckResult::badShape:
 		throw InputDistMat_BadShape{ distanceMatrix };
@@ -103,7 +107,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
 
 	// Check and store external-to-internal vertex labels
 	if (m_Order != vertexLabels.size())
-		//throw InputVertexLabels_BadSize { vertexLabels.size() };
+		throw InputVertexLabels_BadSize { vertexLabels.size() };
 	for (unsigned int i = 0; i < vertexLabels.size(); ++i)
 		m_ExternalToInternal[vertexLabels[i]] = i;
 	if (m_Order != m_ExternalToInternal.size())
@@ -149,11 +153,15 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
  */
 int CGraph::InternalToExternal(const unsigned int vertex) const
 {
+	DEBUG_METHOD();
+
 	return m_InternalToExternal.at(vertex);
 }
 
 void CGraph::InternalToExternal(const vector<unsigned int>& vertices_internal, vector<int>& vertices_external) const
 {
+	DEBUG_METHOD();
+
 	vertices_external.clear();
 	vertices_external.reserve(vertices_internal.size());
 
@@ -180,11 +188,15 @@ void CGraph::InternalToExternal(const vector<unsigned int>& vertices_internal, v
  */
 unsigned int CGraph::ExternalToInternal(const int vertex) const
 {
+	DEBUG_METHOD();
+
 	return m_ExternalToInternal.at(vertex);
 }
 
 void CGraph::ExternalToInternal(const vector<int>& vertices_external, vector<unsigned int>& vertices_internal) const
 {
+	DEBUG_METHOD();
+
 	vertices_internal.clear();
 	vertices_internal.reserve(vertices_external.size());
 
@@ -229,6 +241,8 @@ void CGraph::ExternalToInternal(const vector<int>& vertices_external, vector<uns
  */
 double CGraph::ShortestDistance(const int& startVertex, const int& endVertex, const bool& preferStartVertex, vector<int>& outputRoute)
 {
+	DEBUG_METHOD();
+
 	// Convert to internal vertex numbering (and check valid start and end vertices)
 	unsigned int iStartVertex, iEndVertex;
 	try
@@ -254,6 +268,8 @@ double CGraph::ShortestDistance(const int& startVertex, const int& endVertex, co
 
 double CGraph::ShortestDistance(const int& startVertex, const int& endVertex, vector<int>& outputRoute)
 {
+	DEBUG_METHOD();
+
 	return ShortestDistance(startVertex, endVertex, true, outputRoute);
 }
 
@@ -285,6 +301,8 @@ double CGraph::ShortestDistance(const int& startVertex, const int& endVertex, ve
  */
 void CGraph::InternalShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
 {
+	DEBUG_METHOD();
+
 	/*  -- Decide on whether to use Dijkstra from the startVertex or the endVertex -- //
 	 *   - Default is to use endVertex if Dijkstra as already been called for this, and startVertex
 	 *     otherwise.
@@ -393,6 +411,8 @@ void CGraph::InternalShortestDistance(const unsigned int& startVertex, const uns
  */
 unsigned int CGraph::InternalDijkstra(const unsigned int& startVertex)
 {
+	DEBUG_METHOD();
+
 	// -- Initial Admin -- //
 	// Check whether we have already computed Dijkstra for this startVertex
 	auto mapIterator = m_DijkstraStartVertices.find(startVertex);
@@ -490,6 +510,8 @@ unsigned int CGraph::InternalDijkstra(const unsigned int& startVertex)
  */
 CGraph::DistMatCheckResult CGraph::CheckInput_DistMat(const vector<vector<double> >& distanceMatrix) const
 {
+	DEBUG_METHOD();
+
 	// Check distanceMatrix is not too large for m_Order to fit in an unsigned int type
 	// The value of -1 (i.e. the largest possible unsigned int) is also reserved for special uses in InternalDijkstra.
 	const long unsigned max_unsignedInt = numeric_limits<unsigned int>::max();

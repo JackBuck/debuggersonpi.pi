@@ -523,6 +523,8 @@ vector<int> CMap::CalculateRoomVertices(vector<int> coord) const
  */
 vector<double> CMap::CalculateVertexCoords(int vertex) const
 {
+	DEBUG_METHOD();
+
 	int roomWidth = m_cellwidth / 3;
 
 	double row = floor(vertex / (2*roomWidth+1));
@@ -540,6 +542,7 @@ vector<double> CMap::CalculateVertexCoords(int vertex) const
 vector<int> CMap::GetRoomVertices(ERoom room_type)
 {
 	DEBUG_METHOD();
+
 	vector<int> vertex_flag;
 
 	switch (room_type)
@@ -635,6 +638,7 @@ vector<int> CMap::GetRoomVertices(ERoom room_type)
 int CMap::GetEntranceVertex() const
 {
 	DEBUG_METHOD();
+
 	vector<int> coord = {m_cellwidth/3, 0}; // TODO: should be m_cellheight here? (even if it is academic when they're both equal!)
 
 	return (coord[0]+1)*(2*m_cellwidth+1) + 2*coord[1] +1;
@@ -643,6 +647,7 @@ int CMap::GetEntranceVertex() const
 int CMap::GetExitVertex() const
 {
 	DEBUG_METHOD();
+
 	vector<int> coord = {0, m_cellwidth/3};
 
 	return (coord[0])*(2*m_cellwidth+1) + 2*coord[1] +2; // TODO: Should be +1 here? Is the exit not off the top rather than the right?
@@ -651,6 +656,7 @@ int CMap::GetExitVertex() const
 int CMap::GetCurrentVertex() const
 {
 	DEBUG_METHOD();
+
 	return m_currentVertex;
 }
 
@@ -675,6 +681,7 @@ void CMap::SetCurrentVertex(int new_vertex)
 vector<int> CMap::RoomIndextoCoord(int room_index) const
 {
 	DEBUG_METHOD();
+
 	int row_index = room_index/(2*m_cellwidth +1);
 	int col_index = room_index % (2*m_cellwidth +1);
 
@@ -686,6 +693,7 @@ vector<int> CMap::RoomIndextoCoord(int room_index) const
 void CMap::FollowInstructions(CInstructions &inputInstructions)
 {
 	DEBUG_METHOD();
+
 	//////////////////////////////////////////////////////////////////////////////////////
 	// Check we are at start vertex.
 
@@ -705,7 +713,9 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 
 
 
-std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate) {
+vector<vector<int>> CMap::populateDistanceMatrixFromArray(vector<int>exampleArray, int rowCoordinate, int columnCoordinate)
+{
+	DEBUG_METHOD();
 
 	int n = GetRoomMap()[0].size();
 	int distanceMatrixSize = (n - 1)*(2 * (n + 1) + 1) + (5 * n) - 2;
@@ -790,13 +800,18 @@ std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<
 	return m_distanceMatrix;
 }
 
-void CMap::WriteCellMap(std::string filepath)
+void CMap::WriteCellMap(string filepath)
 {
+	DEBUG_METHOD();
+
 	CParseCSV::WriteCSV(m_cellMap, filepath);
 }
 
-std::vector<std::vector<int>> CMap::DistanceMatrix()
+vector<vector<int>> CMap::DistanceMatrix()
 {
+	DEBUG_METHOD();
+
+
 	// x = i(2n + 2j) 
 	// y = x + 2n + 2
 
@@ -825,11 +840,15 @@ std::vector<std::vector<int>> CMap::DistanceMatrix()
 	return m_distanceMatrix;
 }
 
-//std::vector<std::vector<int>> GetDistanceMatrix() {
-//
+//std::vector<std::vector<int>> GetDistanceMatrix()
+//{
+//	DEBUG_METHOD();
 //}
 
-std::vector<std::vector<int>> CMap::GetDistanceMatrixCoordinateList(){
+vector<vector<int>> CMap::GetDistanceMatrixCoordinateList()
+{
+	DEBUG_METHOD();
+
 	DistanceMatrix();
 	return m_distanceMatrixCoordinateList;
 }

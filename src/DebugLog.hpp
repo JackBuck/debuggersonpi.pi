@@ -3,15 +3,15 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Toggle Data on/off for output to DebuggingLog.txt
 
-#define DEBUG_LOG_ENABLE							// Main switch
-#define DEBUG_SHOW_FUNCTIONS_ENABLE					// Show entry and exit of functions
-#define DEBUG_VALUE_OF_SENSORS_ENABLE				// Show sensor related variables
-#define DEBUG_VALUE_OF_INSTRUCTIONS_ENABLE			// Show instruction related variables
-#define DEBUG_VALUE_OF_BLOCKS_ENABLE				// Show block related variables
-#define DEBUG_VALUE_OF_LOCATION_ENABLE				// Show location related variables
-#define DEBUG_VALUE_OF_INPUT_ENABLE					// Show input related variables
-#define DEBUG_VALUE_OF_OUTPUT_ENABLE				// Show output related variables
-//#define DEBUG_VALUE_OF_MISC_ENABLE					// Show misc related variables - this should be used for specific tasks and not used for anything permanent.
+#define DEBUG_LOG_ENABLE                        // Main switch
+#define DEBUG_SHOW_FUNCTIONS_ENABLE             // Show entry and exit of functions
+#define DEBUG_VALUE_OF_SENSORS_ENABLE           // Show sensor related variables
+#define DEBUG_VALUE_OF_INSTRUCTIONS_ENABLE      // Show instruction related variables
+#define DEBUG_VALUE_OF_BLOCKS_ENABLE            // Show block related variables
+#define DEBUG_VALUE_OF_LOCATION_ENABLE          // Show location related variables
+#define DEBUG_VALUE_OF_INPUT_ENABLE             // Show input related variables
+#define DEBUG_VALUE_OF_OUTPUT_ENABLE            // Show output related variables
+//#define DEBUG_VALUE_OF_MISC_ENABLE              // Show misc related variables - this should be used for specific tasks and not used for anything permanent.
 
 #define DEBUG_LOG_ENABLE_TIMING						// Show timings (bit pointless without functions showing)
 #define DEBUG_LOG_ENABLE_TYPE_OUTPUT				// Show types of the variables
@@ -31,6 +31,15 @@
 #define DEBUG_VALUE_AND_TYPE_OF_COLLECTION(variable)
 #define DEBUG_VALUE_AND_TYPE_OF_TOP_COLLECTION(variable, maxCount)
 #define DEBUG_VALUE_AND_TYPE_OF_BOTTOM_COLLECTION(variable, maxCount)
+
+#define DEBUG_VALUE_OF_SENSORS(variable)
+#define DEBUG_VALUE_OF_INSTRUCTIONS(variable)
+#define DEBUG_VALUE_OF_LOCATION(variable)
+#define DEBUG_VALUE_OF_INPUT(variable)
+#define DEBUG_VALUE_OF_OUTPUT(variable)
+#define DEBUG_VALUE_OF_BLOCKS(variable)
+#define DEBUG_VALUE_OF_MISC(variable)
+
 
 #else
 

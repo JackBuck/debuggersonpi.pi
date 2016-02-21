@@ -47,7 +47,7 @@ int CMap_test()
 
 	myfile.close();
 
-	std::string fileOutputPath = "5x5testmap1Output.txt";
+	std::string fileOutputPath = "TestData/5x5testmap1Output.txt";
 	Maze.WriteCellMap(fileOutputPath);
 	return 0;
 }

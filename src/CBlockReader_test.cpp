@@ -77,6 +77,8 @@ int CBlockReader_test2()
 // This test checks the pi can use system() to take photos
 int CBlockReader_test3()
 {
+	DEBUG_METHOD()
+
 	CBlockReader aBlockReader;
 
 	if (aBlockReader.TakePhoto(""))

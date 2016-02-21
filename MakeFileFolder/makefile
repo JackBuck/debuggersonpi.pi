@@ -67,7 +67,7 @@ renispace: $(addprefix $(OBJECTS_FOLDER), $(OBJS))
 # Autogenerate prerequisites for include files. These go into .d files that are included by make, one per file
 # See gnu info on Make: 4.14 Generating Prerequisites Automatically
 
-$(OBJECTS_FOLDER)/%.d: %.cpp
+$(OBJECTS_FOLDER)%.d: %.cpp
 	@echo 'Auto generating $@';
 	@set -e; rm -f $@;
 	$(CXX) -MM $(CPPFLAGS) $< | perl -pe 's/^(\S+).o\s*:/$$1.o $$1.d :/' > $@;
@@ -75,7 +75,7 @@ $(OBJECTS_FOLDER)/%.d: %.cpp
 -include $(addprefix $(OBJECTS_FOLDER), $(OBJS:.o=.d))
 
 # Version without .d files. Doesn't use preprocessor to check for new dependencies / changed header files
-$(OBJECTS_FOLDER)/%.o: %.cpp
+$(OBJECTS_FOLDER)%.o: %.cpp
 	@echo ' '
 	@echo 'Building file: $<'
 #	@echo 'Invoking: GCC C++ Compiler'

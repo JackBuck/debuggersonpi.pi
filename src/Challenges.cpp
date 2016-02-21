@@ -46,34 +46,57 @@ void CChallenges::ChallengeTwo()
 {
 	DEBUG_METHOD();
 
+
+	//////////////////////////////////////////////////////////////////////
+	// Creat empty map
+
 	CMap aMap = CMap(10, 10);
+
+	///////////////////////////////////////////////////////////////////
+	// Flag as to whether a vertex is needed.
+
 	bool is_next_vertex;
 
 	do{
 
-	ERoom currentRoomType = CManouvre::MoveForwardAndDetectRoomType();
+		/////////////////////////////////////////////////////////////////////////////////
+		// Find room type of current room and save it into the map.
 
-	aMap.SetCurrentRoom(currentRoomType);
+		ERoom currentRoomType = CManouvre::MoveForwardAndDetectRoomType();
+		aMap.SetCurrentRoom(currentRoomType);
 
-	CMazeMapper aMazeMapper = CMazeMapper(&aMap);
 
-	std::vector<int> outputRoute;
+		///////////////////////////////////////////////////////////////////////////////
+		// Find next route to explore. Create MazeMapper to choose next vertex and 
+		// route to it.
 
-	is_next_vertex = aMazeMapper.ComputeNextVertex(aMap.GetCurrentVertex(), outputRoute);
+		CMazeMapper aMazeMapper = CMazeMapper(&aMap);
+		std::vector<int> outputRoute;
+		is_next_vertex = aMazeMapper.ComputeNextVertex(aMap.GetCurrentVertex(), outputRoute);
 
-	if(is_next_vertex)
+
+		////////////////////////////////////////////////////////////////////////////////
+		// If the next vertex was found move to next vertex.
+
+		if(is_next_vertex)
 		{
-		CInstructions aInstructions = CInstructions(outputRoute, 10);
-
-		aMap.FollowInstructions(aInstructions);
-
+			CInstructions aInstructions = CInstructions(outputRoute, 10);
+			aMap.FollowInstructions(aInstructions);
 		}
 
 	}
 	while(is_next_vertex);
 
-	std::string filepath = "example.txt";
+
+	///////////////////////////////////////////////////////////////////////////////////////////
+	// Map now completel known. Write to file.
+
+	std::string filepath = "ExportMap.txt";
 	aMap.WriteCellMap(filepath);
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Signal function is complete.
 
 	CSignals::Complete();
 }

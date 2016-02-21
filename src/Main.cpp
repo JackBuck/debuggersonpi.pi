@@ -96,7 +96,7 @@ int main() {
 	//		std::cout << coords.at(i).at(j) << " ";
 	//	}
 	//	std::cout << std::endl;
-	//}
+	}
 
 	//std::cout << "here is the distanceMatrix: \n";
 

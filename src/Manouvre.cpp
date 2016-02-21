@@ -77,6 +77,8 @@ void CManouvre::TurnRightInRoom()
 	CGoodsOut::TurnRight90();
 	CGoodsOut::Forward(HALFROOMLENGTH, false);
 }
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // Move forward into room to junction. Detect junction and return room type Enum.
 ERoom CManouvre::MoveForwardAndDetectRoomType()

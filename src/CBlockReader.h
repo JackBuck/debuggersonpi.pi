@@ -62,6 +62,7 @@ public:
 	int CountSpots();
 	bool ComputeBlockLocation(double& blockRelPosn_x, double& blockRelPosn_y) const;
 	void LoadImgFromFile(std::string imagePath);
+	bool TakePhoto();
 	bool TakePhoto(std::string saveLocation);
 	void SetExpectedSpotDistances(const std::vector<std::string>& fileNames);
 

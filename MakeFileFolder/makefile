@@ -78,10 +78,10 @@ $(OBJECTS_FOLDER)%.d: %.cpp
 $(OBJECTS_FOLDER)%.o: %.cpp
 	@echo ' '
 	@echo 'Building file: $<'
-#	@echo 'Invoking: GCC C++ Compiler'
-# 	g++ -std=c++0x $(INCLUDE_DIRS) -O0 -g0 -Wall -c -fmessage-length=0 -o "$@" "$<"
-# 	@echo 'Finished building: $<'
-# 	@echo ' '
+	@echo 'Invoking: GCC C++ Compiler'
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o "$@" "$<"
+	@echo 'Finished building: $<'
+	@echo ' '
 
 # Other Targets
 clean: cleanobj cleand

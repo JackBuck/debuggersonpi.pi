@@ -50,7 +50,7 @@ CGraph::CGraph()
  *
  */
 CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>& vertexLabels)
-		: m_Order { distanceMatrix.size() }, m_InternalToExternal { vertexLabels }
+		: m_Order { static_cast<unsigned int>(distanceMatrix.size()) }, m_InternalToExternal { vertexLabels }
 {
 	DEBUG_METHOD();
 

@@ -34,7 +34,7 @@ public:
 		// Open the file for appending
 		std::ofstream file(filePath, openMode);
 		if (!file.is_open())
-			throw Exception_CantOpenFile { filePath };
+			throw Exception_CParseCSV_CantOpenFile { filePath };
 
 		// Write the lines
 		for (unsigned int i = 0; i < lines.size(); ++i)
@@ -54,10 +54,10 @@ public:
 	}
 
 	// === Exceptions ======================================================================================
-	struct Exception_CantOpenFile
+	struct Exception_CParseCSV_CantOpenFile
 	{
 		std::string m_filePath;
-		Exception_CantOpenFile(std::string filePath)
+		Exception_CParseCSV_CantOpenFile(std::string filePath)
 				: m_filePath {filePath}
 		{
 		}

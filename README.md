@@ -19,10 +19,14 @@ filling in `path/to/your/local/renispace/repository` with the path to your copy 
 Then run the following two commands:
 ```
 git config merge.ff false
-git config pull.ff pull
+git config pull.ff only
 ```
 
 This will add configurations to your `.git/config` file, which is repository specific.
+
+NB Typo originally said `git config pull.ff pull`, note now it says `only`.
+I changed it to only from `true` as an experiment, since git otherwise wanted me to commit after a fastforward pull.
+We shall see how it works out...
 
 ## Other useful things
 See the GitHub [Markdown Basics](https://help.github.com/articles/markdown-basics/) page for an introduction on how to format this README file. 

@@ -24,7 +24,7 @@ class CManouvre
 public:
 
 	static void InstructionToManouvre(EInstruction instruction_type);
-
+	static void LastInstructionToManouvre(EInstruction instruction_type);
 	static void MoveToStartVertex();
 	static void ExitMap();
 	static int ApproachAndPhotographBlock();
@@ -35,7 +35,7 @@ public:
 	static void StraightAcrossRoom();
 	static void TurnLeftInRoom();
 	static void TurnRightInRoom();
-	static ERoom MoveForwardAndDetectRoomType();
+	static ERoom DetectRoomType();
 };
 
 

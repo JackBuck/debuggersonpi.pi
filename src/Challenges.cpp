@@ -225,10 +225,6 @@ void CChallenges::ChallengeFour()
 
 		if(block_location[next_value] == LOCATION_UNKNOWN)
 		{
-			
-
-			///////////////////////////////////////////////////////////////////////////////////
-			// TODO this could be moved onto the CGraph class.
 
 			//////////////////////////////////////////////////////////////////////////////////
 			// Keep track of shortest distance and path and start vertex
@@ -236,7 +232,7 @@ void CChallenges::ChallengeFour()
 			int start_vertex;
 			double shortest_distance = LONG_MAX;
 			std::vector<int> shortest_path;
-
+			bool end_straight = false;
 
 			//////////////////////////////////////////////////////////////////////
 			// Get current room type and the vertex labels of adjacent vertices.
@@ -291,7 +287,20 @@ void CChallenges::ChallengeFour()
 						std::vector<int> current_shortest_path;
 						double current_shortest_distance = aGraph.ShortestDistance(current_vertex, room_vertices[j], current_shortest_path);
 
+						int size = current_shortest_path.size();
+						CInstructions aInstructions = CInstructions({current_shortest_path[size -2], current_shortest_path[size -1]}, 10);
+						std::vector<EInstruction> instruction = aInstructions.GetInstructions();
+
+						bool replace = false;
+
 						if(current_shortest_distance < shortest_distance)
+						{
+							if(!end_straight) replace = true;
+							else if(instruction[0] == EInstruction_Straight) replace = true;
+						}
+						else if(!end_straight && (instruction[0] == EInstruction_Straight)) replace = true;
+
+						if(replace)
 						{
 							shortest_distance = current_shortest_distance;
 							shortest_path = current_shortest_path;
@@ -316,6 +325,7 @@ void CChallenges::ChallengeFour()
 			int start_vertex;
 			double shortest_distance = LONG_MAX;
 			std::vector<int> shortest_path;
+			bool end_straight;
 
 			/////////////////////////////////////////////////////////////////////////////////////////////
 			// Get current room type and the vertex labels of adjacent vertices.
@@ -362,8 +372,21 @@ void CChallenges::ChallengeFour()
 
 					std::vector<int> current_shortest_path;
 					double current_shortest_distance = aGraph.ShortestDistance(current_vertex, room_vertices[j], current_shortest_path);
+					
+					int size = current_shortest_path.size();
+					CInstructions aInstructions = CInstructions({current_shortest_path[size -2], current_shortest_path[size -1]}, 10);
+					std::vector<EInstruction> instruction = aInstructions.GetInstructions();
+
+					bool replace = false;
 
 					if(current_shortest_distance < shortest_distance)
+					{
+						if(!end_straight) replace = true;
+						else if(instruction[0] == EInstruction_Straight) replace = true;
+					}
+					else if(!end_straight && (instruction[0] == EInstruction_Straight)) replace = true;
+
+					if(replace)
 					{
 						shortest_distance = current_shortest_distance;
 						shortest_path = current_shortest_path;
@@ -385,7 +408,10 @@ void CChallenges::ChallengeFour()
 		//////////////////////////////////////////////////////////////////////////////////////////////
 		// Now we know our route, execute it
 
-		aMap.FollowInstructions(aInstructions);
+
+		aMap.FollowInstructionsNotLast(aInstructions);
+
+
 	
 	CGoodsOut::Stop();
 

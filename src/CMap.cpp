@@ -724,14 +724,34 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 	}
 }
 
-
-
-vector<vector<int>> CMap::populateDistanceMatrixFromArray(vector<int>exampleArray, int rowCoordinate, int columnCoordinate)
+EInstruction CMap::FollowInstructionsNotLast(CInstructions & inputInstructions)
 {
 	DEBUG_METHOD();
 
+	//////////////////////////////////////////////////////////////////////////////////////
+	// Check we are at start vertex.
+
+	int current_vertex = GetCurrentVertex();
+
+	vector<EInstruction> instructionList = inputInstructions.GetInstructions();
+	vector<ERoom> roomList = inputInstructions.GetRoomList();
+	vector<EOrientation> oreintationList = inputInstructions.GetOrientations();
+
+	if (current_vertex != instructionList[0]) CSignals::Error();
+
+	for (int i = 0; i < instructionList.size()-1; i++)
+	{
+		CManouvre::InstructionToManouvre(instructionList[i]);
+	}
+
+	return instructionList[instructionList.size()-1];
+}
+
+	
+
 std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate)
 {
+	DEBUG_METHOD();
 	int n = GetRoomMap()[0].size();
 	int distanceMatrixSize = (n - 1)*(2 * (n + 1) + 1) + (5 * n) - 2;
 

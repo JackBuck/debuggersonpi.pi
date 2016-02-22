@@ -1,4 +1,4 @@
-////////////////////////ng////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // CMap.h
 // Created: 15/11/15
 // Author: Hannah Howell
@@ -80,14 +80,12 @@ public:
 	std::vector<int> CalculateRoomVertices(int row, int col) const;
 	std::vector<double> CalculateVertexCoords(int vertex) const;
 	void FollowInstructions(CInstructions &inputInstructions);
-
-
+	EInstruction FollowInstructionsNotLast(CInstructions &inputInstructions);
 
 	std::vector<std::vector<int>> DistanceMatrix();
 	std::vector<std::vector<int>> populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate);
 
 	void WriteCellMap(std::string filepath);
-
 
 
 	// === Private Functions ========================================================================

@@ -35,9 +35,15 @@ int TestAllFunctions()
 //	std::cout << '\n';
 	returnVal += CGraph_test();
 	std::cout << '\n';
-	returnVal += CGraph_test2();
+	//returnVal += CGraph_test();
+	//std::cout << '\n';
+	//returnVal += CGraph_test2();
+	//std::cout << '\n';
+	//returnVal += CGraph_test3();
+	//std::cout << '\n';
+	returnVal += CParseCSV_test();
 	std::cout << '\n';
-	returnVal += CGraph_test3();
+	CParseCSV_test2();
 	std::cout << '\n';
 	returnVal += CParseCSV_test();
 	std::cout << '\n';

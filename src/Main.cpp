@@ -21,6 +21,10 @@
 #include<iostream>
 #include<fstream>
 #include "DebugLog.hpp"
+#include "CMap.h"
+#include<fstream>
+#include<fstream>
+#include "DebugLog.hpp"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;

@@ -49,6 +49,8 @@ void CSignals::Notification2()
 	DEBUG_METHOD();
 }
 
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // To signal a part of the challenge has been completed. Number 3
 void CSignals::Notification3()

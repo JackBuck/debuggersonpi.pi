@@ -24,6 +24,8 @@ using namespace std;
 
 int ENTRANCEPORCHROOM = -1;
 
+
+
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // This function is a constructor for the CMap Class. It takes the filepath of the raw input data
 // and from this creates an instance of the class.
@@ -56,7 +58,8 @@ CMap::CMap(string filepath)
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Current room is entrance room which is not defined in our map so set to 
-	m_currentRoom = ENTRANCEPORCHROOM;
+	m_currentRoom.resize(2);
+	m_currentRoom[0] = ENTRANCEPORCHROOM;
 	DEBUG_VALUE_OF_LOCATION(m_currentRoom);
 	
 }
@@ -432,6 +435,12 @@ void CMap::UpdateCellMap()
 			}
 		}
 
+void CMap::SetCurrentRoomType(ERoom roomType)
+{	
+	m_roomMap[m_currentRoom[0]][m_currentRoom[1]] = roomType;
+	UpdateCellMap();
+	}
+
 
 void CMap::CalculateBlockRooms(vector<int>* pBlockRooms) const
 {
@@ -657,22 +666,26 @@ int CMap::GetCurrentVertex() const
 	return m_currentVertex;
 }
 
-int CMap::GetCurrentRoom() const
+std::vector<int> CMap::GetCurrentRoom() const
 {
 	DEBUG_METHOD();
 	return m_currentRoom;
 }
 
-void CMap::SetCurrentRoom(int new_room)
+void CMap::SetCurrentRoom(int new_room_index)
 {
 	DEBUG_METHOD();
-	m_currentRoom = new_room;
+
+	std::vector<int> coord = RoomIndextoCoord(new_room_index);
+
+	m_currentRoom[0] = coord[0];
+	m_currentRoom[1] = coord[1];
 }
 
-void CMap::SetCurrentVertex(int new_vertex)
+void CMap::SetCurrentVertex(int new_vertex_index)
 {
 	DEBUG_METHOD();
-	m_currentVertex = new_vertex;
+	m_currentVertex = new_vertex_index;
 }
 
 vector<int> CMap::RoomIndextoCoord(int room_index) const
@@ -708,12 +721,34 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 	}
 }
 
-
-
-vector<vector<int>> CMap::populateDistanceMatrixFromArray(vector<int>exampleArray, int rowCoordinate, int columnCoordinate)
+EInstruction CMap::FollowInstructionsNotLast(CInstructions & inputInstructions)
 {
 	DEBUG_METHOD();
 
+	//////////////////////////////////////////////////////////////////////////////////////
+	// Check we are at start vertex.
+
+	int current_vertex = GetCurrentVertex();
+
+	vector<EInstruction> instructionList = inputInstructions.GetInstructions();
+	vector<ERoom> roomList = inputInstructions.GetRoomList();
+	vector<EOrientation> oreintationList = inputInstructions.GetOrientations();
+
+	if (current_vertex != instructionList[0]) CSignals::Error();
+
+	for (int i = 0; i < instructionList.size()-1; i++)
+	{
+		CManouvre::InstructionToManouvre(instructionList[i]);
+	}
+
+	return instructionList[instructionList.size()-1];
+}
+
+	
+
+std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate)
+{
+	DEBUG_METHOD();
 	int n = GetRoomMap()[0].size();
 	int distanceMatrixSize = (n - 1)*(2 * (n + 1) + 1) + (5 * n) - 2;
 

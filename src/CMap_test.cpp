@@ -64,10 +64,11 @@ void PrintMatrix(std::vector<std::vector<int>> inputMap)
 	}
 }
 
-void DistanceMatrixTest()
+int DistanceMatrixTest()
 {
 	std::string filepath = "TestData/PracticeMap.csv";
 	CMap Maze(filepath);
 
 	PrintMatrix(Maze.DistanceMatrix());
+	return 1;
 }

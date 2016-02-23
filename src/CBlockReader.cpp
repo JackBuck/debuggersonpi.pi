@@ -149,10 +149,11 @@ bool CBlockReader::TakePhoto(string saveLocation, bool useCalibrationInfo)
 			commandStream << " --ISO " << m_Iso;
 	}
 
+	string command = commandStream.str();
 
 	DEBUG_VALUE_OF_BLOCKS(command);
 
-	int result = system(commandStream.str().c_str());
+	int result = system(command.c_str());
 
 	return result;
 }
@@ -437,7 +438,7 @@ void CBlockReader::CalibrateFromPhoto()
 	else
 	{
 		cerr << "Error executing exiftool!" << endl;
-		throw Exception_CBlockReader_CantReadExifData;
+		throw Exception_CBlockReader_CantReadExifData{};
 	}
 
 	// Print ExifTool error

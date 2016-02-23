@@ -64,7 +64,6 @@ void PrintMatrix(std::vector<std::vector<int>> inputMap)
 	}
 }
 
-
 void DistanceMatrixTest()
 {
 	std::string filepath = "TestData/PracticeMap.csv";

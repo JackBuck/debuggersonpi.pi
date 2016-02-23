@@ -749,7 +749,7 @@ EInstruction CMap::FollowInstructionsNotLast(CInstructions & inputInstructions)
 
 	
 
-std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate, int roomWidth)
+std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<int>roomVertices, int rowCoordinate, int columnCoordinate, int roomWidth)
 {
 	DEBUG_METHOD();
 

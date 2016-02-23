@@ -9,6 +9,7 @@
 #include "CGraph.h"
 #include <limits>
 #include <stdexcept>
+#include "DebugLog.hpp"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -25,6 +26,7 @@ using namespace std;
  */
 CGraph::CGraph()
 {
+	DEBUG_METHOD();
 	// Default initialisations of member variables as 0 and empty containers does exactly this!
 }
 
@@ -48,28 +50,30 @@ CGraph::CGraph()
  *
  */
 CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>& vertexLabels)
-		: m_Order { distanceMatrix.size() }, m_InternalToExternal { vertexLabels }
+		: m_Order { static_cast<unsigned int>(distanceMatrix.size()) }, m_InternalToExternal { vertexLabels }
 {
+	DEBUG_METHOD();
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//// Check Inputs ////
 
 	// Distance matrix
-	CGraph_DistMatCheckResult distanceMatrixType = CheckInput_DistMat(distanceMatrix);
+	DistMatCheckResult distanceMatrixType = CheckInput_DistMat(distanceMatrix);
 
 	switch (distanceMatrixType) {
-	case CGraph_DistMatCheckResult::tooLarge:
-		throw InputDistMat_MatrixTooLarge { distanceMatrix.size(), std::numeric_limits<unsigned int>::max() - 1 };
+	case DistMatCheckResult::tooLarge:
+		throw InputDistMat_MatrixTooLarge(distanceMatrix.size(), std::numeric_limits<unsigned int>::max() - 1);
 		break;
-	case CGraph_DistMatCheckResult::badShape:
+	case DistMatCheckResult::badShape:
 		throw InputDistMat_BadShape{ distanceMatrix };
 		break;
-	case CGraph_DistMatCheckResult::invalidElements:
+	case DistMatCheckResult::invalidElements:
 		throw InputDistMat_InvalidElements { distanceMatrix };
 		break;
-	case CGraph_DistMatCheckResult::square:
+	case DistMatCheckResult::square:
 		m_DistanceMatrix = distanceMatrix;
 		break;
-	case CGraph_DistMatCheckResult::lowerTriangular:
+	case DistMatCheckResult::lowerTriangular:
 		// Define and fill out distance matrix as a square matrix
 		m_DistanceMatrix = vector<vector<double> >(m_Order, vector<double>(m_Order, 0));
 		for (unsigned int i = 0; i < m_Order; ++i)
@@ -83,7 +87,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
 			}
 		}
 		break;
-	case CGraph_DistMatCheckResult::upperTriangular:
+	case DistMatCheckResult::upperTriangular:
 		m_DistanceMatrix = vector<vector<double> >(m_Order, vector<double>(m_Order, 0));
 		for (unsigned int i = 0; i < m_Order; ++i)
 		{
@@ -103,7 +107,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
 
 	// Check and store external-to-internal vertex labels
 	if (m_Order != vertexLabels.size())
-		throw InputVertexLabels_BadSize { vertexLabels.size() };
+		throw InputVertexLabels_BadSize(vertexLabels.size());
 	for (unsigned int i = 0; i < vertexLabels.size(); ++i)
 		m_ExternalToInternal[vertexLabels[i]] = i;
 	if (m_Order != m_ExternalToInternal.size())
@@ -149,11 +153,15 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
  */
 int CGraph::InternalToExternal(const unsigned int vertex) const
 {
+	DEBUG_METHOD();
+
 	return m_InternalToExternal.at(vertex);
 }
 
 void CGraph::InternalToExternal(const vector<unsigned int>& vertices_internal, vector<int>& vertices_external) const
 {
+	DEBUG_METHOD();
+
 	vertices_external.clear();
 	vertices_external.reserve(vertices_internal.size());
 
@@ -180,11 +188,15 @@ void CGraph::InternalToExternal(const vector<unsigned int>& vertices_internal, v
  */
 unsigned int CGraph::ExternalToInternal(const int vertex) const
 {
+	DEBUG_METHOD();
+
 	return m_ExternalToInternal.at(vertex);
 }
 
 void CGraph::ExternalToInternal(const vector<int>& vertices_external, vector<unsigned int>& vertices_internal) const
 {
+	DEBUG_METHOD();
+
 	vertices_internal.clear();
 	vertices_internal.reserve(vertices_external.size());
 
@@ -229,6 +241,8 @@ void CGraph::ExternalToInternal(const vector<int>& vertices_external, vector<uns
  */
 double CGraph::ShortestDistance(const int& startVertex, const int& endVertex, const bool& preferStartVertex, vector<int>& outputRoute)
 {
+	DEBUG_METHOD();
+
 	// Convert to internal vertex numbering (and check valid start and end vertices)
 	unsigned int iStartVertex, iEndVertex;
 	try
@@ -254,6 +268,8 @@ double CGraph::ShortestDistance(const int& startVertex, const int& endVertex, co
 
 double CGraph::ShortestDistance(const int& startVertex, const int& endVertex, vector<int>& outputRoute)
 {
+	DEBUG_METHOD();
+
 	return ShortestDistance(startVertex, endVertex, true, outputRoute);
 }
 
@@ -285,10 +301,12 @@ double CGraph::ShortestDistance(const int& startVertex, const int& endVertex, ve
  */
 void CGraph::InternalShortestDistance(const unsigned int& startVertex, const unsigned int& endVertex, const bool& preferStartVertex, double& shortestDistance, vector<unsigned int>& outputRoute)
 {
+	DEBUG_METHOD();
+
 	/*  -- Decide on whether to use Dijkstra from the startVertex or the endVertex -- //
 	 *   - Default is to use endVertex if Dijkstra as already been called for this, and startVertex
 	 *     otherwise.
-	 * Call internalDijkstra if necessary (from startVertex)
+	 * Call internalDijkstra if necessary (from startVertex or endVertex according to preferStartVertex)
 	 */
 	bool fromStartVertex;
 	if (m_DijkstraStartVertices.count(endVertex) > 0)
@@ -318,17 +336,17 @@ void CGraph::InternalShortestDistance(const unsigned int& startVertex, const uns
 
 		// Set the outputRoute
 		if (shortestDistance == -1) // If startVertex and endVertex are not connected
-			outputRoute = vector<unsigned int> ();
+			outputRoute = vector<unsigned int>();
 		else // If startVertex and endVertex are connected
 		{
 			// Set first element in reverseOutputRoute as endVertex.
 			// Then repeatedly push_back the parent vertex of the latest vertex in reverseOutputRoute until we reach startVertex
-			vector<unsigned int> reverseOutputRoute = {endVertex};
+			vector<unsigned int> reverseOutputRoute = { endVertex };
 			while (reverseOutputRoute.back() != startVertex)
 				reverseOutputRoute.push_back(m_DijkstraOutputRoutes[index][reverseOutputRoute.back()]);
 
 			// Set outputRoute as reverse of reverseOutputRoute
-			outputRoute = vector<unsigned int> (reverseOutputRoute.rbegin(), reverseOutputRoute.rend());
+			outputRoute = vector<unsigned int>(reverseOutputRoute.rbegin(), reverseOutputRoute.rend());
 		}
 	}
 	else
@@ -342,12 +360,12 @@ void CGraph::InternalShortestDistance(const unsigned int& startVertex, const uns
 
 		// Set the outputRoute
 		if (shortestDistance == -1)
-			outputRoute = vector<unsigned int> ();
+			outputRoute = vector<unsigned int>();
 		else
 		{
 			// Set first element in outputRoute as startVertex
 			// Then repeatedly push_back the parent vertex of the latest vertex in outputRoute until we reach endVertex
-			outputRoute = vector<unsigned int> {startVertex};
+			outputRoute = vector<unsigned int> { startVertex };
 			while (outputRoute.back() != endVertex)
 				outputRoute.push_back(m_DijkstraOutputRoutes[index][outputRoute.back()]);
 		}
@@ -393,6 +411,8 @@ void CGraph::InternalShortestDistance(const unsigned int& startVertex, const uns
  */
 unsigned int CGraph::InternalDijkstra(const unsigned int& startVertex)
 {
+	DEBUG_METHOD();
+
 	// -- Initial Admin -- //
 	// Check whether we have already computed Dijkstra for this startVertex
 	auto mapIterator = m_DijkstraStartVertices.find(startVertex);
@@ -476,7 +496,7 @@ unsigned int CGraph::InternalDijkstra(const unsigned int& startVertex)
  * distanceMatrix = The distance matrix to check.
  *
  * OUTPUT:
- * This takes one of the values of the enum class CGraph_DistMatCheckResult:
+ * This takes one of the values of the enum class DistMatCheckResult:
  *  - undefined       => An internal error has occurred and the output has not been set.
  *  - square          => The matrix supplied is square.
  *  - lowerTriangular => The matrix supplied is lower triangular.
@@ -488,48 +508,50 @@ unsigned int CGraph::InternalDijkstra(const unsigned int& startVertex)
  *                       into an unsigned int.
  *
  */
-CGraph_DistMatCheckResult CGraph::CheckInput_DistMat(const vector<vector<double> >& distanceMatrix) const
+CGraph::DistMatCheckResult CGraph::CheckInput_DistMat(const vector<vector<double> >& distanceMatrix) const
 {
+	DEBUG_METHOD();
+
 	// Check distanceMatrix is not too large for m_Order to fit in an unsigned int type
 	// The value of -1 (i.e. the largest possible unsigned int) is also reserved for special uses in InternalDijkstra.
 	const long unsigned max_unsignedInt = numeric_limits<unsigned int>::max();
 	if (distanceMatrix.size() > max_unsignedInt - 1)
-		return CGraph_DistMatCheckResult::tooLarge;
+		return DistMatCheckResult::tooLarge;
 
 	// Check distanceMatrix is not empty
 	if (distanceMatrix.size() == 0)
-		return CGraph_DistMatCheckResult::badShape;
+		return DistMatCheckResult::badShape;
 
 	// Get dimensions and check the input is a square or triangular matrix
 	// Determine shape if possible, and return bad shape if no shape is matched
-	CGraph_DistMatCheckResult matrixShape { CGraph_DistMatCheckResult::undefined };
+	DistMatCheckResult matrixShape { DistMatCheckResult::undefined };
 	if (distanceMatrix[0].size() == m_Order &&
 			(distanceMatrix.size() == 1 || distanceMatrix[1].size() == m_Order))
-		matrixShape = CGraph_DistMatCheckResult::square;
+		matrixShape = DistMatCheckResult::square;
 	else if (distanceMatrix[0].size() == 1 && distanceMatrix[1].size() == 2 )
-		matrixShape = CGraph_DistMatCheckResult::lowerTriangular;
+		matrixShape = DistMatCheckResult::lowerTriangular;
 	else if (distanceMatrix[0].size() == m_Order && distanceMatrix[1].size() == m_Order - 1)
-		matrixShape = CGraph_DistMatCheckResult::upperTriangular;
+		matrixShape = DistMatCheckResult::upperTriangular;
 	else
-		return CGraph_DistMatCheckResult::badShape;
+		return DistMatCheckResult::badShape;
 
 	// Check rest of matrix agrees with this shape
 	for (unsigned int i = 0; i < m_Order; ++i)
 	{
 		if (distanceMatrix[i].size() > max_unsignedInt)
-			return CGraph_DistMatCheckResult::tooLarge;
+			return DistMatCheckResult::tooLarge;
 
 		unsigned int rowLength = distanceMatrix[i].size();
-		if (matrixShape == CGraph_DistMatCheckResult::square && rowLength != m_Order)
-			return CGraph_DistMatCheckResult::badShape;
-		else if (matrixShape == CGraph_DistMatCheckResult::lowerTriangular && i > 0
+		if (matrixShape == DistMatCheckResult::square && rowLength != m_Order)
+			return DistMatCheckResult::badShape;
+		else if (matrixShape == DistMatCheckResult::lowerTriangular && i > 0
 				&& rowLength != distanceMatrix[i-1].size() + 1)
-			return CGraph_DistMatCheckResult::badShape;
-		else if (matrixShape == CGraph_DistMatCheckResult::upperTriangular && i > 0
+			return DistMatCheckResult::badShape;
+		else if (matrixShape == DistMatCheckResult::upperTriangular && i > 0
 				&& rowLength != distanceMatrix[i-1].size() - 1)
-			return CGraph_DistMatCheckResult::badShape;
+			return DistMatCheckResult::badShape;
 	}
-	if (matrixShape == CGraph_DistMatCheckResult::undefined)
+	if (matrixShape == DistMatCheckResult::undefined)
 		throw InternalException("Code broken internally. Variable matrixShape was not changed from undefined.");
 
 	// Check elements are valid
@@ -538,7 +560,7 @@ CGraph_DistMatCheckResult CGraph::CheckInput_DistMat(const vector<vector<double>
 		for (unsigned int j = 0; j < distanceMatrix[i].size(); ++j)
 		{
 			if (distanceMatrix[i][j] < 0 && distanceMatrix[i][j] != -1)
-				return CGraph_DistMatCheckResult::invalidElements;
+				return DistMatCheckResult::invalidElements;
 		}
 	}
 

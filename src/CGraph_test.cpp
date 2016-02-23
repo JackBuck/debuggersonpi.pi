@@ -8,6 +8,7 @@
 #include "CGraph.h"
 #include<iostream>
 #include<iomanip>
+#include "DebugLog.hpp"
 
 using namespace std;
 
@@ -21,6 +22,7 @@ template<typename T> void printElement(T t, const int& width)
 // Test CGraph, in particular the Dijkstra algorithm
 int CGraph_test()
 {
+	DEBUG_METHOD();
 	/*TODO: Write separate checks for the constructors and ShortestDistance functions.
 	 *      This will require public access to the distance matrix.
 	 *      Alternatively (and better?), these test functions should be declared within the CGraph class (included by a preprocessor command perhaps) so that they have access to the private elements of the class.
@@ -228,6 +230,8 @@ int CGraph_test()
 
 int CGraph_test2()
 {
+	DEBUG_METHOD();
+
 	// 1 - Define example of a graph manually
 	// The last two vertices form a second connected component.
 	vector<vector<double> > exampleGraph_DistMat {
@@ -329,6 +333,8 @@ int CGraph_test2()
 
 int CGraph_test3()
 {
+	DEBUG_METHOD();
+
 	// Test ShortestDistance with a singleton graph
 	vector<vector<double> > exampleGraph_DistMat {
 		{ 0 }

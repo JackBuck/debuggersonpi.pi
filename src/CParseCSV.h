@@ -40,8 +40,8 @@ public:
 		for (unsigned int i = 0; i < lines.size(); ++i)
 		{
 			// Write the ith line
-			for (unsigned int j = 0; j < lines[i].size() - 1; ++j)
-				file << lines[i][j] << ',';
+			for (unsigned int j = 1; j < lines[i].size(); ++j)
+				file << lines[i][j-1] << ',';
 			if (lines[i].size() > 0)
 				file << lines[i].back() << std::endl;
 		}
@@ -77,6 +77,8 @@ private:
 	static std::vector<std::vector<T> > ReadCSV(const std::string& filePath, T (*strParse)(const std::string&) )
 	{
 		std::ifstream file(filePath);
+		if (!file.is_open())
+			throw Exception_CantOpenFile { filePath };
 
 		CSVRow row;
 		std::vector<std::vector<T> > parsedFile;

@@ -7,6 +7,7 @@
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "CMazeMapper.h"
+#include "DebugLog.hpp"
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
@@ -19,6 +20,8 @@ using namespace std;
 CMazeMapper::CMazeMapper(const CMap* pMaze)
 		: m_pCurrentMap { pMaze }
 {
+	DEBUG_METHOD();
+
 	if (pMaze)
 		Update(pMaze);
 	else
@@ -43,6 +46,8 @@ CMazeMapper::CMazeMapper(const CMap* pMaze)
  */
 bool CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& outputRoute)
 {
+	DEBUG_METHOD();
+
 	// Generate graph from the CMap
 	// TODO: Fix this when you now how you will generate the graph / receive the map
 	vector< vector<double> > distanceMatrix;
@@ -93,6 +98,8 @@ bool CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& 
  */
 void CMazeMapper::Update(const CMap* pNewMap)
 {
+	DEBUG_METHOD();
+
 	if (pNewMap)
 	{
 		m_pCurrentMap = pNewMap;
@@ -126,6 +133,8 @@ void CMazeMapper::Update(const CMap* pNewMap)
  */
 void CMazeMapper::FindVertsToExplore()
 {
+	DEBUG_METHOD();
+
 	m_vertsToExplore.clear();
 
 	vector<vector<ERoom> > roomMap = m_pCurrentMap->GetRoomMap();
@@ -186,6 +195,8 @@ void CMazeMapper::FindVertsToExplore()
  */
 double CMazeMapper::VertexScore(int vertex)
 {
+	DEBUG_METHOD();
+
 	vector<double> coord = m_pCurrentMap->CalculateVertexCoords(vertex);
 	return coord[1] - coord[0];
 }

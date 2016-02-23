@@ -15,6 +15,7 @@
 #include "GoodsOut.h"
 #include "Manouvre.h"
 #include <climits>
+#include "DebugLog.hpp"
 
 // ~~~ DEFINITIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int LOCATION_UNKNOWN = -1;
@@ -23,6 +24,8 @@ int LOCATION_UNKNOWN = -1;
 // Basic outline of challenge 1 I am not sure how the interupts will work exactly.
 void CChallenges::ChallengeOne()
 {
+	DEBUG_METHOD();
+
 	CSignals::Start();
 
 	bool interrupt = false;
@@ -53,7 +56,7 @@ void CChallenges::ChallengeOne()
 
 void CChallenges::ChallengeTwo()
 {
-	
+	DEBUG_METHOD();
 
 
 
@@ -61,6 +64,7 @@ void CChallenges::ChallengeTwo()
 
 void CChallenges::ChallengeThree()
 {
+	DEBUG_METHOD();
 	std::string filepath;
 	CMap aMap = CMap(filepath);
 	int entrance_vertex = aMap.GetEntranceVertex();
@@ -114,6 +118,7 @@ void CChallenges::ChallengeThree()
 
 void CChallenges::ChallengeFour()
 {
+	DEBUG_METHOD();
 	///////////////////////////////////////////////////////////////////////
 	// Import map
 	std::string filepath;
@@ -363,7 +368,7 @@ void CChallenges::ChallengeFour()
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		// Remove the current room from the list of unknown rooms as we have just discovered which 
 		// block is there.
-		if(unknown_block_rooms[i] = current_room) 
+		if(unknown_block_rooms[i] == current_room)
 		{
 			unknown_block_rooms.erase(unknown_block_rooms.begin() + i);
 		}

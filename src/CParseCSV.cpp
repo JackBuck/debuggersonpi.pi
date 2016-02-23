@@ -7,7 +7,7 @@
 
 
 #include "CParseCSV.h"
-
+#include "DebugLog.hpp"
 
 using namespace std;
 
@@ -17,6 +17,8 @@ using namespace std;
  */
 vector<vector<int> > CParseCSV::ReadCSV_int(const string& filePath)
 {
+	DEBUG_METHOD();
+
 	int (*f)(const string&) = [](const string& s){return stoi(s);};
 	return ReadCSV(filePath, f);
 }
@@ -26,6 +28,8 @@ vector<vector<int> > CParseCSV::ReadCSV_int(const string& filePath)
  */
 vector<vector<double> > CParseCSV::ReadCSV_double(const string& filePath)
 {
+	DEBUG_METHOD();
+
 	double (*f)(const string&) = [](const string& s){return stod(s);};
 	return ReadCSV(filePath, f);
 }

@@ -83,7 +83,7 @@ public:
 	EInstruction FollowInstructionsNotLast(CInstructions &inputInstructions);
 
 	std::vector<std::vector<int>> DistanceMatrix();
-	std::vector<std::vector<int>> populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate);
+	std::vector<std::vector<int>> populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate, int roomWidth);
 
 	void WriteCellMap(std::string filepath);
 

@@ -63,7 +63,6 @@ CMap::CMap(string filepath)
 	// Current room is entrance room which is not defined in our map so set to 
 	m_currentRoom.resize(2);
 	m_currentRoom[0] = ENTRANCEPORCHROOM;
-	DEBUG_VALUE_OF_LOCATION(m_currentRoom);
 	
 }
 

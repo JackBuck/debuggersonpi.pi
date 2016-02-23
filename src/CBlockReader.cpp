@@ -29,6 +29,11 @@
 
 #include <cstdlib> /* system, NULL, EXIT_FAILURE */
 
+#include "../libs/ExifTool.h"
+#include <fstream>
+#include <sstream>
+
+
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
 using namespace cv;
@@ -39,7 +44,8 @@ using namespace cv;
 // TODO: Learn how to do filenames portably so that it will run on Windows machines...
 const string CBlockReader::imgExampleFolder {"Data/SpotImageExamples/"}; // In unix it is safe to concatenate filenames with two slashes :D
 const string CBlockReader::expectedSpotDistancesFile {"Data/Calibration/ExpectedSpotDistances.csv"};
-
+const string CBlockReader::lightingCalibrationPath {"Data/Calibration/CameraLightingCalibration.cal"};
+const string CBlockReader::mostRecentPhotoPath {"Data/MostRecentPhoto.jpg"};
 
 // -/-/-/-/-/-/-/ CONSTRUCTORS AND DESTRUCTORS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (default constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,6 +54,8 @@ const string CBlockReader::expectedSpotDistancesFile {"Data/Calibration/Expected
 CBlockReader::CBlockReader()
 {
 	DEBUG_METHOD();
+
+	ReadLightingCalibration();
 }
 
 /* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,6 +70,8 @@ CBlockReader::CBlockReader()
 CBlockReader::CBlockReader(string imagePath)
 {
 	DEBUG_METHOD();
+
+	ReadLightingCalibration();
 	LoadImgFromFile(imagePath);
 }
 
@@ -98,17 +108,17 @@ void CBlockReader::LoadImgFromFile(string imagePath)
  *	saveLocation - This should contain the path at which to save the photo.
  *
  *	RETURNS:
- *	true if photo was taken successfully. False otherwise.
+ *	True if photo was taken successfully. False otherwise.
  *
  */
-bool CBlockReader::TakePhoto()
+bool CBlockReader::TakePhoto(bool useCalibrationInfo)
 {
 	DEBUG_METHOD();
 
-	return TakePhoto("Data/MostRecentPhoto.png");
+	return TakePhoto(mostRecentPhotoPath, useCalibrationInfo);
 }
 
-bool CBlockReader::TakePhoto(string saveLocation)
+bool CBlockReader::TakePhoto(string saveLocation, bool useCalibrationInfo)
 {
 	DEBUG_METHOD();
 
@@ -119,17 +129,32 @@ bool CBlockReader::TakePhoto(string saveLocation)
 		return false;
 	}
 
-	// Take a photo
-	string command = "raspistill";
-	command += " --nopreview";
-	command += " --output " + saveLocation;
-	command += " --encoding png";
+
+	// Define photo command
+	ostringstream commandStream;
+	commandStream << "raspistill";
+	commandStream << " --nopreview";
+	commandStream << " --output " + saveLocation;
+	commandStream << " --encoding jpg";
+
+	// Add calibration info
+	if (useCalibrationInfo)
+	{
+		commandStream << " --timeout 1"; // V short timeout TODO: May need to change to 10 say
+
+		if (m_ShutterSpeed != 0)
+			commandStream << " --shutter " << m_ShutterSpeed;
+
+		if (m_Iso != 0)
+			commandStream << " --ISO " << m_Iso;
+	}
+
 
 	DEBUG_VALUE_OF_BLOCKS(command);
 
-	int result = system(command.c_str());
+	int result = system(commandStream.str().c_str());
 
-	return true;
+	return result;
 }
 
 
@@ -366,6 +391,106 @@ void CBlockReader::SetExpectedSpotDistances(const vector<string>& fileNames)
 	}
 }
 
+/* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function writes the file containing the calibration to lighting conditions for the camera.
+ * This includes the shutter speed and iso.
+ *
+ * The method calls TakePhoto to take a photo, then reads the exif information from that photo and
+ * uses it to create the calibration information.
+ *
+ */
+void CBlockReader::CalibrateFromPhoto()
+{
+	// Take photo for calibration
+	bool result = TakePhoto(false); //TODO: Uncomment this!!!
+
+	// Extract exif data
+	ExifTool exifTool {};
+	TagInfo* pTagInfo = exifTool.ImageInfo(mostRecentPhotoPath.c_str());
+	if (pTagInfo)
+	{
+		// Read exif data
+		for (TagInfo* i = pTagInfo; i; i = i->next)
+		{
+			// ----- Extract SHUTTER SPEED -----
+			string shutterSpeedName = "ShutterSpeedValue"; // TODO: Maybe change this to "ExposureTime"?
+			if (shutterSpeedName.compare(i->name) == 0)
+			{
+				// Convert fraction to microseconds
+				string shutterSpeed_frac = i->value;
+				unsigned int idx = shutterSpeed_frac.find('/');
+				double numerator = stod(shutterSpeed_frac.substr(0,idx));
+				double denominator = stod(shutterSpeed_frac.substr(idx+1));
+				m_ShutterSpeed = (numerator / denominator) * 1000000; // Convert seconds to microseconds
+			}
+
+			// ----- Extract ISO -----
+			string isoName = "ISO";
+			if (isoName.compare(i->name) == 0)
+				m_Iso = stod(i->value);
+		}
+
+
+		delete pTagInfo;
+		pTagInfo = nullptr;
+	}
+	else
+	{
+		cerr << "Error executing exiftool!" << endl;
+		throw Exception_CBlockReader_CantReadExifData;
+	}
+
+	// Print ExifTool error
+	char *err = exifTool.GetError();
+	if (err) cout << err;
+	delete err;
+	err = nullptr;
+
+	// TODO: Include check for reasonable shutter speed and iso?
+
+	// Write lighting calibration file
+	ofstream file(lightingCalibrationPath);
+	if (!file.is_open())
+		throw Exception_CBlockReader_CantOpenFile { lightingCalibrationPath };
+
+	file << "ShutterSpeed " << m_ShutterSpeed << endl;
+	file << "ISO"           << m_Iso <<          endl;
+
+	file.close();
+}
+
+/* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function reads the lighting calibration file and updates the relevant member variables.
+ *
+ */
+void CBlockReader::ReadLightingCalibration()
+{
+	m_ShutterSpeed = 0;
+	m_Iso = 0;
+
+	ifstream file(lightingCalibrationPath);
+	if (!file.is_open())
+		throw Exception_CBlockReader_CantOpenFile { lightingCalibrationPath };
+
+	string exifName;
+	while(file >> exifName)
+	{
+		if (exifName.compare("ShutterSpeed") == 0)
+		{
+			file >> m_ShutterSpeed;
+		}
+		else if (exifName.compare(""))
+		{
+			file >> m_Iso;
+		}
+		else
+		{
+			string bin;
+			file >> bin;
+		}
+	}
+	file.close();
+}
 
 // -/-/-/-/-/-/-/ HELPER FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ STRUCT (emulating private function) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -478,7 +603,6 @@ bool CBlockReader::SortAndComputeSpotDists()
 	}
 
 	// Sort centredSpots
-	// TODO: Debug sorting with testfourh15cm4.jpg
 	sort(centredSpots.begin(), centredSpots.end(), CompareByAngleThenRadius {});
 
 	// Find average spot size

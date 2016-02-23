@@ -13,7 +13,9 @@ OBJECTS_FOLDER  := objects/
 
 # Define search path for source files
 #SRC_DIR := $(REPO_DIR)/src
-vpath %.cpp $(REPO_DIR)/src
+vpath %.cpp $(REPO_DIR)/src \
+            $(REPO_DIR)/libs
+
 
 
 # Define source files
@@ -37,13 +39,16 @@ SRCS  =     CBlockReader.cpp      \
             Main.cpp              \
             Manouvre.cpp          \
             Signals.cpp           \
-            TestFunctions.cpp
+            TestFunctions.cpp     \
+            ExifTool.cpp          \
+            ExifToolPipe.cpp      \
+            TagInfo.cpp
 
 # Define object files (by naming rule)
 OBJS  = $(SRCS:.cpp=.o)
 
 # Define include paths
-INCLUDE_DIRS := -I/usr/include/opencv -I $(REPO_DIR)/src
+INCLUDE_DIRS := -I/usr/include/opencv -I $(REPO_DIR)/src -I $(REPO_DIR)/libs
 
 # Define linker flags for libraries
 LIBS := -lopencv_core -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_video -lopencv_highgui -lopencv_features2d

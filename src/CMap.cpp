@@ -748,17 +748,11 @@ EInstruction CMap::FollowInstructionsNotLast(CInstructions & inputInstructions)
 
 	
 
-std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<int>roomVertices, int rowCoordinate, int columnCoordinate, int roomWidth)
+void CMap::populateDistanceMatrixFromArray(std::vector<int> roomVertices, int rowCoordinate, int columnCoordinate, int roomWidth)
 {
 	DEBUG_METHOD();
 
 	int n = roomWidth;
-	// int distanceMatrixSize = (n - 1)*(2 * (n + 1) + 1) + (5 * n) - 2;
-
-	// TODO:
-	// Ensure every edge is printed in the coordinate list. Currently it seems to only have half of the expected coordinates
-	// ENSURE THAT i & j > n !!!
-	// if so, throw exception "n must be > than row & column coordinates"
 
 	// x = i(2n + 1) + 2j
 	// y = x + 2n + 2
@@ -775,13 +769,8 @@ std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<
 	int NorthVertexCoordinate = firstVertexOfRoom + 1;
 	int EastVertexCoordinate = firstVertexOfRoom + 2;
 
-	// by default, the southvertex number is the following. However, if the room is on the last row, the equation changes slightly
+	
 	int SouthVertexCoordinate = firstVertexOfRoom + (2 * n) + 2;
-
-	// probably works
-	//if (i_coordinate == n - 1) {
-	//	SouthVertexCoordinate = firstVertexOfRoom + (2 * n) + 1;
-	//}
 
 	int WestVertexCoordinate = firstVertexOfRoom;
 
@@ -806,36 +795,23 @@ std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<
 
 					// coordinates are only added if both vertices are non-zero
 					if (j == i + 1 || j == i + 3) {
-						edge_Magnitude = 2;
+						edge_Magnitude = CORNER_PATH_WEIGHT;
 					}
 					else if (j == i + 2) {
-						edge_Magnitude = 1;
+						edge_Magnitude = STRAIGHT_PATH_WEIGHT;
 }
-					else { edge_Magnitude = 0; }
+					else { edge_Magnitude = -1; }
 
 
-					if (vertexA_Coordinate < vertexB_Coordinate) {
+					// Add two entries to distance matrix.
 
-						m_distanceMatrix.at(vertexB_Coordinate).at(vertexA_Coordinate) = edge_Magnitude;
-
-						// std::vector<int> distanceMatrixCoordinate = { vertexB_Coordinate, vertexA_Coordinate, edge_Magnitude };
-						// m_distanceMatrixCoordinateList.push_back(distanceMatrixCoordinate);
-					}
-
-					// Added in case vertexA_Coordinate == vertexB_Coordinate (which should never happen)
-					else if (vertexA_Coordinate > vertexB_Coordinate) {
-
-						// Logic needs to be added to discern whether the room is a corner or a straight line
-						m_distanceMatrix.at(vertexA_Coordinate).at(vertexB_Coordinate) = edge_Magnitude;
-
-						// std::vector<int> distanceMatrixCoordinate = { vertexA_Coordinate, vertexB_Coordinate, edge_Magnitude };
-						// m_distanceMatrixCoordinateList.push_back(distanceMatrixCoordinate);
-					}
+					m_distanceMatrix.at(vertexB_Coordinate).at(vertexA_Coordinate) = edge_Magnitude;
+					m_distanceMatrix.at(vertexA_Coordinate).at(vertexB_Coordinate) = edge_Magnitude;
+				
 				}
 			}
 		}
 	}
-	return m_distanceMatrix;
 }
 
 void CMap::WriteCellMap(string filepath)
@@ -845,7 +821,7 @@ void CMap::WriteCellMap(string filepath)
 	CParseCSV::WriteCSV(m_cellMap, filepath);
 }
 
-vector<vector<int>> CMap::DistanceMatrix()
+vector<vector<double>> CMap::DistanceMatrix()
 {
 	DEBUG_METHOD();
 
@@ -853,23 +829,29 @@ vector<vector<int>> CMap::DistanceMatrix()
 	// y = x + 2n + 2
 
 	int westPoint, southPoint, roomWidth;
-	roomWidth = m_cellheight/3;
+	roomWidth = m_cellwidth/3;
 
 	int n = roomWidth;
-	// distanceMatrix might have a -1 due to starting at 0.
-	// int distanceMatrixSize = (n - 1)*(2 * (n + 1) + 1) + (5 * n) - 2;
+
+	// Calculate the total number of vertices.
+
 	int distanceMatrixSize = n*(n + 1) + (n + 1)*(n + 1);
 
-	m_distanceMatrixCoordinateList.clear();
-	std::vector<std::vector<int>> distanceMatrix;
-	distanceMatrix.resize(distanceMatrixSize);
+	m_distanceMatrix.clear();
 
-	// Default is zero.
-	// should be able to do distanceMatrix.resize(distanceMatrixSize);
-	for (int i = 0; i < distanceMatrixSize; i++) {
-		distanceMatrix[i].resize(distanceMatrixSize);
+	m_distanceMatrix.resize(distanceMatrixSize);
+
+	// Change resize vectors and populate with -1.
+	
+	for (int i = 0; i < distanceMatrixSize; i++) 
+	{
+		m_distanceMatrix[i].resize(distanceMatrixSize, -1.0);
 	}
-	m_distanceMatrix = distanceMatrix;
+	m_distanceMatrix = m_distanceMatrix;
+
+
+	///////////////////////////////////////////////////////////////////
+	//  Check which rooms contain blocks
 
 	std::vector<int> blockRooms;
 	CalculateBlockRooms(&blockRooms);
@@ -877,9 +859,14 @@ vector<vector<int>> CMap::DistanceMatrix()
 
 	blockRoomCoords.resize(blockRooms.size());
 
+	///////////////////////////////////////////////////////////////////
+	// Convert to coordinates of room
+
 	for (int i = 0; i < blockRooms.size(); i++) {
 		blockRoomCoords.at(i) = RoomIndextoCoord(blockRooms.at(i));
 	}
+
+
 	for (int i = 0; i < roomWidth; i++)
 	{
 		for (int j = 0; j < roomWidth; j++)
@@ -902,18 +889,13 @@ vector<vector<int>> CMap::DistanceMatrix()
 	return m_distanceMatrix;
 }
 
-//std::vector<std::vector<int>> GetDistanceMatrix()
-//{
-//	DEBUG_METHOD();
-//}
-
-vector<vector<int>> CMap::GetDistanceMatrixCoordinateList()
+std::vector<std::vector<double>> CMap::GetDistanceMatrix()
 {
 	DEBUG_METHOD();
 
-	DistanceMatrix();
-	return m_distanceMatrixCoordinateList;
+	return m_distanceMatrix;
 }
+
 
 
 

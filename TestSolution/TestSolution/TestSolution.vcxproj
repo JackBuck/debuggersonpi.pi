@@ -141,6 +141,7 @@
     <ClCompile Include="..\..\src\CParseCSV_test.cpp" />
     <ClCompile Include="..\..\src\CSVRow.cpp" />
     <ClCompile Include="..\..\src\DebugLog.cpp" />
+    <ClCompile Include="..\..\src\DistanceMatrixTest.cpp" />
     <ClCompile Include="..\..\src\Instructions.cpp" />
     <ClCompile Include="..\..\src\CInstruction_test.cpp" />
     <ClCompile Include="..\..\src\Manouvre.cpp" />

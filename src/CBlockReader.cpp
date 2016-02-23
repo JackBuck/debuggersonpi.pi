@@ -96,7 +96,8 @@ void CBlockReader::LoadImgFromFile(string imagePath)
 	}
 	else
 	{
-		resize(image_fullsize, m_Image, Size(), 0.2, 0.2, INTER_AREA);
+		//resize(image_fullsize, m_Image, Size(), 0.2, 0.2, INTER_AREA); // TODO Change this so that the pi just takes smaller photos
+		m_Image = image_fullsize;
 	}
 }
 
@@ -134,6 +135,9 @@ bool CBlockReader::TakePhoto(string saveLocation, bool useCalibrationInfo)
 	ostringstream commandStream;
 	commandStream << "raspistill";
 	commandStream << " --nopreview";
+	commandStream << " --width 432"; // 1/6 maximum resolution
+	commandStream << " --height 324";
+	commandStream << " --quality 100"; // TODO: Tweak for fastest load by opencv "75" is a happy medium says the internet...
 	commandStream << " --output " + saveLocation;
 	commandStream << " --encoding jpg";
 

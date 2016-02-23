@@ -10,11 +10,13 @@
 #include "GoodsIn.h"
 #include "DebugLog.hpp"
 
+//Is any of this relevant?
 void CGoodsIn::GetJunctionType()
 {
 	DEBUG_METHOD();
 }
 
+//what is this even for?!
 void CGoodsIn::GetRawSensorData()
 {
 	DEBUG_METHOD();

@@ -87,7 +87,7 @@ int CBlockReader_test3()
 		return 1;
 }
 
-// This tests the ExifTool
+// This tests the ExifTool and the calibration process
 void CBlockReader_test4()
 {
 	DEBUG_METHOD();

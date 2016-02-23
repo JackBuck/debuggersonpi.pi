@@ -60,8 +60,8 @@ int main()
 		cout << "Error! One or more tests failed!\n";
 	}
 
-	keep_window_open();
-
+	//keep_window_open(); // Commented since logger redirects output to file, so you don't see the enter character message!!
+	return result;
 }
 
 

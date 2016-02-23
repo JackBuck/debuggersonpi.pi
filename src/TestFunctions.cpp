@@ -13,7 +13,7 @@
 #include "DebugLog.hpp"
 
 int CMap_test();
-void CMap_testJohn();
+int DistanceMatrixTest();
 int CGraph_test();
 int CGraph_test2();
 int CGraph_test3();
@@ -31,19 +31,19 @@ int TestAllFunctions()
 	int returnVal = 0;
 	// TODO It would be useful to produce output to the console to show which functions 'passed' and which 'failed' so that we can look at their output in the future.
 	returnVal += CMap_test();
-	//std::cout << '\n';
-	//CMap_testJohn();
-	//std::cout << '\n';
-	//returnVal += CGraph_test();
-	//std::cout << '\n';
-	//returnVal += CGraph_test2();
-	//std::cout << '\n';
-	//returnVal += CGraph_test3();
-	//std::cout << '\n';
-	//returnVal += CParseCSV_test();
-	//std::cout << '\n';
-	//CParseCSV_test2();
-	//std::cout << '\n';
+	std::cout << '\n';
+	DistanceMatrixTest();
+	std::cout << '\n';
+	returnVal += CGraph_test();
+	std::cout << '\n';
+	returnVal += CGraph_test2();
+	std::cout << '\n';
+	returnVal += CGraph_test3();
+	std::cout << '\n';
+	returnVal += CParseCSV_test();
+	std::cout << '\n';
+	CParseCSV_test2();
+	std::cout << '\n';
 	//CBlockReader_test();                // Will fail without images in the Data/SpotImageExamples folder
 	//std::cout << '\n';
 	//returnVal += CBlockReader_test2();  // Will fail without images in the Data/SpotImageExamples folder

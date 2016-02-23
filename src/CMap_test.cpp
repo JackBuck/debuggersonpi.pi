@@ -52,7 +52,7 @@ int CMap_test()
 	return 0;
 }
 
-void PrintMatrix(std::vector<std::vector<int>> inputMap)
+void PrintMatrix(std::vector<std::vector<double>> inputMap)
 {
 	DEBUG_METHOD();
 

@@ -34,9 +34,7 @@ private:
 	int m_exitRoom;
 	std::vector<int> m_entranceCell;
 	std::vector<int> m_exitCell;
-	std::vector<int[3]> m_distanceMatrixArray;
-	std::vector<std::vector<int>> m_distanceMatrixCoordinateList;
-	std::vector<std::vector<int>> m_distanceMatrix;
+	std::vector<std::vector<double>> m_distanceMatrix;
 
 	// === Location Tracking ==========================================================================
 
@@ -58,10 +56,6 @@ public:
 	int GetEntranceVertex() const;
 	int GetExitVertex() const;
 
-	std::vector<std::vector<int>> GetDistanceMatrix();
-	std::vector<std::vector<int>> GetDistanceMatrixCoordinateList();
-	//std::vector<int[3]> GetDistanceMatrixArray();
-
 	int GetCurrentVertex() const;
 	std::vector<int> GetCurrentRoom() const;
 
@@ -82,8 +76,9 @@ public:
 	void FollowInstructions(CInstructions &inputInstructions);
 	EInstruction FollowInstructionsNotLast(CInstructions &inputInstructions);
 
-	std::vector<std::vector<int>> DistanceMatrix();
-	std::vector<std::vector<int>> populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate, int roomWidth);
+	std::vector<std::vector<double>> DistanceMatrix();		// recomputes distance matrix
+	std::vector<std::vector<double>> GetDistanceMatrix();	// Doesnt recompute.
+	void populateDistanceMatrixFromArray(std::vector<int> roomVertices, int rowCoordinate, int columnCoordinate, int roomWidth);
 
 	void WriteCellMap(std::string filepath);
 

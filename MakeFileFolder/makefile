@@ -4,8 +4,8 @@
 ########################################################################
 
 # Define repository location on the pi (~/renispace_source is a symbolic link on the pi)
-REPO_DIR := /home/pi/renispace_source
-#REPO_DIR := /home/pi/swDev/Source/Repos/renispace
+REPO_DIR ?= /home/pi/renispace_source
+#REPO_DIR ?= /home/pi/swDev/Source/Repos/renispace
 
 # Output names and locations
 EXECUTABLE_NAME := renispace

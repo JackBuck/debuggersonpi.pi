@@ -23,6 +23,7 @@ int CMazeMapper_test();
 void CBlockReader_test();
 int CBlockReader_test2();
 int CBlockReader_test3();
+void CBlockReader_test4();
 
 int TestAllFunctions()
 {
@@ -48,8 +49,10 @@ int TestAllFunctions()
 //	std::cout << '\n';
 //	returnVal += CBlockReader_test2();  // Will fail without images in the Data/SpotImageExamples folder
 //	std::cout << '\n';
-	returnVal += CBlockReader_test3();  // Tests ability to use system to take photos
-	std::cout << '\n';
+//	returnVal += CBlockReader_test3();  // Tests ability to use system to take photos (ONLY RUN ON PI)
+//	std::cout << '\n';
+//	CBlockReader_test4();               // Tests calibration to lighting conditions, and exiftool (ONLY RUN ON PI)
+//	std::cout << '\n';
 //	returnVal += CMazeMapper_test();
 //	std::cout << '\n';
 

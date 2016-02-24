@@ -14,7 +14,7 @@
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
 
-// -/-/-/-/-/-/-/ CONSTRUCTORS AND DESTRUCTORS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
+// -/-/-/-/-/-/-/ CONSTRUCTORS, DESTRUCTORS and INITIALISERS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * This is a default constructor for the CGraph.
  * It will initialise the graph as an empty graph.
@@ -28,6 +28,20 @@ CGraph::CGraph()
 {
 	DEBUG_METHOD();
 	// Default initialisations of member variables as 0 and empty containers does exactly this!
+}
+
+/* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function is a constructor for the CGraph class. It takes input for the distance matrix and
+ * assumes 1,2,...,n for the vertex labels.
+ */
+CGraph::CGraph(const vector<vector<double> >& distanceMatrix)
+{
+	// Create default vertex labels
+	vector<int> vertexLabels(distanceMatrix.size());
+	for (unsigned int i = 0; i < distanceMatrix.size(); ++i)
+		vertexLabels[i] = i;
+
+	Initialise(distanceMatrix, vertexLabels);
 }
 
 /* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,9 +64,24 @@ CGraph::CGraph()
  *
  */
 CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>& vertexLabels)
-		: m_Order { static_cast<unsigned int>(distanceMatrix.size()) }, m_InternalToExternal { vertexLabels }
+//		: m_Order { static_cast<unsigned int>(distanceMatrix.size()) }, m_InternalToExternal { vertexLabels }
 {
 	DEBUG_METHOD();
+
+	Initialise(distanceMatrix, vertexLabels);
+}
+
+/* ~~~ FUNCTION (initialiser) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  This function initialises the CGraph object. See the comments of the constructor with the same
+ *  argument.
+ */
+void CGraph::Initialise(const vector<vector<double> > &distanceMatrix, const vector<int>& vertexLabels)
+{
+	DEBUG_METHOD();
+
+	// Would be on initialiser line in constructor
+	m_Order = static_cast<unsigned int>(distanceMatrix.size());
+	m_InternalToExternal = vertexLabels;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//// Check Inputs ////
@@ -130,9 +159,7 @@ CGraph::CGraph(const vector<vector<double> > &distanceMatrix, const vector<int>&
 			}
 		}
 	}
-
 }
-
 
 // -/-/-/-/-/-/-/ INTERNAL NUMBERING FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (private) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -847,7 +847,7 @@ vector<vector<double>> CMap::DistanceMatrix()
 	{
 		m_distanceMatrix[i].resize(distanceMatrixSize, -1.0);
 	}
-	m_distanceMatrix = m_distanceMatrix;
+	//m_distanceMatrix = m_distanceMatrix; // TODO: This line breaks compile for me - what was it supposed to say??
 
 
 	///////////////////////////////////////////////////////////////////

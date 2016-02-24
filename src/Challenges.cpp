@@ -47,7 +47,7 @@ void CChallenges::ChallengeTwo()
 
 
 	//////////////////////////////////////////////////////////////////////
-	// Creat empty map
+	// Create empty map
 
 	CMap aMap = CMap(10, 10);
 
@@ -62,7 +62,7 @@ void CChallenges::ChallengeTwo()
 		// Find room type of current room and save it into the map.
 
 		ERoom currentRoomType = CManouvre::DetectRoomType();
-		aMap.SetCurrentRoom(currentRoomType);
+		aMap.SetCurrentRoomType(currentRoomType);
 
 
 		///////////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ void CChallenges::ChallengeTwo()
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////
-	// Map now completel known. Write to file.
+	// Map now completely known. Write to file.
 
 	std::string filepath = "ExportMap.txt";
 	aMap.WriteCellMap(filepath);
@@ -115,11 +115,7 @@ void CChallenges::ChallengeThree()
 	std::vector<std::vector<double>> distanceMatrix = aMap.DistanceMatrix();
 
 	///////////////////////////////////////////////////////////////
-	// TODO sort out labels
-
-	std::vector<int> labels;
-
-	CGraph aGraph = CGraph(distanceMatrix, labels);
+	CGraph aGraph = CGraph(distanceMatrix);
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -213,11 +209,7 @@ void CChallenges::ChallengeFour()
 		std::vector<std::vector<double>> distanceMatrix = aMap.DistanceMatrix();
 
 		///////////////////////////////////////////////////////////////
-		// TODO sort out labels
-
-		std::vector<int> labels;
-
-		CGraph aGraph = CGraph(distanceMatrix, labels);
+		CGraph aGraph = CGraph(distanceMatrix);
 
 
 		//////////////////////////////////////////////////////////////////////

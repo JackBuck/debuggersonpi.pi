@@ -18,7 +18,7 @@ const double ROOMLENGTH = 2.0;
 const double STRAIGHT_PATH_WEIGHT = 1.0;
 const double CORNER_PATH_WEIGHT = 2.0;
 
-const int UNKNOWN_TEST_RESULT=-1.0;
+const int UNKNOWN_TEST_RESULT=0;
 
 
 enum ERoom

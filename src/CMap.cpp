@@ -89,8 +89,14 @@ CMap::CMap(int room_height, int room_width)
 			m_cellMap[3*i+2][3*j+1] = -1;
 			m_cellMap[3*i + 1][3*j] = -1;
 
-}
+		}
 	}
+
+	m_exitRoom = room_width -1;
+	m_firstRoom = room_width * (room_height - 1);
+
+	ComputeCellMapSize();
+	CreateRoomMap();
 }
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,7 +119,7 @@ void CMap::CreateRoomMap()
 			vector<bool> room_flag;
 			room_flag.assign(16, true);
 
-			if(m_cellMap[(3*height_index)][(3*width_index) + 1] == 0)
+			if(m_cellMap[(3*height_index)][(3*width_index) + 1] == 0) // Check north vertex
 			{ 
 				room_flag[ERoom_Cross] = false;
 				room_flag[ERoom_North] = false;
@@ -433,15 +439,15 @@ void CMap::UpdateCellMap()
 				}
 			}
 
-				}
-			}
-		}
+		} // for cols
+	} // for rows
+}
 
 void CMap::SetCurrentRoomType(ERoom roomType)
 {	
 	m_roomMap[m_currentRoom[0]][m_currentRoom[1]] = roomType;
 	UpdateCellMap();
-	}
+}
 
 
 void CMap::CalculateBlockRooms(vector<int>* pBlockRooms) const
@@ -647,9 +653,9 @@ int CMap::GetEntranceVertex() const
 {
 	DEBUG_METHOD();
 
-	vector<int> coord = {m_cellwidth/3, 0}; // TODO: should be m_cellheight here? (even if it is academic when they're both equal!)
+	vector<int> coord = {m_cellheight/3, 0};
 
-	return (coord[0]+1)*(2*m_cellwidth+1) + 2*coord[1] +1;
+	return (coord[0]+1)*(2*m_cellwidth/3+1) + 2*coord[1] +1;
 }
 
 int CMap::GetExitVertex() const
@@ -658,7 +664,7 @@ int CMap::GetExitVertex() const
 
 	vector<int> coord = {0, m_cellwidth/3};
 
-	return (coord[0])*(2*m_cellwidth+1) + 2*coord[1] +2; // TODO: Should be +1 here? Is the exit not off the top rather than the right?
+	return (coord[0])*(2*m_cellwidth/3 + 1) + 2*coord[1] + 1;
 }
 
 int CMap::GetCurrentVertex() const
@@ -680,6 +686,7 @@ void CMap::SetCurrentRoom(int new_room_index)
 
 	std::vector<int> coord = RoomIndextoCoord(new_room_index);
 
+	m_currentRoom.resize(2);
 	m_currentRoom[0] = coord[0];
 	m_currentRoom[1] = coord[1];
 }
@@ -847,7 +854,6 @@ vector<vector<double>> CMap::DistanceMatrix()
 	{
 		m_distanceMatrix[i].resize(distanceMatrixSize, -1.0);
 	}
-	//m_distanceMatrix = m_distanceMatrix; // TODO: This line breaks compile for me - what was it supposed to say??
 
 
 	///////////////////////////////////////////////////////////////////

@@ -36,11 +36,11 @@ class CMazeMapper
 {
 public:
 	// === Constructor and Destructors ==============================================================
-	CMazeMapper(const CMap*);
+	CMazeMapper(CMap*);
 
 	// === Public Functions =========================================================================
 	bool ComputeNextVertex(const int& currentVertex, std::vector<int>& outputRoute);
-	void Update(const CMap* newMap);
+	void Update(CMap* newMap);
 
 	// === Exceptions ===============================================================================
 	struct Exception_NullPointer {};
@@ -48,7 +48,7 @@ public:
 private:
 	// === Member Variables =========================================================================
 	std::vector<int> m_vertsToExplore;
-	const CMap* m_pCurrentMap;
+	CMap* m_pCurrentMap;
 
 	// === Private Functions ========================================================================
 	void FindVertsToExplore();

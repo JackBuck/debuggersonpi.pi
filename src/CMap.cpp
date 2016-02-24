@@ -22,7 +22,7 @@ using namespace std;
 
 // ~~~ DEFINITIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-int ENTRANCEPORCHROOM = -1;
+//int ENTRANCEPORCHROOM = -1;
 
 
 
@@ -48,7 +48,7 @@ CMap::CMap(string filepath)
 	m_exitRoom = m_cellwidth-1;
 
 	m_entranceCell = {3*m_firstRoom , 2};
-	m_exitCell = {2, 3*m_cellwidth};
+	m_exitCell = {2, 3*m_cellwidth}; // TODO: Change this? The exit cell is
 
 	//////////////////////////////////////////////////////////////////////////////////////
 	// Assume positioned at start.
@@ -60,9 +60,9 @@ CMap::CMap(string filepath)
 	DEBUG_VALUE_OF_LOCATION(m_currentOrientation);
 	
 	///////////////////////////////////////////////////////////////////////////////////////
-	// Current room is entrance room which is not defined in our map so set to 
-	m_currentRoom.resize(2);
-	m_currentRoom[0] = ENTRANCEPORCHROOM;
+	// Initial 'next room' is entrance room is the bottom left room on the map
+	m_nextRoom = vector<int> {m_cellheight/3, 0};
+	//m_nextRoom[0] = ENTRANCEPORCHROOM;
 	
 }
 
@@ -96,6 +96,15 @@ CMap::CMap(int room_height, int room_width)
 	m_firstRoom = room_width * (room_height - 1);
 
 	ComputeCellMapSize();
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	// Initial 'next room' is entrance room is the bottom left room on the map
+	m_nextRoom = vector<int> {m_cellheight/3, 0};
+	m_currentVertex = GetEntranceVertex();
+	DEBUG_VALUE_OF_LOCATION(m_currentVertex);
+	m_currentOrientation = EOrientation_North;
+	DEBUG_VALUE_OF_LOCATION(m_currentOrientation);
+
 	CreateRoomMap();
 }
 
@@ -114,8 +123,28 @@ void CMap::CreateRoomMap()
 		for(int width_index=0; width_index<room_width; width_index++)
 		{
 			//////////////////////////////////////////////////////////
-			// Determine room type
+			// Check that the room is not empty
+			if ((m_cellMap[3*height_index][3*width_index + 1] == -1)                  // north
+					|| (m_cellMap[(3*height_index) + 1][(3*width_index) + 2] == -1)     // east
+					|| (m_cellMap[(3 * height_index) + 2][(3 * width_index) + 1] == -1) // south
+					|| (m_cellMap[(3*height_index) + 1][(3*width_index)] == -1))        // west
+			{
+				if (width_index == 0)
+				{
+					vector<ERoom> temp_vec;
+					temp_vec.clear();
+					temp_vec.push_back(ERoom_Unknown);
+					m_roomMap.push_back(temp_vec);
+				}
+				else
+				{
+					m_roomMap[height_index].push_back(ERoom_Unknown);
+				}
+			}
 
+
+			//////////////////////////////////////////////////////////
+			// Determine room type
 			vector<bool> room_flag;
 			room_flag.assign(16, true);
 
@@ -143,7 +172,7 @@ void CMap::CreateRoomMap()
 				room_flag[ERoom_EastSouthWest] = false;
 			}
 
-			if (m_cellMap[(3*height_index) + 1][(3*width_index) + 2] == 0)
+			if (m_cellMap[(3*height_index) + 1][(3*width_index) + 2] == 0) // Check east vertex
 			{
 				room_flag[ERoom_Cross] = false;
 				room_flag[ERoom_East] = false;
@@ -166,7 +195,7 @@ void CMap::CreateRoomMap()
 				room_flag[ERoom_NorthSouthWest] = false;
 			}
 
-			if (m_cellMap[(3 * height_index) + 2][(3 * width_index) + 1] == 0)
+			if (m_cellMap[(3 * height_index) + 2][(3 * width_index) + 1] == 0) // Check south vertex
 			{
 				room_flag[ERoom_Cross] = false;
 				room_flag[ERoom_South] = false;
@@ -189,7 +218,7 @@ void CMap::CreateRoomMap()
 				room_flag[ERoom_NorthEastWest] = false;
 			}
 			
-			if (m_cellMap[(3*height_index) + 1][(3*width_index)] == 0)
+			if (m_cellMap[(3*height_index) + 1][(3*width_index)] == 0) // Check west vertex
 			{
 				room_flag[ERoom_Cross] = false;
 				room_flag[ERoom_West] = false;
@@ -212,6 +241,8 @@ void CMap::CreateRoomMap()
 				room_flag[ERoom_NorthEast] = false;
 				room_flag[ERoom_NorthEastSouth] = false;
 			}
+
+
 			//////////////////////////////////////////////////////////
 			// There should now only be one true flag.
 
@@ -445,10 +476,9 @@ void CMap::UpdateCellMap()
 
 void CMap::SetCurrentRoomType(ERoom roomType)
 {	
-	m_roomMap[m_currentRoom[0]][m_currentRoom[1]] = roomType;
+	m_roomMap[m_nextRoom[0]][m_nextRoom[1]] = roomType;
 	UpdateCellMap();
 }
-
 
 void CMap::CalculateBlockRooms(vector<int>* pBlockRooms) const
 {
@@ -674,22 +704,33 @@ int CMap::GetCurrentVertex() const
 	return m_currentVertex;
 }
 
-std::vector<int> CMap::GetCurrentRoom() const
+// This returns the room we are about to enter while following instructions
+std::vector<int> CMap::GetNextRoom() const
 {
 	DEBUG_METHOD();
-	return m_currentRoom;
+	return m_nextRoom;
 }
 
-void CMap::SetCurrentRoom(int new_room_index)
+void CMap::SetNextRoom(int new_room_index) // TODO: Unnecessary?
 {
 	DEBUG_METHOD();
 
 	std::vector<int> coord = RoomIndextoCoord(new_room_index);
 
-	m_currentRoom.resize(2);
-	m_currentRoom[0] = coord[0];
-	m_currentRoom[1] = coord[1];
+	m_nextRoom.resize(2);
+	m_nextRoom[0] = coord[0];
+	m_nextRoom[1] = coord[1];
 }
+
+void CMap::SetNextRoom(int row, int col) // TODO: Unnecessary?
+{
+	DEBUG_METHOD();
+
+	m_nextRoom.resize(2);
+	m_nextRoom[0] = row;
+	m_nextRoom[1] = col;
+}
+
 
 void CMap::SetCurrentVertex(int new_vertex_index)
 {
@@ -713,47 +754,83 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 {
 	DEBUG_METHOD();
 
-	//////////////////////////////////////////////////////////////////////////////////////
-	// Check we are at start vertex.
+	//int current_vertex = GetCurrentVertex(); // Why use this when we are a member function of CMap??
 
-	int current_vertex = GetCurrentVertex();
-
+	// Extract information from inputInstructions
 	vector<EInstruction> instructionList = inputInstructions.GetInstructions();
 	vector<ERoom> roomList = inputInstructions.GetRoomList();
-	vector<EOrientation> oreintationList = inputInstructions.GetOrientations();
+	vector<EOrientation> orientationList = inputInstructions.GetOrientations();
+	vector<int> vertexList = inputInstructions.GetVertexList();
 
-	if (current_vertex != instructionList[0]) CSignals::Error();
+	// Check m_currentVertex is valid
+	if (m_currentVertex != instructionList[0]) CSignals::Error();
 
+	// Move and update location member variables as you go
 	for (int i = 0; i < instructionList.size(); i++)
 	{
 		CManouvre::InstructionToManouvre(instructionList[i]);
+
+		m_currentVertex = vertexList[i+1];
+		m_currentOrientation = orientationList[i+1];
+
+		switch (orientationList[i])
+		{
+			case EOrientation_North:
+				m_nextRoom[0] -= 1;
+				break;
+			case EOrientation_East:
+				m_nextRoom[1] += 1;
+				break;
+			case EOrientation_South:
+				m_nextRoom[0] += 1;
+				break;
+			case EOrientation_West:
+				m_nextRoom[1] -= 1;
+				break;
+		}
 	}
+
 }
 
 EInstruction CMap::FollowInstructionsNotLast(CInstructions & inputInstructions)
 {
 	DEBUG_METHOD();
 
-	//////////////////////////////////////////////////////////////////////////////////////
-	// Check we are at start vertex.
-
-	int current_vertex = GetCurrentVertex();
+	//int current_vertex = GetCurrentVertex();
 
 	vector<EInstruction> instructionList = inputInstructions.GetInstructions();
 	vector<ERoom> roomList = inputInstructions.GetRoomList();
-	vector<EOrientation> oreintationList = inputInstructions.GetOrientations();
+	vector<EOrientation> orientationList = inputInstructions.GetOrientations();
+	vector<int> vertexList = inputInstructions.GetVertexList();
 
-	if (current_vertex != instructionList[0]) CSignals::Error();
+	if (m_currentVertex != instructionList[0]) CSignals::Error();
 
 	for (int i = 0; i < instructionList.size()-1; i++)
 	{
 		CManouvre::InstructionToManouvre(instructionList[i]);
+
+		m_currentVertex = vertexList[i+1];
+		m_currentOrientation = orientationList[i+1];
+
+		switch (orientationList[i+1])
+		{
+			case EOrientation_North:
+				m_nextRoom[0] -= 1;
+				break;
+			case EOrientation_East:
+				m_nextRoom[1] += 1;
+				break;
+			case EOrientation_South:
+				m_nextRoom[0] += 1;
+				break;
+			case EOrientation_West:
+				m_nextRoom[1] -= 1;
+				break;
+		}
 	}
 
 	return instructionList[instructionList.size()-1];
 }
-
-	
 
 void CMap::populateDistanceMatrixFromArray(std::vector<int> roomVertices, int rowCoordinate, int columnCoordinate, int roomWidth)
 {

@@ -22,6 +22,7 @@ private:
 	std::vector<EInstruction> m_instructions;
 	std::vector<ERoom> m_roomList;
 	std::vector<EOrientation> m_orientationBetweenInstructions;
+	std::vector<int> m_vertexList;
 
 
 	// === Public Functions =========================================================================
@@ -31,6 +32,8 @@ public:
 	std::vector<ERoom> GetRoomList();
 
 	std::vector<EOrientation> GetOrientations();
+
+	std::vector<int> GetVertexList();
 
 	void TruncateAtRoom(int room_index);
 

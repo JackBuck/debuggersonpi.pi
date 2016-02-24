@@ -100,7 +100,6 @@ void CChallenges::ChallengeTwo()
 	CSignals::Complete();
 }
 
-
 void CChallenges::ChallengeThree()
 {
 	DEBUG_METHOD();
@@ -137,6 +136,8 @@ void CChallenges::ChallengeThree()
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	// Now we know our route, execute it
 
+	// TODO: NB the CMap member variables tracking the location are not updated here!!!
+	// If we do decide to use them, then the easiest way would be to use the CMap::FollowInstructions method.
 	CManouvre::MoveToStartVertex();
 
 	for(unsigned int i=0; i<macroInstructions.size(); i++)
@@ -150,8 +151,6 @@ void CChallenges::ChallengeThree()
 
 	CSignals::Complete();
 }
-
-
 
 void CChallenges::ChallengeFour()
 {
@@ -454,7 +453,7 @@ void CChallenges::ChallengeFour()
 	if(current_block_number != next_value)
 	{
 		CManouvre::ReverseAndUTurn();
-	CSignals::Notification2();
+		CSignals::Notification2();
 		continue;
 	}
 

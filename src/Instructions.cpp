@@ -25,6 +25,7 @@ using namespace std;
 // and from this creates an instance of the class.
 
 CInstructions::CInstructions(const std::vector<int> &vertexList, const int map_width)
+		: m_vertexList { vertexList }
 {
 	DEBUG_METHOD();
 
@@ -301,6 +302,10 @@ vector<EOrientation> CInstructions::GetOrientations()
 	return m_orientationBetweenInstructions;
 }
 
+vector<int> CInstructions::GetVertexList()
+{
+	return m_vertexList;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // This function truncates instructions if they go through the room of interest.
@@ -315,6 +320,7 @@ void CInstructions::TruncateAtRoom(int room_index)
 			m_instructions.resize(i-1);
 			m_roomList.resize(i-1);
 			m_orientationBetweenInstructions.resize(i);
+			m_vertexList.resize(i);
 		}
 	}
 }

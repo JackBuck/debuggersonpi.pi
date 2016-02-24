@@ -38,7 +38,8 @@ private:
 
 	// === Location Tracking ==========================================================================
 
-	std::vector<int> m_currentRoom;
+	// These three are only updated in the FollowInstructions() and FollowInstructionsNotLast() methods
+	std::vector<int> m_nextRoom; // The room we are about to enter (while following instructions)
 	int m_currentVertex;
 	EOrientation m_currentOrientation;
 
@@ -57,9 +58,10 @@ public:
 	int GetExitVertex() const;
 
 	int GetCurrentVertex() const;
-	std::vector<int> GetCurrentRoom() const;
+	std::vector<int> GetNextRoom() const;
 
-	void SetCurrentRoom(int new_room_index);
+	void SetNextRoom(int new_room_index);
+	void SetNextRoom(int row, int col);
 	void SetCurrentVertex(int new_vertex_index);
 
 

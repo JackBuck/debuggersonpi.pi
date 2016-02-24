@@ -61,7 +61,7 @@ CMap::CMap(string filepath)
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Initial 'next room' is entrance room is the bottom left room on the map
-	m_nextRoom = vector<int> {m_cellheight/3, 0};
+	m_nextRoom = vector<int> {m_cellheight/3 -1, 0};
 	//m_nextRoom[0] = ENTRANCEPORCHROOM;
 	
 }
@@ -99,7 +99,7 @@ CMap::CMap(int room_height, int room_width)
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Initial 'next room' is entrance room is the bottom left room on the map
-	m_nextRoom = vector<int> {m_cellheight/3, 0};
+	m_nextRoom = vector<int> {m_cellheight/3 -1, 0};
 	m_currentVertex = GetEntranceVertex();
 	DEBUG_VALUE_OF_LOCATION(m_currentVertex);
 	m_currentOrientation = EOrientation_North;
@@ -140,6 +140,8 @@ void CMap::CreateRoomMap()
 				{
 					m_roomMap[height_index].push_back(ERoom_Unknown);
 				}
+
+				continue;
 			}
 
 
@@ -362,31 +364,32 @@ void CMap::UpdateCellMap()
 
 		for (size_t j = 0; j < m_roomMap[i].size(); j++)
 		{
-			m_cellMap[3*i][3*j] = 0;
-			m_cellMap[3*i+2][3*j] = 0;
-			m_cellMap[3*i][3 * j+2] = 0;
-			m_cellMap[3*i+2][3 * j+2] = 0;
-			m_cellMap[3*i+1][3 * j+1] = 1;
+
+			m_cellMap[3*i][3*j] = 0;     // top left corner
+			m_cellMap[3*i+2][3*j] = 0;   // bottom left corner
+			m_cellMap[3*i][3*j+2] = 0;   // top right corner
+			m_cellMap[3*i+2][3*j+2] = 0; // bottom right corner
+			m_cellMap[3*i+1][3*j+1] = 1; // room centre
 
 
 			switch (m_roomMap[i][j])
 			{
 				case ERoom_Empty:
 				{
-					m_cellMap[3 * i + 1][3*j + 1] = 0;
+					m_cellMap[3*i+1][3*j+1] = 0; // room centre
 					break;
 				}
 				case ERoom_Cross:
 				{
-					m_cellMap[3*i][3*j+1] = 1;
-					m_cellMap[3*i+1][3*j+2] = 1;
-					m_cellMap[3*i+2][3*j+1] = 1;
-					m_cellMap[3*i + 1][3*j] = 1;
+					m_cellMap[3*i][3*j+1]   = 1; // middle top
+					m_cellMap[3*i+1][3*j+2] = 1; // right centre
+					m_cellMap[3*i+2][3*j+1] = 1; // middle bottom
+					m_cellMap[3*i+1][3*j]   = 1; // left centre
 					break;
 				}
 				case ERoom_North:
 				{
-					m_cellMap[3*i][3*j + 1] = 1;
+					m_cellMap[3*i][3*j+1] = 1;
 					break;
 				}
 				case ERoom_East:
@@ -466,6 +469,19 @@ void CMap::UpdateCellMap()
 					m_cellMap[3*i+1][3*j+2] = 1;
 					m_cellMap[3*i+2][3*j+1] = 1;
 					m_cellMap[3*i+1][3*j] = 1;
+					break;
+				}
+				case ERoom_Unknown:
+				{
+					m_cellMap[3*i][3*j]     = 0;
+					m_cellMap[3*i+2][3*j]   = 0;
+					m_cellMap[3*i][3*j+2]   = 0;
+					m_cellMap[3*i+2][3*j+2] = 0;
+					m_cellMap[3*i+1][3*j+1] = -1;
+					m_cellMap[3*i][3*j+1]   = -1;
+					m_cellMap[3*i+1][3*j+2] = -1;
+					m_cellMap[3*i+2][3*j+1] = -1;
+					m_cellMap[3*i+1][3*j]   = -1;
 					break;
 				}
 			}

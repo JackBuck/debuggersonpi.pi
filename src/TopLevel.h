@@ -8,6 +8,8 @@
 #ifndef SRC_TOPLEVEL_H_
 #define SRC_TOPLEVEL_H_
 
+#include <vector>
+
 class TopLevel
 {
 public:

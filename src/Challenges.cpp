@@ -90,7 +90,7 @@ void CChallenges::ChallengeTwo()
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// Map now completely known. Write to file.
 
-	std::string filepath = "ExportMap.txt";
+	std::string filepath = "Data/ExportMap.txt";
 	aMap.WriteCellMap(filepath);
 
 
@@ -105,7 +105,7 @@ void CChallenges::ChallengeThree()
 	DEBUG_METHOD();
 	std::string filepath;
 
-	filepath = std::string("example.txt");
+	filepath = std::string("TestData/PracticeMap.csv");
 
 	CMap aMap = CMap(filepath);
 	int entrance_vertex = aMap.GetEntranceVertex();

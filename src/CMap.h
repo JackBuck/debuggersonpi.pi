@@ -34,13 +34,11 @@ private:
 	int m_exitRoom;
 	std::vector<int> m_entranceCell;
 	std::vector<int> m_exitCell;
-	std::vector<int[3]> m_distanceMatrixArray;
-	std::vector<std::vector<int>> m_distanceMatrixCoordinateList;
-	std::vector<std::vector<int>> m_distanceMatrix;
+	std::vector<std::vector<double>> m_distanceMatrix;
 
 	// === Location Tracking ==========================================================================
 
-	int m_currentRoom;
+	std::vector<int> m_currentRoom;
 	int m_currentVertex;
 	EOrientation m_currentOrientation;
 
@@ -57,15 +55,12 @@ public:
 	static std::vector<int> GetRoomVertices(ERoom room_type);
 	int GetEntranceVertex() const;
 	int GetExitVertex() const;
-	std::vector<std::vector<int>> GetDistanceMatrix();
-	std::vector<std::vector<int>> GetDistanceMatrixCoordinateList();
-	//std::vector<int[3]> GetDistanceMatrixArray();
 
 	int GetCurrentVertex() const;
-	int GetCurrentRoom() const;
+	std::vector<int> GetCurrentRoom() const;
 
-	void SetCurrentRoom(int new_room);
-	void SetCurrentVertex(int new_vertex);
+	void SetCurrentRoom(int new_room_index);
+	void SetCurrentVertex(int new_vertex_index);
 
 
 
@@ -73,16 +68,19 @@ public:
 
 	void UpdateRoomMap();
 	void UpdateCellMap();
+	void SetCurrentRoomType(ERoom roomType);
 	void CalculateBlockRooms(std::vector<int> *pBlockRooms) const;
 	std::vector<int> CalculateRoomVertices(int room_index) const;
 	std::vector<int> CalculateRoomVertices(int row, int col) const;
 	std::vector<double> CalculateVertexCoords(int vertex) const;
 	void FollowInstructions(CInstructions &inputInstructions);
-	std::vector<std::vector<int>> DistanceMatrix();
-	std::vector<std::vector<int>> populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate, int roomWidth);
+	EInstruction FollowInstructionsNotLast(CInstructions &inputInstructions);
+
+	std::vector<std::vector<double>> DistanceMatrix();		// recomputes distance matrix
+	std::vector<std::vector<double>> GetDistanceMatrix();	// Doesnt recompute.
+	void populateDistanceMatrixFromArray(std::vector<int> roomVertices, int rowCoordinate, int columnCoordinate, int roomWidth);
 
 	void WriteCellMap(std::string filepath);
-
 
 
 	// === Private Functions ========================================================================

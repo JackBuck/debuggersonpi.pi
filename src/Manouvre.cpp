@@ -11,6 +11,7 @@
 //~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "Manouvre.h"
 #include "GoodsOut.h"
+#include "GoodsIn.h"
 #include "DebugLog.hpp"
 
 
@@ -37,11 +38,39 @@ void CManouvre::InstructionToManouvre(EInstruction instruction_type)
 	}
 }
 
+void CManouvre::LastInstructionToManouvre(EInstruction instruction_type)
+{
+	DEBUG_METHOD();
+
+	switch(instruction_type)
+	{
+	case EInstruction_Straight:
+	{
+		CManouvre::StraightAcrossRoom();
+	}
+	case EInstruction_TurnLeft:
+	{
+		CManouvre::TurnRightInRoom();
+		CGoodsOut::Forward(HALFROOMLENGTH, false);
+		CManouvre::TurnRightInRoom();
+		CManouvre::TurnRightInRoom();
+	}
+	case EInstruction_TurnRight:
+	{
+		CManouvre::TurnLeftInRoom();
+		CGoodsOut::Forward(HALFROOMLENGTH, false);
+		CManouvre::TurnLeftInRoom();
+		CManouvre::TurnLeftInRoom();
+	}
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // Move into the maze to entrance vertex (edge of first room).
 void CManouvre::MoveToStartVertex()
 {
 	DEBUG_METHOD();
+	CGoodsOut::Forward(HALFROOMLENGTH, false);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -49,6 +78,7 @@ void CManouvre::MoveToStartVertex()
 void CManouvre::ExitMap()
 {
 	DEBUG_METHOD();
+	CGoodsOut::Forward(HALFROOMLENGTH, false);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +112,16 @@ void CManouvre::TurnRightInRoom()
 	CGoodsOut::Forward(HALFROOMLENGTH, false);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// Move forward into room to junction. Detect junction and return room type Enum.
+ERoom CManouvre::DetectRoomType()
+{
+	CGoodsIn::GetJunctionType();
+	return ERoom_Empty;
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // Approach a block from vertex of room and take photograph and return block number.
 int CManouvre::ApproachAndPhotographBlock()
@@ -112,6 +152,11 @@ void CManouvre::ReleaseBlock()
 void CManouvre::ReverseAndUTurn()
 {
 	DEBUG_METHOD();
+	
+	CGoodsOut::Reverse(ROOMLENGTH, false);
+	CGoodsOut::TurnLeft90();
+	CGoodsOut::TurnLeft90();
+	CGoodsOut::Reverse(HALFROOMLENGTH, false);
 }
 
 

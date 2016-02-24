@@ -21,7 +21,7 @@ using namespace std;
 
 
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// This function is a constructor for the CInstructor Class. It takes the filepath of the raw input data
+// This function is a constructor for the CInstructor Class. It takes a reference to the raw input data
 // and from this creates an instance of the class.
 
 CInstructions::CInstructions(const std::vector<int> &vertexList, const int map_width)

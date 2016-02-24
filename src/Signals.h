@@ -29,6 +29,10 @@ public:
 	static void Notification2();
 	static void Notification3();
 
+	static void Introduction();
+	static void Idle();
+	static void Challenge();
+
 };
 
 

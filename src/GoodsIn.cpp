@@ -7,20 +7,38 @@
 // The functions are currently empty and do nothing. Any functions that use these place holders will 
 // need to be checked when the class is completed.
 
+// ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "GoodsIn.h"
 #include "DebugLog.hpp"
 
+// ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+using namespace std;
+
+// ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void CGoodsIn::GetJunctionType()
 {
 	DEBUG_METHOD();
 }
 
+// ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void CGoodsIn::GetRawSensorData()
 {
 	DEBUG_METHOD();
 }
 
+// ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void CGoodsIn::GetRawCompassData()
 {
 	DEBUG_METHOD();
+}
+
+/* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This asks the pic whether the button has been pressed since the last request.
+ *
+ *
+ *
+ */
+bool CGoodsIn::PollButton(vector<bool>& switches)
+{
+
 }

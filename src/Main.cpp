@@ -66,6 +66,13 @@ int main()
 
 	//keep_window_open(); // Commented since logger redirects output to file, so you don't see the enter character message!!
 	return result;
+
+/* Uncomment this to run real program, rather than the tests.
+ *
+ *	TopLevel::Introduction();
+ *	return 0;
+ *
+ */
 }
 
 

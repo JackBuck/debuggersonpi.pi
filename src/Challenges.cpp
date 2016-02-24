@@ -29,7 +29,6 @@ void CChallenges::ChallengeOne()
 
 	CSignals::Start();
 
-	bool interrupt = false;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// Tell pic to follow line forever (or near enough) unless interrupted.
@@ -113,13 +112,12 @@ void CChallenges::ChallengeThree()
 	int entrance_vertex = aMap.GetEntranceVertex();
 	int exit_vertex = aMap.GetExitVertex();
 
-	std::vector<std::vector<double>> distanceMatrix;
+	std::vector<std::vector<double>> distanceMatrix = aMap.DistanceMatrix();
+
+	///////////////////////////////////////////////////////////////
+	// TODO sort out labels
+
 	std::vector<int> labels;
-	///////////////////////////// Call Johns Function to populate these
-
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////
-	// Generate graph of map.
 
 	CGraph aGraph = CGraph(distanceMatrix, labels);
 
@@ -212,13 +210,15 @@ void CChallenges::ChallengeFour()
 
 		std::vector<int> planned_path;
 
-		std::vector<std::vector<double>> distanceMatrix;
+		std::vector<std::vector<double>> distanceMatrix = aMap.DistanceMatrix();
+
+		///////////////////////////////////////////////////////////////
+		// TODO sort out labels
+
 		std::vector<int> labels;
 
+		CGraph aGraph = CGraph(distanceMatrix, labels);
 
-		// Calculated by Johns function.
-
-		CGraph aGraph { distanceMatrix, labels };
 
 		//////////////////////////////////////////////////////////////////////
 		// Check if location of next block is known.

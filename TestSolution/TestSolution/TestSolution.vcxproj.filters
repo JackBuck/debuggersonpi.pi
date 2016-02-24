@@ -110,6 +110,9 @@
     <ClCompile Include="..\..\src\CMazeMapper_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Challenge_Run_Test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\src\5x5testmap1.txt">

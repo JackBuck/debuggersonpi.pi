@@ -135,6 +135,7 @@
     <ClCompile Include="..\..\src\CGraph.cpp" />
     <ClCompile Include="..\..\src\CGraph_test.cpp" />
     <ClCompile Include="..\..\src\Challenges.cpp" />
+    <ClCompile Include="..\..\src\Challenge_Run_Test.cpp" />
     <ClCompile Include="..\..\src\CMazeMapper.cpp" />
     <ClCompile Include="..\..\src\CMazeMapper_test.cpp" />
     <ClCompile Include="..\..\src\CParseCSV.cpp" />

@@ -70,5 +70,5 @@ int DistanceMatrixTest()
 	CMap Maze(filepath);
 
 	PrintMatrix(Maze.DistanceMatrix());
-	return 0;
+	return UNKNOWN_TEST_RESULT;
 }

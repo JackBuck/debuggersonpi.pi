@@ -29,6 +29,8 @@ CInstructions::CInstructions(const std::vector<int> &vertexList, const int map_w
 {
 	DEBUG_METHOD();
 
+	if(vertexList.size() == 0 ) return;
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	// This vector contains the list of rooms that will be moved through during each instruction.
 
@@ -41,7 +43,7 @@ CInstructions::CInstructions(const std::vector<int> &vertexList, const int map_w
 	// Note this has one more entry than the instruction list.
 
 	m_orientationBetweenInstructions.clear();
-	m_orientationBetweenInstructions.reserve(vertexList.size());
+	m_orientationBetweenInstructions.resize(vertexList.size());
 	EOrientation current_orientation;
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,8 +64,14 @@ CInstructions::CInstructions(const std::vector<int> &vertexList, const int map_w
 		// If the difference is 1 there are two options moving from West to North (going East) or North to East
 		// (going South) we can distinguish between the two by checking if the the first is even.
 
-		if((static_cast<int>(floor(level_check)) %2) == vertexList[0] % 2) current_orientation = EOrientation_East;
-		else current_orientation = EOrientation_South;
+		if((static_cast<int>(floor(level_check)) %2) == vertexList[0] % 2) 
+		{
+			current_orientation = EOrientation_East;
+		}
+		else 
+		{
+			current_orientation = EOrientation_South;
+		}
 	}
 	else if(num_diff == -1)
 	{
@@ -71,28 +79,60 @@ CInstructions::CInstructions(const std::vector<int> &vertexList, const int map_w
 		// If the difference is -1 there are two options are opposite moving from North to West 
 		// (South) or East to North (West) we can distinguish between the two by checking if the the first is even.
 
-		if((static_cast<int>(floor(level_check)) %2) == vertexList[0] % 2) current_orientation = EOrientation_West;
-		else current_orientation = EOrientation_South;
+		if((static_cast<int>(floor(level_check)) %2) == vertexList[0] % 2) 
+		{
+			current_orientation = EOrientation_West;
+		}
+		else 
+		{
+			current_orientation = EOrientation_South;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	// The other orientations are calculated in a similar manner. 
 	
-	else if(num_diff ==  2)					current_orientation = EOrientation_East;
+	else if(num_diff ==  2)					
+	{
+		current_orientation = EOrientation_East;
+	}
 
-	else if(num_diff == -2)					current_orientation = EOrientation_West;
+	else if(num_diff == -2)					
+	{
+		current_orientation = EOrientation_West;
+	}
 
-	else if(num_diff ==  2*(map_width +1))	current_orientation = EOrientation_South;
+	else if(num_diff ==  2*(map_width +1))	
+	{
+		current_orientation = EOrientation_South;
+	}
 
-	else if(num_diff == -2*(map_width+1))	current_orientation = EOrientation_North;
+	else if(num_diff == -2*(map_width+1))	
+	{
+		current_orientation = EOrientation_North;
+	}
 
-	else if(num_diff == 2*map_width)		current_orientation = EOrientation_West;
 
-	else if(num_diff ==  2*map_width)		current_orientation = EOrientation_North;
+	else if(num_diff == -2*map_width)		
+	{
+		current_orientation = EOrientation_West;
+	}
 
-	else if(num_diff ==  2*map_width +2)	current_orientation = EOrientation_East;
+	else if(num_diff ==  2*map_width)		
+	{
+		current_orientation = EOrientation_North;
+	}
 
-	else if(num_diff ==  -(2*map_width +2))	current_orientation = EOrientation_North;
+	else if(num_diff ==  2*map_width +2)	
+	{
+		current_orientation = EOrientation_East;
+	}
+
+
+	else if(num_diff ==  -(2*map_width +2))	
+	{
+		current_orientation = EOrientation_North;
+	}
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////

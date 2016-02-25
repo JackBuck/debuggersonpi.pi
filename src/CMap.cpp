@@ -294,12 +294,12 @@ vector<vector<ERoom>> CMap::GetRoomMap() const
 	return m_roomMap;
 }
 
-ERoom CMap::GetRoomType(int room_index) const
+ERoom CMap::GetRoomType(std::vector<int> coords) const
 {
 	DEBUG_METHOD();
 
-	vector<int> coords = RoomIndextoCoord(room_index);
-	return m_roomMap[coords[0]][coords[1]];
+
+	return m_roomMap.at(coords[0]).at(coords[1]);
 }
 
 
@@ -534,12 +534,13 @@ void CMap::CalculateBlockRooms(vector<int>* pBlockRooms) const
  * The vertices are returned in the order North, East, South, West.
  *
  */
-vector<int> CMap::CalculateRoomVertices(int room_index) const
-{
-	DEBUG_METHOD();
-	vector<int> coord = RoomIndextoCoord(room_index);
-	return CalculateRoomVertices(coord);
-}
+
+//vector<int> CMap::CalculateRoomVertices(int room_index) const
+//{
+//	DEBUG_METHOD();
+//	vector<int> coord = aMap.RoomIndexToCoord(room_index);
+//	return CalculateRoomVertices(coord);
+//}
 
 vector<int> CMap::CalculateRoomVertices(int row, int col) const
 {
@@ -722,30 +723,18 @@ int CMap::GetCurrentVertex() const
 }
 
 // This returns the room we are about to enter while following instructions
-int CMap::GetNextRoom() const
+std::vector<int> CMap::GetNextRoom() const
 {
 	DEBUG_METHOD();
-	return m_nextRoom[0] * m_cellwidth / 3 + m_nextRoom[1];
+	return m_nextRoom;
 }
 
-void CMap::SetNextRoom(int new_room_index) // TODO: Unnecessary?
+
+void CMap::SetNextRoom(std::vector<int> coord) // TODO: Unnecessary?
 {
 	DEBUG_METHOD();
 
-	std::vector<int> coord = RoomIndextoCoord(new_room_index);
-
-	m_nextRoom.resize(2);
-	m_nextRoom[0] = coord[0];
-	m_nextRoom[1] = coord[1];
-}
-
-void CMap::SetNextRoom(int row, int col) // TODO: Unnecessary?
-{
-	DEBUG_METHOD();
-
-	m_nextRoom.resize(2);
-	m_nextRoom[0] = row;
-	m_nextRoom[1] = col;
+	m_nextRoom = coord;
 }
 
 
@@ -755,15 +744,27 @@ void CMap::SetCurrentVertex(int new_vertex_index)
 	m_currentVertex = new_vertex_index;
 }
 
-vector<int> CMap::RoomIndextoCoord(int room_index) const
+EOrientation CMap::GetCurrentOrientation()
 {
 	DEBUG_METHOD();
 
-	int row_index = room_index/(2*m_cellwidth +1);
-	int col_index = room_index % (2*m_cellwidth +1);
+	return m_currentOrientation;
+}
+
+vector<int> CMap::RoomIndexToCoord(int room_index)
+{
+	DEBUG_METHOD();
+
+	int row_index = room_index/(m_cellwidth/3);
+	int col_index = room_index % (m_cellheight/3);
 
 	vector<int> roomCoord = {row_index, col_index};
 	return roomCoord;
+}
+
+int CMap::RoomCoordToIndex(std::vector<int> coord)
+{
+	return coord[0]*(m_cellwidth/3) + coord[1];
 }
 
 
@@ -771,10 +772,13 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 {
 	DEBUG_METHOD();
 
-	//int current_vertex = GetCurrentVertex(); // Why use this when we are a member function of CMap??
+
 
 	// Extract information from inputInstructions
 	vector<EInstruction> instructionList = inputInstructions.GetInstructions();
+
+	if(instructionList.size() < 2) return;
+
 	vector<ERoom> roomList = inputInstructions.GetRoomList();
 	vector<EOrientation> orientationList = inputInstructions.GetOrientations();
 	vector<int> vertexList = inputInstructions.GetVertexList();
@@ -813,14 +817,15 @@ EInstruction CMap::FollowInstructionsNotLast(CInstructions & inputInstructions)
 {
 	DEBUG_METHOD();
 
-	//int current_vertex = GetCurrentVertex();
 
 	vector<EInstruction> instructionList = inputInstructions.GetInstructions();
+
+
+	if(instructionList.size() < 3) return EInstruction_Invalid;
+
 	vector<ERoom> roomList = inputInstructions.GetRoomList();
 	vector<EOrientation> orientationList = inputInstructions.GetOrientations();
 	vector<int> vertexList = inputInstructions.GetVertexList();
-
-	if (m_currentVertex != instructionList[0]) CSignals::Error();
 
 	for (int i = 0; i < instructionList.size()-1; i++)
 	{
@@ -963,7 +968,7 @@ vector<vector<double>> CMap::DistanceMatrix()
 	// Convert to coordinates of room
 
 	for (int i = 0; i < blockRooms.size(); i++) {
-		blockRoomCoords.at(i) = RoomIndextoCoord(blockRooms.at(i));
+		blockRoomCoords.at(i) = RoomIndexToCoord(blockRooms.at(i));
 	}
 
 

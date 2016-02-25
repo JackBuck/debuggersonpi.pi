@@ -47,7 +47,7 @@ private:
 	// === Accessor Functions =========================================================================
 public:
 	std::vector<std::vector<ERoom>>	GetRoomMap() const;
-	ERoom GetRoomType(int room_index) const;
+	ERoom GetRoomType(std::vector<int>) const;
 	std::vector<std::vector<int>> GetCellMap() const;
 	int GetEntranceRoom() const;
 	int GetExitRoom() const;
@@ -58,11 +58,13 @@ public:
 	int GetExitVertex() const;
 
 	int GetCurrentVertex() const;
-	int GetNextRoom() const;
+	std::vector<int> GetNextRoom() const;
 
-	void SetNextRoom(int new_room_index);
-	void SetNextRoom(int row, int col);
+	//void SetNextRoom(int new_room_index);
+	void SetNextRoom(std::vector<int> coord);
 	void SetCurrentVertex(int new_vertex_index);
+
+	EOrientation GetCurrentOrientation();
 
 
 
@@ -72,7 +74,7 @@ public:
 	void UpdateCellMap();
 	void SetCurrentRoomType(ERoom roomType);
 	void CalculateBlockRooms(std::vector<int> *pBlockRooms) const;
-	std::vector<int> CalculateRoomVertices(int room_index) const;
+//	std::vector<int> CalculateRoomVertices(int room_index) const;
 	std::vector<int> CalculateRoomVertices(int row, int col) const;
 	std::vector<double> CalculateVertexCoords(int vertex) const;
 	void FollowInstructions(CInstructions &inputInstructions);
@@ -84,13 +86,18 @@ public:
 
 	void WriteCellMap(std::string filepath);
 
+	std::vector<int> RoomIndexToCoord(int room_index);
+
+	int RoomCoordToIndex(std::vector<int>);
+	std::vector<int> CalculateRoomVertices(std::vector<int> coord) const;
 
 	// === Private Functions ========================================================================
 private:
 	void CreateRoomMap();
 	void ComputeCellMapSize();
-	std::vector<int> CalculateRoomVertices(std::vector<int> coord) const;
-	std::vector<int> RoomIndextoCoord(int room_index) const;
+	
+	
+
 	
 };
 

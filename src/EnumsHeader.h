@@ -14,6 +14,7 @@
 
 const double HALFROOMLENGTH = 1.0;
 const double ROOMLENGTH = 2.0;
+const double DISTANCE_TO_FIRST_CELL = ROOMLENGTH / 3;
 
 const double STRAIGHT_PATH_WEIGHT = 1.0;
 const double CORNER_PATH_WEIGHT = 2.0;
@@ -49,7 +50,7 @@ enum EInstruction
 	EInstruction_Straight,
 	EInstruction_TurnLeft,
 	EInstruction_TurnRight,
-	EInstruction_LAST
+	EInstruction_Invalid
 };
 
 

@@ -24,18 +24,18 @@ void CGoodsOut::Forward(double distance, bool watch_light_sensors)
 	double currentDistance = 0;
 
 	// checks whether an emergency stop is called many times during a manouvre
-	while (ContinueManouvre && Count<stopCount && currentDistance < distance && !junctionDetected)
-	{
-		// motors move
-		// wait a specified time (eg. wait 20ms for 50 stopCount & 1 second total manouvre time)
-
-		// Check light sensors for junction & if so, set junctionDetected to true
-		// Check encoders for current distance & increase currentDistance
-		// Check for emergency stop
-
-		// If time is a bad thing to go by, ignore the count!
-		Count++;
-	}
+//	while (ContinueManouvre && Count<stopCount && currentDistance < distance && !junctionDetected)
+//	{
+//		// motors move
+//		// wait a specified time (eg. wait 20ms for 50 stopCount & 1 second total manouvre time)
+//
+//		// Check light sensors for junction & if so, set junctionDetected to true
+//		// Check encoders for current distance & increase currentDistance
+//		// Check for emergency stop
+//
+//		// If time is a bad thing to go by, ignore the count!
+//		Count++;
+//	}
 }
 
 void CGoodsOut::Reverse(double distance, bool watch_light_sensors)
@@ -52,18 +52,18 @@ void CGoodsOut::Reverse(double distance, bool watch_light_sensors)
 	double currentDistance = 0;
 
 	// checks whether an emergency stop is called many times during a manouvre
-	while (ContinueManouvre && Count<stopCount && currentDistance < distance && !junctionDetected)
-	{
-		// motors move
-		// wait a specified time (eg. wait 20ms for 50 stopCount & 1 second total manouvre time)
-
-		// Check light sensors for junction & if so, set junctionDetected to true
-		// Check encoders for current distance & increase currentDistance
-		// Check for emergency stop
-
-		// If time is a bad thing to go by, ignore the count!
-		Count++;
-	}
+//	while (ContinueManouvre && Count<stopCount && currentDistance < distance && !junctionDetected)
+//	{
+//		// motors move
+//		// wait a specified time (eg. wait 20ms for 50 stopCount & 1 second total manouvre time)
+//
+//		// Check light sensors for junction & if so, set junctionDetected to true
+//		// Check encoders for current distance & increase currentDistance
+//		// Check for emergency stop
+//
+//		// If time is a bad thing to go by, ignore the count!
+//		Count++;
+//	}
 }
 
 void CGoodsOut::TurnLeft90()
@@ -75,12 +75,12 @@ void CGoodsOut::TurnLeft90()
 	int stopCount;
 
 	// should check whether an emergency stop is called many times during a manouvre
-	while (ContinueManouvre && Count<stopCount)
-	{
-		// motors move
-		// wait a specified time (eg. wait 20ms for 50 stopCount & 1 second total manouvre time)
-		Count++;
-	}
+//	while (ContinueManouvre && Count<stopCount)
+//	{
+//		// motors move
+//		// wait a specified time (eg. wait 20ms for 50 stopCount & 1 second total manouvre time)
+//		Count++;
+//	}
 }
 
 void CGoodsOut::TurnRight90()
@@ -92,14 +92,14 @@ void CGoodsOut::TurnRight90()
 	int stopCount;
 
 	// should check whether an emergency stop is called many times during a manouvre
-	while (ContinueManouvre && Count<stopCount)
-	{
-		// motors move
-		// wait a specified time (eg. wait 20ms for 50 stopCount & 1 second total manouvre time)
-		Count++;
-
-		// Check ContinueManouvre
-	}
+//	while (ContinueManouvre && Count<stopCount)
+//	{
+//		// motors move
+//		// wait a specified time (eg. wait 20ms for 50 stopCount & 1 second total manouvre time)
+//		Count++;
+//
+//		// Check ContinueManouvre
+//	}
 }
 
 void CGoodsOut::Stop()

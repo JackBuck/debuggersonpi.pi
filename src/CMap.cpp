@@ -725,7 +725,7 @@ int CMap::GetCurrentVertex() const
 int CMap::GetNextRoom() const
 {
 	DEBUG_METHOD();
-	return m_nextRoom;
+	return m_nextRoom[0] * m_cellwidth / 3 + m_nextRoom[1];
 }
 
 void CMap::SetNextRoom(int new_room_index) // TODO: Unnecessary?

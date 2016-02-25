@@ -80,7 +80,7 @@ void CChallenges::ChallengeTwo()
 		if(is_next_vertex)
 		{
 			CInstructions aInstructions = CInstructions(outputRoute, 10);
-			aMap.FollowInstructions(aInstructions);
+			aMap.FollowInstructions(aInstructions);  // Automatically updates aMap.m_nextRoom
 		}
 
 	}
@@ -137,7 +137,7 @@ void CChallenges::ChallengeThree()
 	// Now we know our route, execute it
 
 	// TODO: NB the CMap member variables tracking the location are not updated here!!!
-	// If we do decide to use them, then the easiest way would be to use the CMap::FollowInstructions method.
+	// If you decide you need to use them, then the easiest way would be to use the CMap::FollowInstructions method.
 	CManouvre::MoveToStartVertex();
 
 	for(unsigned int i=0; i<macroInstructions.size(); i++)
@@ -163,7 +163,7 @@ void CChallenges::ChallengeFour()
 
 	////////////////////////////////////////////////////////////////////////
 	// Set the current room as the starting room of the map.
-	int current_room = aMap.GetEntranceRoom();
+//	int current_room = aMap.GetEntranceRoom();
 
 	///////////////////////////////////////////////////////////////////////
 	// Set start_vertex as entrance vertex.
@@ -228,8 +228,8 @@ void CChallenges::ChallengeFour()
 			//////////////////////////////////////////////////////////////////////
 			// Get current room type and the vertex labels of adjacent vertices.
 
-			ERoom start_room_type = aMap.GetRoomType(current_room);
-			std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(current_room);
+			ERoom start_room_type = aMap.GetRoomType(aMap.GetNextRoom());
+			std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(aMap.GetNextRoom());
 
 
 			/////////////////////////////////////////////////////////////////////////////
@@ -321,8 +321,8 @@ void CChallenges::ChallengeFour()
 			/////////////////////////////////////////////////////////////////////////////////////////////
 			// Get current room type and the vertex labels of adjacent vertices.
 
-			ERoom start_room_type = aMap.GetRoomType(current_room);
-			std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(current_room);
+			ERoom start_room_type = aMap.GetRoomType(aMap.GetNextRoom());
+			std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(aMap.GetNextRoom());
 
 			////////////////////////////////////////////////////////////////////////////////////////////
 			// Check which of these vertices exist for the start room.
@@ -400,13 +400,19 @@ void CChallenges::ChallengeFour()
 		// Now we know our route, execute it
 
 
-		aMap.FollowInstructionsNotLast(aInstructions);
+		aMap.FollowInstructionsNotLast(aInstructions); // Automatically updates aMap.m_nextRoom
 
 
 	
 	CGoodsOut::Stop();
 
-	int current_block_number = CManouvre::ApproachAndPhotographBlock();
+	// TODO: We need to sort out how exacty to split up the approach here...
+	// E.g. ApproachBlock (passing last instruction)
+	//      Create a CBlockReader (default constructor) and TakePhoto() (pass a filepath if we want to keep the photo)
+	//      Call the CountSpotsMethod
+	// In particular here, the taking of the photo is separate from the approach.
+	// So we kill two birds with one stone and don't need to rephotograph known blocks before we collect them.
+	int current_block_number = CManouvre::ApproachAndPhotographBlock(); // Do not manually update aMap.m_nextRoom
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	// Update the location vectors
@@ -429,7 +435,7 @@ void CChallenges::ChallengeFour()
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		// Remove the current room from the list of unknown rooms as we have just discovered which 
 		// block is there.
-		if(unknown_block_rooms[i] == current_room)
+		if(unknown_block_rooms[i] == aMap.GetNextRoom())
 		{
 			unknown_block_rooms.erase(unknown_block_rooms.begin() + i);
 		}
@@ -440,7 +446,7 @@ void CChallenges::ChallengeFour()
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		// Remove the current room from the list of unknown rooms as we have just discovered which 
 		// block is there.
-		if(unknown_block_rooms[i] == current_room)
+		if(unknown_block_rooms[i] == aMap.GetNextRoom())
 		{
 			unknown_block_rooms.erase(unknown_block_rooms.begin() + i);
 		}
@@ -452,8 +458,9 @@ void CChallenges::ChallengeFour()
 
 	if(current_block_number != next_value)
 	{
-		CManouvre::ReverseAndUTurn();
 		CSignals::Notification2();
+		CManouvre::ReverseAndUTurn();
+		aMap.SetNextRoom(); // TODO: Must manually update aMap.m_nextRoom after ReverseAndUTurn
 		continue;
 	}
 
@@ -465,7 +472,9 @@ void CChallenges::ChallengeFour()
 
 	CManouvre::CollectBlock();
 
+	// TODO: If we are collecting the block then the shortest distance isn't necessarily from the vertex we came (though due to time pressures I don't suggest you change it!)
 	CManouvre::ReverseAndUTurn();
+	aMap.SetNextRoom(); // TODO: Must manually update aMap.m_nextRoom after ReverseAndUTurn
 
 	///////////////////////////////////////////////////////////////////////////////////
 	// Compute shortest path to start.
@@ -481,7 +490,7 @@ void CChallenges::ChallengeFour()
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	// Now we know our route, execute it
 
-	aMap.FollowInstructions(aInstructions);
+	aMap.FollowInstructions(aInstructions); // Automatically updates aMap.m_nextRoom
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	// Exit map and release block.
@@ -491,6 +500,8 @@ void CChallenges::ChallengeFour()
 	CManouvre::ReleaseBlock();
 
 	CManouvre::ReverseAndUTurn();
+	aMap.SetNextRoom(); // TODO: Must manually update aMap.m_nextRoom after ReverseAndUTurn
+
 	}
 
 	CSignals::Complete();

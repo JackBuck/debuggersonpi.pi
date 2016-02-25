@@ -27,7 +27,7 @@ private:
 	static void IdleState();
 
 	// This function interprets the switches
-	static void InterpretSwitches(std::vector<bool> switches);
+	static void InterpretSwitches(std::vector<bool> switches, bool askerIsIdleState);
 
 };
 

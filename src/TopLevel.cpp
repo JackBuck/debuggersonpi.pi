@@ -72,10 +72,14 @@ void TopLevel::IdleState()
  */
 void TopLevel::InterpretSwitches(vector<bool> switches, bool askerIsIdleState)
 {
-	// TODO: Include states for 4 challenges, calibration, idle, exit program, shutdown, test switch directions
 
 	if (switches == vector<bool> { 0, 0, 0, 0 })      // 0000 -- Idle
-		IdleState();
+	{
+		if (!askerIsIdleState)
+			IdleState();
+		else
+			return; // Return control to the idle state
+	}
 
 	else if (switches == vector<bool> { 1, 0, 0, 0 }) // 1000 -- Challenge one
 		CChallenges::ChallengeOne();
@@ -115,7 +119,11 @@ void TopLevel::InterpretSwitches(vector<bool> switches, bool askerIsIdleState)
 
 	else
 	{
-		//TODO: flash both LEDS to signal erroneous input
+		//TODO: flash both LEDS to signal erroneous input for 2 seconds
 
+		if (!askerIsIdleState)
+			IdleState();
+		else
+			return;
 	}
 }

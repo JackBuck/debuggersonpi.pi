@@ -9,106 +9,67 @@
 
 #include "GoodsOut.h"
 #include "DebugLog.hpp"
+#include "pi_spi.h"
+#include "pic_enums.h"
 
-void CGoodsOut::Forward(double distance, bool watch_light_sensors)
+void CGoodsOut::ForwardDistance(double distance, bool PSControlTheory)
 {
 	DEBUG_METHOD();
-	int Count = 0;
 
-	// stopCount needs to be set to a number according to the time waited & the time 
-	int stopCount;
-
-	// the pic will have to check whether a junction has been detected & when it has, this will become true
-	bool junctionDetected = false;
-
-	double currentDistance = 0;
-
-	// checks whether an emergency stop is called many times during a manouvre
-//	while (ContinueManouvre && Count<stopCount && currentDistance < distance && !junctionDetected)
-//	{
-//		// motors move
-//		// wait a specified time (eg. wait 20ms for 50 stopCount & 1 second total manouvre time)
-//
-//		// Check light sensors for junction & if so, set junctionDetected to true
-//		// Check encoders for current distance & increase currentDistance
-//		// Check for emergency stop
-//
-//		// If time is a bad thing to go by, ignore the count!
-//		Count++;
-//	}
+	uint16_t tempcounts = (uint16_t) distance / 6;
+	if(PSControlTheory) pic_write_state(PSNS_FORWARD,COUNTS,(uint16_t) tempcounts, 1);
+	else 					  pic_write_state(OL_FORWARD, COUNTS, (uint16_t) tempcounts, 1);
 }
 
-void CGoodsOut::Reverse(double distance, bool watch_light_sensors)
+ERoom CGoodsOut::ForwardDetectJunction()
+{
+
+	DEBUG_METHOD();
+
+	pic_write_state(PSNS_FORWARD_JUNCTION_DETECT, JUNCTION, 0, 1);
+
+	ERoom Result;
+	pic_read_roomtype(&Result);
+	return Result;
+}
+
+
+void CGoodsOut::Reverse(double distance, bool PSControlTheory)
 {
 	DEBUG_METHOD();
-	int Count = 0;
 
-	// stopCount needs to be set to a number according to the time waited & the time 
-	int stopCount;
+	uint16_t tempcounts = (uint16_t) distance / 6;
+	if(PSControlTheory) pic_write_state(PSNS_REVERSE,COUNTS,(uint16_t) tempcounts, 1);
+	else 					  pic_write_state(OL_REVERSE, COUNTS, (uint16_t) tempcounts, 1);
 
-	// the pic will have to check whether a junction has been detected & when it has, this will become true
-	bool junctionDetected = false;
-
-	double currentDistance = 0;
-
-	// checks whether an emergency stop is called many times during a manouvre
-//	while (ContinueManouvre && Count<stopCount && currentDistance < distance && !junctionDetected)
-//	{
-//		// motors move
-//		// wait a specified time (eg. wait 20ms for 50 stopCount & 1 second total manouvre time)
-//
-//		// Check light sensors for junction & if so, set junctionDetected to true
-//		// Check encoders for current distance & increase currentDistance
-//		// Check for emergency stop
-//
-//		// If time is a bad thing to go by, ignore the count!
-//		Count++;
-//	}
 }
 
 void CGoodsOut::TurnLeft90()
 {
 	DEBUG_METHOD();
-	int Count = 0;
 
-	// stopCount needs to be set to a number according to the time waited & the time 
-	int stopCount;
-
-	// should check whether an emergency stop is called many times during a manouvre
-//	while (ContinueManouvre && Count<stopCount)
-//	{
-//		// motors move
-//		// wait a specified time (eg. wait 20ms for 50 stopCount & 1 second total manouvre time)
-//		Count++;
-//	}
+	pic_write_state(COMP_LEFT, NONE_CONDITION_T, 0, 1);
 }
 
 void CGoodsOut::TurnRight90()
 {
 	DEBUG_METHOD();
-	int Count = 0;
 
-	// stopCount needs to be set to a number according to the time waited & the time 
-	int stopCount;
-
-	// should check whether an emergency stop is called many times during a manouvre
-//	while (ContinueManouvre && Count<stopCount)
-//	{
-//		// motors move
-//		// wait a specified time (eg. wait 20ms for 50 stopCount & 1 second total manouvre time)
-//		Count++;
-//
-//		// Check ContinueManouvre
-//	}
+	pic_write_state(COMP_RIGHT, NONE_CONDITION_T, 0, 1);
 }
 
 void CGoodsOut::Stop()
 {
 	DEBUG_METHOD();
+
+	pic_write_state(STOPPED, NONE_CONDITION_T, 0, 0);
 }
 
 ERoom CGoodsOut::GetCurrentRoomType()
 {
 	DEBUG_METHOD();
-	return ERoom();
+
+	ERoom Result;
+	pic_read_roomtype(&Result);
+	return Result;
 }

@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include "EnumsHeader.h"
+#include "pic_enums.h"
 
 //SPI-------------------------------------------------------------------------
 

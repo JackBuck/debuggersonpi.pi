@@ -13,12 +13,11 @@
 #include "GoodsOut.h"
 #include "GoodsIn.h"
 #include "DebugLog.hpp"
-#include "EnumsHeader.h"
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //
-void CManouvre::InstructionToManouvre(EInstruction instruction_type)
+void CManouvre::InstructionToManoeuvre(EInstruction instruction_type)
 {
 	DEBUG_METHOD();
 
@@ -52,16 +51,18 @@ void CManouvre::LastInstructionBeforeBlock(EInstruction instruction_type)
 	case EInstruction_TurnLeft:
 	{
 		CManouvre::TurnRightInRoom();
+		CGoodsOut::ForwardDistance(HALFROOMLENGTH, false); // Positions the wheels on the right hand edge of the room
 		CGoodsOut::TurnRight90();
 		CGoodsOut::TurnRight90();
-		CGoodsOut::Forward(DISTANCE_TO_FIRST_CELL, false);
+		CGoodsOut::ForwardDistance(DISTANCE_TO_FIRST_CELL, true);
 	}
 	case EInstruction_TurnRight:
 	{
 		CManouvre::TurnLeftInRoom();
+		CGoodsOut::ForwardDistance(HALFROOMLENGTH, false); // Positions the wheels on the left hand edge of the room
 		CGoodsOut::TurnLeft90();
 		CGoodsOut::TurnLeft90();
-		CGoodsOut::Forward(DISTANCE_TO_FIRST_CELL, false);
+		CGoodsOut::ForwardDistance(DISTANCE_TO_FIRST_CELL, true);
 	}
 	}
 }
@@ -71,7 +72,7 @@ void CManouvre::LastInstructionBeforeBlock(EInstruction instruction_type)
 void CManouvre::MoveToStartVertex()
 {
 	DEBUG_METHOD();
-	CGoodsOut::Forward(HALFROOMLENGTH, false);
+	CGoodsOut::ForwardDistance(HALFROOMLENGTH, false);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +80,7 @@ void CManouvre::MoveToStartVertex()
 void CManouvre::ExitMap()
 {
 	DEBUG_METHOD();
-	CGoodsOut::Forward(HALFROOMLENGTH, false);
+	CGoodsOut::ForwardDistance(HALFROOMLENGTH, false);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +89,8 @@ void CManouvre::StraightAcrossRoom()
 {
 	DEBUG_METHOD();
 
-	CGoodsOut::Forward(ROOMLENGTH, false);
+	CGoodsOut::ForwardDetectJunction();
+	CGoodsOut::ForwardDetectJunction();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -97,9 +99,9 @@ void CManouvre::TurnLeftInRoom()
 {
 	DEBUG_METHOD();
 
-	CGoodsOut::Forward(HALFROOMLENGTH, true);
+	CGoodsOut::ForwardDetectJunction();
 	CGoodsOut::TurnLeft90();
-	CGoodsOut::Forward(HALFROOMLENGTH, false);
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -108,20 +110,10 @@ void CManouvre::TurnRightInRoom()
 {
 	DEBUG_METHOD();
 
-	CGoodsOut::Forward(HALFROOMLENGTH, true);
+	CGoodsOut::ForwardDetectJunction();
 	CGoodsOut::TurnRight90();
-	CGoodsOut::Forward(HALFROOMLENGTH, false);
+	
 }
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-// Move forward into room to junction. Detect junction and return room type Enum.
-ERoom CManouvre::DetectRoomType()
-{
-	CGoodsIn::GetJunctionType();
-	return ERoom_Empty;
-}
-
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // Approach a block from vertex of room and take photograph and return block number.
@@ -138,7 +130,6 @@ void CManouvre::CollectBlock()
 {
 	DEBUG_METHOD();
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // Move arm to release block
@@ -160,4 +151,8 @@ void CManouvre::ReverseAndUTurn()
 	CGoodsOut::Reverse(HALFROOMLENGTH, false);
 }
 
+ERoom CManouvre::DetectRoomType()
+{
+	return CGoodsOut::ForwardDetectJunction();
+}
 

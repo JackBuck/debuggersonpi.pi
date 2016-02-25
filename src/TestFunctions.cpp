@@ -59,8 +59,8 @@ int TestAllFunctions()
 	//std::cout << '\n';
 	//returnVal += CMazeMapper_test();
 	//std::cout << '\n';
-//	returnVal += Challenge1_run_test();
-//	std::cout << '\n';
+	returnVal += Challenge1_run_test();
+	std::cout << '\n';
 	returnVal += Challenge2_run_test();
 	std::cout << '\n';
 	returnVal += Challenge3_run_test();

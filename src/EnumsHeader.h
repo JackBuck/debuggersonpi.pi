@@ -63,5 +63,10 @@ enum EOrientation
 };
 
 
+typedef enum {
+	PIC_NONE,
+	PIC_ERROR
+} EPicErr;
+
 
 #endif /* SRC_ENUMS_H_ */

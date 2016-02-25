@@ -22,8 +22,9 @@ class CGoodsOut
 {
 	// === Public Functions =========================================================================
 public:
-	static void Forward(double distance, bool watch_sensors);
-	static void Reverse(double distance, bool watch_sensors);
+	static void ForwardDistance(double distance, bool PSControlTheory);
+	static ERoom ForwardDetectJunction();
+	static void Reverse(double distance, bool PSControlTheory);
 	static void TurnLeft90();
 	static void TurnRight90();
 	static void Stop();

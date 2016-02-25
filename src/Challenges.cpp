@@ -35,7 +35,7 @@ void CChallenges::ChallengeOne()
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// Tell pic to follow line forever (or near enough) unless interrupted.
 
-	CGoodsOut::Forward(INT_MAX, true);
+	CGoodsOut::ForwardDistance(INT_MAX, true);
 
 
 	CGoodsOut::Stop();
@@ -144,7 +144,7 @@ void CChallenges::ChallengeThree()
 
 	for(unsigned int i=0; i<macroInstructions.size(); i++)
 	{
-		CManouvre::InstructionToManouvre(macroInstructions[i]);
+		CManouvre::InstructionToManoeuvre(macroInstructions[i]);
 	}
 
 	CManouvre::ExitMap();

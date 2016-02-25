@@ -789,7 +789,7 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 	// Move and update location member variables as you go
 	for (int i = 0; i < instructionList.size(); i++)
 	{
-		CManouvre::InstructionToManouvre(instructionList[i]);
+		CManouvre::InstructionToManoeuvre(instructionList[i]);
 
 		m_currentVertex = vertexList[i+1];
 		m_currentOrientation = orientationList[i+1];
@@ -829,7 +829,7 @@ EInstruction CMap::FollowInstructionsNotLast(CInstructions & inputInstructions)
 
 	for (int i = 0; i < instructionList.size()-1; i++)
 	{
-		CManouvre::InstructionToManouvre(instructionList[i]);
+		CManouvre::InstructionToManoeuvre(instructionList[i]);
 
 		m_currentVertex = vertexList[i+1];
 		m_currentOrientation = orientationList[i+1];

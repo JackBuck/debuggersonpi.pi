@@ -32,6 +32,7 @@ public:
 	static void Introduction();
 	static void Idle();
 	static void Challenge();
+	static void BothLeds(int milliseconds);
 
 };
 

@@ -18,6 +18,9 @@ public:
 	 */
 	static void Introduction();
 
+	// TODO: Get rid of the introduction once you have a state for the switches which lets you exit without shutting down
+
+
 private:
 	// This is the idle state on the pi.
 	static void IdleState();

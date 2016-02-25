@@ -40,5 +40,5 @@ void CGoodsIn::GetRawCompassData()
  */
 bool CGoodsIn::PollButton(vector<bool>& switches)
 {
-
+	return false; // TODO: Connect to SPI
 }

@@ -41,7 +41,6 @@ void CSignals::Notification1()
 	DEBUG_METHOD();
 }
 
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // To signal a part of the challenge has been completed. Number 2
 void CSignals::Notification2()
@@ -55,3 +54,30 @@ void CSignals::Notification3()
 {
 	DEBUG_METHOD();
 }
+
+
+// ------------------------------------------------------------------------------------------------
+// To set the idle state signal
+void CSignals::Idle()
+{
+	// Set green led to flash and blue to off.
+}
+
+// To set the challenge state signal
+void CSignals::Challenge()
+{
+	// Set the green led to solid.
+	// (Want to be able to use blue led during challenges)
+}
+
+// To signal that the user must do something to enter the program during the introduction
+void CSignals::Introduction()
+{
+	// Set green led to flashing and blue to solid
+}
+
+void CSignals::BothLeds(int milliseconds)
+{
+	// Switch on both leds for the specified time
+}
+

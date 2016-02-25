@@ -15,6 +15,7 @@
 //~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #include "EnumsHeader.h"
+#include <vector>
 
 
 //~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,6 +26,7 @@ public:
 	static void GetJunctionType();
 	static void GetRawSensorData();
 	static void GetRawCompassData();
+	static bool PollButton(std::vector<bool>& switches);
 
 
 

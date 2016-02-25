@@ -24,6 +24,8 @@ using namespace std;
 
 int ENTRANCEPORCHROOM = -1;
 
+
+
 // ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // This function is a constructor for the CMap Class. It takes the filepath of the raw input data
 // and from this creates an instance of the class.
@@ -31,10 +33,10 @@ CMap::CMap(string filepath)
 {
 	DEBUG_METHOD();
 
-	std::vector<std::vector<int>> m_cellMap = CParseCSV::ReadCSV_int(filepath);
+	m_cellMap = CParseCSV::ReadCSV_int(filepath);
 
-
-
+	m_cellwidth = m_cellMap.size();
+	m_cellheight = m_cellwidth;
 
 	CreateRoomMap();
 	ComputeCellMapSize();
@@ -59,8 +61,8 @@ CMap::CMap(string filepath)
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Current room is entrance room which is not defined in our map so set to 
-	m_currentRoom = ENTRANCEPORCHROOM;
-	DEBUG_VALUE_OF_LOCATION(m_currentRoom);
+	m_currentRoom.resize(2);
+	m_currentRoom[0] = ENTRANCEPORCHROOM;
 	
 }
 
@@ -435,6 +437,12 @@ void CMap::UpdateCellMap()
 			}
 		}
 
+void CMap::SetCurrentRoomType(ERoom roomType)
+{	
+	m_roomMap[m_currentRoom[0]][m_currentRoom[1]] = roomType;
+	UpdateCellMap();
+	}
+
 
 void CMap::CalculateBlockRooms(vector<int>* pBlockRooms) const
 {
@@ -660,22 +668,26 @@ int CMap::GetCurrentVertex() const
 	return m_currentVertex;
 }
 
-int CMap::GetCurrentRoom() const
+std::vector<int> CMap::GetCurrentRoom() const
 {
 	DEBUG_METHOD();
 	return m_currentRoom;
 }
 
-void CMap::SetCurrentRoom(int new_room)
+void CMap::SetCurrentRoom(int new_room_index)
 {
 	DEBUG_METHOD();
-	m_currentRoom = new_room;
+
+	std::vector<int> coord = RoomIndextoCoord(new_room_index);
+
+	m_currentRoom[0] = coord[0];
+	m_currentRoom[1] = coord[1];
 }
 
-void CMap::SetCurrentVertex(int new_vertex)
+void CMap::SetCurrentVertex(int new_vertex_index)
 {
 	DEBUG_METHOD();
-	m_currentVertex = new_vertex;
+	m_currentVertex = new_vertex_index;
 }
 
 vector<int> CMap::RoomIndextoCoord(int room_index) const
@@ -711,14 +723,37 @@ void CMap::FollowInstructions(CInstructions &inputInstructions)
 	}
 }
 
-
-
-vector<vector<int>> CMap::populateDistanceMatrixFromArray(vector<int>exampleArray, int rowCoordinate, int columnCoordinate)
+EInstruction CMap::FollowInstructionsNotLast(CInstructions & inputInstructions)
 {
 	DEBUG_METHOD();
 
-	int n = GetRoomMap()[0].size();
-	int distanceMatrixSize = (n - 1)*(2 * (n + 1) + 1) + (5 * n) - 2;
+	//////////////////////////////////////////////////////////////////////////////////////
+	// Check we are at start vertex.
+
+	int current_vertex = GetCurrentVertex();
+
+	vector<EInstruction> instructionList = inputInstructions.GetInstructions();
+	vector<ERoom> roomList = inputInstructions.GetRoomList();
+	vector<EOrientation> oreintationList = inputInstructions.GetOrientations();
+
+	if (current_vertex != instructionList[0]) CSignals::Error();
+
+	for (int i = 0; i < instructionList.size()-1; i++)
+	{
+		CManouvre::InstructionToManouvre(instructionList[i]);
+	}
+
+	return instructionList[instructionList.size()-1];
+}
+
+	
+
+std::vector<std::vector<int>> CMap::populateDistanceMatrixFromArray(std::vector<int>roomVertices, int rowCoordinate, int columnCoordinate, int roomWidth)
+{
+	DEBUG_METHOD();
+
+	int n = roomWidth;
+	// int distanceMatrixSize = (n - 1)*(2 * (n + 1) + 1) + (5 * n) - 2;
 
 	// TODO:
 	// Ensure every edge is printed in the coordinate list. Currently it seems to only have half of the expected coordinates
@@ -742,9 +777,11 @@ vector<vector<int>> CMap::populateDistanceMatrixFromArray(vector<int>exampleArra
 
 	// by default, the southvertex number is the following. However, if the room is on the last row, the equation changes slightly
 	int SouthVertexCoordinate = firstVertexOfRoom + (2 * n) + 2;
-	if (i_coordinate == n - 1) {
-		SouthVertexCoordinate = firstVertexOfRoom + (2 * n) + 1;
-	}
+
+	// probably works
+	//if (i_coordinate == n - 1) {
+	//	SouthVertexCoordinate = firstVertexOfRoom + (2 * n) + 1;
+	//}
 
 	int WestVertexCoordinate = firstVertexOfRoom;
 
@@ -754,7 +791,7 @@ vector<vector<int>> CMap::populateDistanceMatrixFromArray(vector<int>exampleArra
 
 	for (int i = 0; i < 4; i++)
 	{
-		if (exampleArray.at(i) != 0)
+		if (roomVertices.at(i) != 0)
 		{
 			// if != 0, the a coordinate is convertedVertexArray[i]
 
@@ -764,7 +801,7 @@ vector<vector<int>> CMap::populateDistanceMatrixFromArray(vector<int>exampleArra
 			for (int j = i + 1; j < 4; j++) {
 
 				// if there is another non-zero value, the b coordinate is convertedVertexArray[j]
-				if (exampleArray.at(j) != 0) {
+				if (roomVertices.at(j) != 0) {
 					vertexB_Coordinate = convertedVertexArray[j];
 
 					// coordinates are only added if both vertices are non-zero
@@ -779,10 +816,10 @@ vector<vector<int>> CMap::populateDistanceMatrixFromArray(vector<int>exampleArra
 
 					if (vertexA_Coordinate < vertexB_Coordinate) {
 
-						// Logic needs to be added to discern whether the room is a corner or a straight line
 						m_distanceMatrix.at(vertexB_Coordinate).at(vertexA_Coordinate) = edge_Magnitude;
-						std::vector<int> distanceMatrixCoordinate = { vertexB_Coordinate, vertexA_Coordinate, edge_Magnitude };
-						m_distanceMatrixCoordinateList.push_back(distanceMatrixCoordinate);
+
+						// std::vector<int> distanceMatrixCoordinate = { vertexB_Coordinate, vertexA_Coordinate, edge_Magnitude };
+						// m_distanceMatrixCoordinateList.push_back(distanceMatrixCoordinate);
 					}
 
 					// Added in case vertexA_Coordinate == vertexB_Coordinate (which should never happen)
@@ -790,8 +827,9 @@ vector<vector<int>> CMap::populateDistanceMatrixFromArray(vector<int>exampleArra
 
 						// Logic needs to be added to discern whether the room is a corner or a straight line
 						m_distanceMatrix.at(vertexA_Coordinate).at(vertexB_Coordinate) = edge_Magnitude;
-						std::vector<int> distanceMatrixCoordinate = { vertexA_Coordinate, vertexB_Coordinate, edge_Magnitude };
-						m_distanceMatrixCoordinateList.push_back(distanceMatrixCoordinate);
+
+						// std::vector<int> distanceMatrixCoordinate = { vertexA_Coordinate, vertexB_Coordinate, edge_Magnitude };
+						// m_distanceMatrixCoordinateList.push_back(distanceMatrixCoordinate);
 					}
 				}
 			}
@@ -811,29 +849,53 @@ vector<vector<int>> CMap::DistanceMatrix()
 {
 	DEBUG_METHOD();
 
-
 	// x = i(2n + 2j) 
 	// y = x + 2n + 2
 
-	int westPoint, southPoint, matrixSize;
-	matrixSize = GetRoomMap().size();
+	int westPoint, southPoint, roomWidth;
+	roomWidth = m_cellheight/3;
 
-	int n = matrixSize;
-	int distanceMatrixSize = (n - 1)*(2 * (n + 1) + 1) + (5 * n) - 2;
+	int n = roomWidth;
+	// distanceMatrix might have a -1 due to starting at 0.
+	// int distanceMatrixSize = (n - 1)*(2 * (n + 1) + 1) + (5 * n) - 2;
+	int distanceMatrixSize = n*(n + 1) + (n + 1)*(n + 1);
 
 	m_distanceMatrixCoordinateList.clear();
-	std::vector<std::vector<int>> distanceMatrix(distanceMatrixSize);
+	std::vector<std::vector<int>> distanceMatrix;
+	distanceMatrix.resize(distanceMatrixSize);
+
+	// Default is zero.
+	// should be able to do distanceMatrix.resize(distanceMatrixSize);
 	for (int i = 0; i < distanceMatrixSize; i++) {
 		distanceMatrix[i].resize(distanceMatrixSize);
 	}
 	m_distanceMatrix = distanceMatrix;
 
-	for (int i = 0; i < 4; i++)
+	std::vector<int> blockRooms;
+	CalculateBlockRooms(&blockRooms);
+	std::vector<std::vector<int>> blockRoomCoords;
+
+	blockRoomCoords.resize(blockRooms.size());
+
+	for (int i = 0; i < blockRooms.size(); i++) {
+		blockRoomCoords.at(i) = RoomIndextoCoord(blockRooms.at(i));
+	}
+	for (int i = 0; i < roomWidth; i++)
 	{
-		for (int j = 0; j < 4; j++)
+		for (int j = 0; j < roomWidth; j++)
 		{
-			ERoom room_type = GetRoomMap().at(i).at(j);
-			populateDistanceMatrixFromArray(GetRoomVertices(room_type), i, j);
+			bool isBlockRoom = false;
+			// cycle through BlockRoomCoords and check if the current room contains a block
+			for (int k = 0; k < blockRooms.size(); k++) {
+				if (blockRoomCoords.at(k).at(0) == i && blockRoomCoords.at(k).at(1) == j) {
+					isBlockRoom = true;
+					break;
+				}
+			}
+			if (!isBlockRoom) {
+				ERoom room_type = m_roomMap.at(i).at(j);
+				populateDistanceMatrixFromArray(GetRoomVertices(room_type), i, j, roomWidth);
+			}
 		}
 	}
 

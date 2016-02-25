@@ -97,7 +97,7 @@ void CManouvre::StraightAcrossRoomJunct()
 	DEBUG_METHOD();
 
 	CGoodsOut::ForwardDetectJunction();
-	CGoodsOut::ForwardDetectJunction();
+	CGoodsOut::ForwardDetectJunction(); // TODO: This is wrong!!!
 }
 
 void CManouvre::StraightAcrossRoomNoJunct()

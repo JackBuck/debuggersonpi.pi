@@ -59,15 +59,19 @@ public:
 	CBlockReader(const std::string imagePath);
 
 	// === Public Functions =========================================================================
+	void CalibrateFromPhoto();
 	int CountSpots();
 	bool ComputeBlockLocation(double& blockRelPosn_x, double& blockRelPosn_y) const;
 	void LoadImgFromFile(std::string imagePath);
-	bool TakePhoto(std::string saveLocation);
+	bool TakePhoto(bool useCalibrationInfo = true);
+	bool TakePhoto(std::string saveLocation, bool useCalibrationInfo = true);
+	void ReadLightingCalibration();
 	void SetExpectedSpotDistances(const std::vector<std::string>& fileNames);
 
 	// === Exceptions ===============================================================================
 	struct Exception_InputImagePath_BadFilePath;
-
+	struct Exception_CBlockReader_TakePhoto_CantOpenFile;
+	struct Exception_CBlockReader_CantReadExifData {};
 
 private:
 	// === Private Functions ========================================================================
@@ -77,16 +81,27 @@ private:
 	bool VerifySpotNbhdVisible() const;
 
 	// === Member Variables =========================================================================
+	// The current loaded image
 	cv::Mat m_Image;
+
+	// Information on the spots detected
 	std::vector<cv::KeyPoint> m_Spots;
 	std::vector<std::vector<double>> m_SpotDists; // units are average spot size
+
+	// Tolerances for use when spot counting
 	static constexpr double RADTOL = 5; // pixels
 	static constexpr double ANGTOL = 0.05; // radians
 	static constexpr double SPOTDISTTOL = 0.2; // proportion of average spot size
 
+	// Camera lighting calibration
+	double m_ShutterSpeed;
+	double m_Iso;
+
 	// === Private Static Data ======================================================================
 	static const std::string imgExampleFolder;
 	static const std::string expectedSpotDistancesFile;
+	static const std::string lightingCalibrationPath;
+	static const std::string mostRecentPhotoPath;
 
 	// === Member classes ===========================================================================
 	struct CompareByAngleThenRadius
@@ -102,7 +117,7 @@ private:
 };
 
 // ~~~ EXCEPTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-struct 	CBlockReader::Exception_InputImagePath_BadFilePath
+struct CBlockReader::Exception_InputImagePath_BadFilePath
 {
 	std::vector<std::string> m_ImagePaths;
 
@@ -116,6 +131,16 @@ struct 	CBlockReader::Exception_InputImagePath_BadFilePath
 	{
 	}
 
+};
+
+struct Exception_CBlockReader_CantOpenFile
+{
+	std::string m_filePath;
+
+	Exception_CBlockReader_CantOpenFile(std::string filePath)
+			: m_filePath { filePath }
+	{
+	}
 };
 
 

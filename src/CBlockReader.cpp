@@ -6,9 +6,9 @@
  */
 
 // ~~~ INCLUDES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#include <cmath>
 #include "CBlockReader.h"
 #include "CParseCSV.h"
-#include <cmath>
 #include "DebugLog.hpp"
 
 //#include <opencv2/opencv.hpp> // Include everything
@@ -27,6 +27,13 @@
 #include <opencv2/highgui/highgui.hpp>
 //#include <opencv2/contrib/contrib.hpp>
 
+#include <cstdlib> /* system, NULL, EXIT_FAILURE */
+
+#include "../libs/ExifTool.h"
+#include <fstream>
+#include <sstream>
+
+
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
 using namespace cv;
@@ -35,9 +42,10 @@ using namespace cv;
 /* ~~~ FILE / FOLDER PATHS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 // TODO: Learn how to do filenames portably so that it will run on Windows machines...
-const std::string CBlockReader::imgExampleFolder {"Data/SpotImageExamples/"}; // In unix it is safe to concatenate filenames with two slashes :D
-const std::string CBlockReader::expectedSpotDistancesFile {"Data/Calibration/ExpectedSpotDistances.csv"};
-
+const string CBlockReader::imgExampleFolder {"Data/SpotImageExamples/"}; // In unix it is safe to concatenate filenames with two slashes :D
+const string CBlockReader::expectedSpotDistancesFile {"Data/Calibration/ExpectedSpotDistances.csv"};
+const string CBlockReader::lightingCalibrationPath {"Data/Calibration/CameraLightingCalibration.cal"};
+const string CBlockReader::mostRecentPhotoPath {"Data/MostRecentPhoto.jpg"};
 
 // -/-/-/-/-/-/-/ CONSTRUCTORS AND DESTRUCTORS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ FUNCTION (default constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +54,8 @@ const std::string CBlockReader::expectedSpotDistancesFile {"Data/Calibration/Exp
 CBlockReader::CBlockReader()
 {
 	DEBUG_METHOD();
+
+	ReadLightingCalibration();
 }
 
 /* ~~~ FUNCTION (constructor) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,6 +70,8 @@ CBlockReader::CBlockReader()
 CBlockReader::CBlockReader(string imagePath)
 {
 	DEBUG_METHOD();
+
+	ReadLightingCalibration();
 	LoadImgFromFile(imagePath);
 }
 
@@ -84,7 +96,8 @@ void CBlockReader::LoadImgFromFile(string imagePath)
 	}
 	else
 	{
-		resize(image_fullsize, m_Image, Size(), 0.2, 0.2, INTER_AREA);
+		//resize(image_fullsize, m_Image, Size(), 0.2, 0.2, INTER_AREA); // TODO Change this so that the pi just takes smaller photos
+		m_Image = image_fullsize;
 	}
 }
 
@@ -94,11 +107,59 @@ void CBlockReader::LoadImgFromFile(string imagePath)
  *
  *	INPUTS:
  *	saveLocation - This should contain the path at which to save the photo.
+ *
+ *	RETURNS:
+ *	True if photo was taken successfully. False otherwise.
+ *
  */
-bool CBlockReader::TakePhoto(std::string saveLocation)
+bool CBlockReader::TakePhoto(bool useCalibrationInfo)
 {
 	DEBUG_METHOD();
-	// TODO: Find out how to take a photo with the PI camera and then implement CBlockReader::TakePhoto
+
+	return TakePhoto(mostRecentPhotoPath, useCalibrationInfo);
+}
+
+bool CBlockReader::TakePhoto(string saveLocation, bool useCalibrationInfo)
+{
+	DEBUG_METHOD();
+
+	// Check we can use system()
+	if (!system(NULL))
+	{
+		cout << "Unable to use system() to call other processes.\n";
+		return false;
+	}
+
+
+	// Define photo command
+	ostringstream commandStream;
+	commandStream << "raspistill";
+	commandStream << " --nopreview";
+	commandStream << " --width 432"; // 1/6 maximum resolution
+	commandStream << " --height 324";
+	commandStream << " --quality 100"; // TODO: Tweak for fastest load by opencv "75" is a happy medium says the internet...
+	commandStream << " --output " + saveLocation;
+	commandStream << " --encoding jpg";
+
+	// Add calibration info
+	if (useCalibrationInfo)
+	{
+		commandStream << " --timeout 1"; // V short timeout TODO: May need to change to 10 say
+
+		if (m_ShutterSpeed != 0)
+			commandStream << " --shutter " << m_ShutterSpeed;
+
+		if (m_Iso != 0)
+			commandStream << " --ISO " << m_Iso;
+	}
+
+	string command = commandStream.str();
+
+	DEBUG_VALUE_OF_BLOCKS(command);
+
+	int result = system(command.c_str());
+
+	return result;
 }
 
 
@@ -335,6 +396,106 @@ void CBlockReader::SetExpectedSpotDistances(const vector<string>& fileNames)
 	}
 }
 
+/* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function writes the file containing the calibration to lighting conditions for the camera.
+ * This includes the shutter speed and iso.
+ *
+ * The method calls TakePhoto to take a photo, then reads the exif information from that photo and
+ * uses it to create the calibration information.
+ *
+ */
+void CBlockReader::CalibrateFromPhoto()
+{
+	// Take photo for calibration
+	bool result = TakePhoto(false); //TODO: Uncomment this!!!
+
+	// Extract exif data
+	ExifTool exifTool {};
+	TagInfo* pTagInfo = exifTool.ImageInfo(mostRecentPhotoPath.c_str());
+	if (pTagInfo)
+	{
+		// Read exif data
+		for (TagInfo* i = pTagInfo; i; i = i->next)
+		{
+			// ----- Extract SHUTTER SPEED -----
+			string shutterSpeedName = "ShutterSpeedValue"; // TODO: Maybe change this to "ExposureTime"?
+			if (shutterSpeedName.compare(i->name) == 0)
+			{
+				// Convert fraction to microseconds
+				string shutterSpeed_frac = i->value;
+				unsigned int idx = shutterSpeed_frac.find('/');
+				double numerator = stod(shutterSpeed_frac.substr(0,idx));
+				double denominator = stod(shutterSpeed_frac.substr(idx+1));
+				m_ShutterSpeed = (numerator / denominator) * 1000000; // Convert seconds to microseconds
+			}
+
+			// ----- Extract ISO -----
+			string isoName = "ISO";
+			if (isoName.compare(i->name) == 0)
+				m_Iso = stod(i->value);
+		}
+
+
+		delete pTagInfo;
+		pTagInfo = nullptr;
+	}
+	else
+	{
+		cerr << "Error executing exiftool!" << endl;
+		throw Exception_CBlockReader_CantReadExifData{};
+	}
+
+	// Print ExifTool error
+	char *err = exifTool.GetError();
+	if (err) cout << err;
+	delete err;
+	err = nullptr;
+
+	// TODO: Include check for reasonable shutter speed and iso?
+
+	// Write lighting calibration file
+	ofstream file(lightingCalibrationPath);
+	if (!file.is_open())
+		throw Exception_CBlockReader_CantOpenFile { lightingCalibrationPath };
+
+	file << "ShutterSpeed " << m_ShutterSpeed << endl;
+	file << "ISO"           << m_Iso <<          endl;
+
+	file.close();
+}
+
+/* ~~~ FUNCTION (public) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * This function reads the lighting calibration file and updates the relevant member variables.
+ *
+ */
+void CBlockReader::ReadLightingCalibration()
+{
+	m_ShutterSpeed = 0;
+	m_Iso = 0;
+
+	ifstream file(lightingCalibrationPath);
+	if (!file.is_open())
+		throw Exception_CBlockReader_CantOpenFile { lightingCalibrationPath };
+
+	string exifName;
+	while(file >> exifName)
+	{
+		if (exifName.compare("ShutterSpeed") == 0)
+		{
+			file >> m_ShutterSpeed;
+		}
+		else if (exifName.compare(""))
+		{
+			file >> m_Iso;
+		}
+		else
+		{
+			string bin;
+			file >> bin;
+		}
+	}
+	file.close();
+}
 
 // -/-/-/-/-/-/-/ HELPER FUNCTIONS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 /* ~~~ STRUCT (emulating private function) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -447,7 +608,6 @@ bool CBlockReader::SortAndComputeSpotDists()
 	}
 
 	// Sort centredSpots
-	// TODO: Debug sorting with testfourh15cm4.jpg
 	sort(centredSpots.begin(), centredSpots.end(), CompareByAngleThenRadius {});
 
 	// Find average spot size

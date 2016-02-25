@@ -34,6 +34,7 @@ void CBlockReader_test()
 
 }
 
+// This test loads test image files and counts the spots
 int CBlockReader_test2()
 {
 	DEBUG_METHOD();
@@ -71,4 +72,37 @@ int CBlockReader_test2()
 		cout << "Failure!\n";
 		return 1;
 	}
+}
+
+// This test checks the pi can use system() to take photos
+int CBlockReader_test3()
+{
+	DEBUG_METHOD();
+
+	CBlockReader aBlockReader;
+
+	if (aBlockReader.TakePhoto())
+		return 0;
+	else
+		return 1;
+}
+
+// This tests the ExifTool
+void CBlockReader_test4()
+{
+	DEBUG_METHOD();
+
+	CBlockReader aBlockReader;
+
+	// Take a photo for calibration
+	aBlockReader.CalibrateFromPhoto();
+
+	// This photo should have the same shutter speed and iso, but be taken faster
+	aBlockReader.TakePhoto("TestData/TestPhoto1.jpg");
+
+	aBlockReader.ReadLightingCalibration();
+
+	// This photo should again have the same shutter speed and iso.
+	aBlockReader.TakePhoto("TestData/TestPhoto2.jpg");
+
 }

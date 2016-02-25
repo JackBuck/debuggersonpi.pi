@@ -157,7 +157,7 @@ void CChallenges::ChallengeFour()
 	DEBUG_METHOD();
 	///////////////////////////////////////////////////////////////////////
 	// Import map
-	std::string filepath;
+	std::string filepath = "TestData/PracticeMap_WithBlocks.csv";
 	CMap aMap = CMap(filepath);
 
 

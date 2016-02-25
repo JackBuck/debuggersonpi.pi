@@ -11,6 +11,8 @@
 #include "Signals.h"
 #include <time.h>
 
+#include <cstdlib>  // For system() and exit()
+
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 using namespace std;
 
@@ -55,50 +57,65 @@ void TopLevel::IdleState()
 }
 
 /* ~~~ FUNCTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * This function interprets the switches
+ * This function interprets the switches.
+ *
+ * INPUTS:
+ * switches - This is a 4-element vector containing the state of the switches to be evaluated.
+ *
+ * askerIsIdleState - This is a bool to determine whether the calling function is the idle state.
+ * 	If this is true then the function will simply return. If it is false then it will explicitly call the idle state.
+ *
+ * 	!!WARNING!! -- To avoid an inception style sequence of events, only pass this as false if coming from the Introduction state.
+ * 	               Needless to say, only pass it as true if coming from idle.
+ * 	               If you want to read the switches in a different function you will need to do something more complicated!
+ *
  */
-void TopLevel::InterpretSwitches(vector<bool> switches)
+void TopLevel::InterpretSwitches(vector<bool> switches, bool askerIsIdleState)
 {
 	// TODO: Include states for 4 challenges, calibration, idle, exit program, shutdown, test switch directions
 
-	if (switches == vector<bool> {0,0,0,0}) // Test the direction of the switches (TODO: Change this to test left and right as well -- eg green flash for 1010 and blue for 0101?)
-	{
-		CSignals::BothLeds(2000);
-	}
+	if (switches == vector<bool> { 0, 0, 0, 0 })      // 0000 -- Idle
+		IdleState();
 
-	else if (switches == vector<bool> {true, true, true, true})    // 1111 -- Idle
-		IdleState(); // TODO: Get rid of Introduction asap so that this can just return us to the idle state (don't want an inception situation!)
-
-	else if (switches == vector<bool> {true, false, false, false}) // 1000 -- Challenge one
+	else if (switches == vector<bool> { 1, 0, 0, 0 }) // 1000 -- Challenge one
 		CChallenges::ChallengeOne();
 
-	else if (switches == vector<bool> {false, true, false, false}) // 0100 -- Challenge two
-			CChallenges::ChallengeOne();
+	else if (switches == vector<bool> { 0, 1, 0, 0 }) // 0100 -- Challenge two
+		CChallenges::ChallengeOne();
 
-	else if (switches == vector<bool> {false, false, true, false}) // 0010 -- Challenge three
-			CChallenges::ChallengeOne();
+	else if (switches == vector<bool> { 0, 0, 1, 0 }) // 0010 -- Challenge three
+		CChallenges::ChallengeOne();
 
-	else if (switches == vector<bool> {false, false, false, true}) // 0001 -- Challenge four
-			CChallenges::ChallengeOne();
+	else if (switches == vector<bool> { 0, 0, 0, 1 }) // 0001 -- Challenge four
+		CChallenges::ChallengeOne();
 
-	else if (switches == vector<bool> {true, true, false, false})   // 1100 -- Shut down
+	else if (switches == vector<bool> { 1, 1, 1, 1 }) // 1111 -- Shut down
 	{
-		// TODO: Shutdown
+		// Check we can use system()
+		if (!system(NULL))
+		{
+			cout << "Unable to use system() to call other processes.\n";
+			exit(1);
+		}
+
+		system("sudo shutdown -h now");
+
 	}
 
-	else if (switches == vector<bool> {true, false, true, false})    // 1110 -- Exit to commandline // TODO: Change this since
+	else if (switches == vector<bool> { 1, 0, 1, 0 }) // 1010 -- Exit to commandline
 	{
-		// TODO: Exit to commandline
+		exit(0);
 	}
 
-	else if (switches == vector<bool> {})
+	else if (switches == vector<bool> { 1, 1, 0, 0 }) // 1100 -- Calibration (Take photo to get lighting conditions)
 	{
-
+		CBlockReader aBlockReader;
+		aBlockReader.CalibrateFromPhoto();
 	}
 
 	else
 	{
 		//TODO: flash both LEDS to signal erroneous input
-		IdleState(); //
+
 	}
 }

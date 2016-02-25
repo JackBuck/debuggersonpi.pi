@@ -18,7 +18,8 @@ public:
 	 */
 	static void Introduction();
 
-	// TODO: Get rid of the introduction once you have a state for the switches which lets you exit without shutting down
+	// Keep introduction! You want to be able to exit if the SPI isn't working!!
+	// Only thing is to decide whether to always send the PI to idle
 
 
 private:

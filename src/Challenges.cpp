@@ -107,7 +107,7 @@ void CChallenges::ChallengeThree()
 	DEBUG_METHOD();
 	std::string filepath;
 
-	filepath = std::string("TestData/PracticeMap.csv");
+	filepath = std::string("/mnt/BlankUSB/RoadRunnerMap.csv");
 
 	CMap aMap = CMap(filepath);
 	int entrance_vertex = aMap.GetEntranceVertex();

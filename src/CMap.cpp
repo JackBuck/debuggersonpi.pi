@@ -44,7 +44,8 @@ CMap::CMap(string filepath)
 	//////////////////////////////////////////////////////////////////////////////////////
 	// Entrance and exit predefined
 
-	m_firstRoom = m_cellheight*m_cellwidth;
+//	m_firstRoom = m_cellheight*m_cellwidth;
+	m_firstRoom = (m_cellheight/3 -1) * (m_cellwidth/3);
 	m_exitRoom = m_cellwidth-1;
 
 	m_entranceCell = {3*m_firstRoom , 2};

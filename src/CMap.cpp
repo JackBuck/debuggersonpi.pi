@@ -508,7 +508,7 @@ void CMap::CalculateBlockRooms(vector<int>* pBlockRooms) const
 		{
 			if(m_cellMap[i][j] ==2)
 			{
-				pBlockRooms->push_back((((i-1)*m_cellwidth)/3) + (j-1)/3);
+				pBlockRooms->push_back( ((i-1)/3)*(m_cellwidth/3) + (j-1)/3);
 			}
 		}
 	}

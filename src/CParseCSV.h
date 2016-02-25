@@ -78,7 +78,7 @@ private:
 	{
 		std::ifstream file(filePath);
 		if (!file.is_open())
-			throw Exception_CantOpenFile { filePath };
+			throw Exception_CParseCSV_CantOpenFile{ filePath };
 
 		CSVRow row;
 		std::vector<std::vector<T> > parsedFile;

@@ -24,7 +24,7 @@ class CManouvre
 public:
 
 	static void InstructionToManouvre(EInstruction instruction_type);
-	static void LastInstructionToManouvre(EInstruction instruction_type);
+	static void LastInstructionBeforeBlock(EInstruction instruction_type);
 	static void MoveToStartVertex();
 	static void ExitMap();
 	static int ApproachAndPhotographBlock();

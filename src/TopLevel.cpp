@@ -9,8 +9,11 @@
 #include "TopLevel.h"
 #include "GoodsIn.h"
 #include "Signals.h"
-#include <time.h>
+#include "CBlockReader.h"
+#include "Challenges.h"
 
+#include <iostream>
+#include <time.h>
 #include <cstdlib>  // For system() and exit()
 
 // ~~~ NAMESPACES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,7 +53,7 @@ void TopLevel::IdleState()
 	while(true)
 	{
 		if (CGoodsIn::PollButton(switches))
-			InterpretSwitches(switches);
+			InterpretSwitches(switches, true);
 
 		nanosleep(&req, (struct timespec *)NULL);
 	}

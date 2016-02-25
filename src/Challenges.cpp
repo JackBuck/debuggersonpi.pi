@@ -21,6 +21,8 @@
 // ~~~ DEFINITIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int LOCATION_UNKNOWN = -1;
 
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Basic outline of challenge 1 I am not sure how the interupts will work exactly.
 void CChallenges::ChallengeOne()
@@ -29,7 +31,6 @@ void CChallenges::ChallengeOne()
 
 	CSignals::Start();
 
-	bool interrupt = false;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// Tell pic to follow line forever (or near enough) unless interrupted.
@@ -48,7 +49,7 @@ void CChallenges::ChallengeTwo()
 
 
 	//////////////////////////////////////////////////////////////////////
-	// Creat empty map
+	// Create empty map
 
 	CMap aMap = CMap(10, 10);
 
@@ -63,7 +64,7 @@ void CChallenges::ChallengeTwo()
 		// Find room type of current room and save it into the map.
 
 		ERoom currentRoomType = CManouvre::DetectRoomType();
-		aMap.SetCurrentRoom(currentRoomType);
+		aMap.SetCurrentRoomType(currentRoomType);
 
 
 		///////////////////////////////////////////////////////////////////////////////
@@ -81,7 +82,7 @@ void CChallenges::ChallengeTwo()
 		if(is_next_vertex)
 		{
 			CInstructions aInstructions = CInstructions(outputRoute, 10);
-			aMap.FollowInstructions(aInstructions);
+			aMap.FollowInstructions(aInstructions);  // Automatically updates aMap.m_nextRoom
 		}
 
 	}
@@ -89,9 +90,9 @@ void CChallenges::ChallengeTwo()
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////
-	// Map now completel known. Write to file.
+	// Map now completely known. Write to file.
 
-	std::string filepath = "ExportMap.txt";
+	std::string filepath = "Data/ExportMap.txt";
 	aMap.WriteCellMap(filepath);
 
 
@@ -101,27 +102,21 @@ void CChallenges::ChallengeTwo()
 	CSignals::Complete();
 }
 
-
 void CChallenges::ChallengeThree()
 {
 	DEBUG_METHOD();
 	std::string filepath;
 
-	filepath = std::string("example.txt");
+	filepath = std::string("TestData/PracticeMap.csv");
 
 	CMap aMap = CMap(filepath);
 	int entrance_vertex = aMap.GetEntranceVertex();
 	int exit_vertex = aMap.GetExitVertex();
 
-	std::vector<std::vector<double>> distanceMatrix;
-	std::vector<int> labels;
-	///////////////////////////// Call Johns Function to populate these
+	std::vector<std::vector<double>> distanceMatrix = aMap.DistanceMatrix();
 
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////
-	// Generate graph of map.
-
-	CGraph aGraph = CGraph(distanceMatrix, labels);
+	///////////////////////////////////////////////////////////////
+	CGraph aGraph = CGraph(distanceMatrix);
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,6 +138,8 @@ void CChallenges::ChallengeThree()
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	// Now we know our route, execute it
 
+	// TODO: NB the CMap member variables tracking the location are not updated here!!!
+	// If you decide you need to use them, then the easiest way would be to use the CMap::FollowInstructions method.
 	CManouvre::MoveToStartVertex();
 
 	for(unsigned int i=0; i<macroInstructions.size(); i++)
@@ -158,19 +155,18 @@ void CChallenges::ChallengeThree()
 }
 
 
-
 void CChallenges::ChallengeFour()
 {
 	DEBUG_METHOD();
 	///////////////////////////////////////////////////////////////////////
 	// Import map
-	std::string filepath;
+	std::string filepath = "TestData/PracticeMap_WithBlocks.csv";
 	CMap aMap = CMap(filepath);
 
 
 	////////////////////////////////////////////////////////////////////////
 	// Set the current room as the starting room of the map.
-	int current_room = aMap.GetEntranceRoom();
+	//	int current_room = aMap.GetEntranceRoom();
 
 	///////////////////////////////////////////////////////////////////////
 	// Set start_vertex as entrance vertex.
@@ -212,13 +208,11 @@ void CChallenges::ChallengeFour()
 
 		std::vector<int> planned_path;
 
-		std::vector<std::vector<double>> distanceMatrix;
-		std::vector<int> labels;
+		std::vector<std::vector<double>> distanceMatrix = aMap.DistanceMatrix();
 
+		///////////////////////////////////////////////////////////////
+		CGraph aGraph = CGraph(distanceMatrix);
 
-		// Calculated by Johns function.
-
-		CGraph aGraph { distanceMatrix, labels };
 
 		//////////////////////////////////////////////////////////////////////
 		// Check if location of next block is known.
@@ -237,8 +231,8 @@ void CChallenges::ChallengeFour()
 			//////////////////////////////////////////////////////////////////////
 			// Get current room type and the vertex labels of adjacent vertices.
 
-			ERoom start_room_type = aMap.GetRoomType(current_room);
-			std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(current_room);
+			ERoom start_room_type = aMap.GetRoomType(aMap.GetNextRoom());
+			std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(aMap.GetNextRoom());
 
 
 			/////////////////////////////////////////////////////////////////////////////
@@ -249,7 +243,7 @@ void CChallenges::ChallengeFour()
 			
 
 			//////////////////////////////////////////////////////////////////////////////
-			// For each vertex of the current room check shorteset path to each
+			// For each vertex of the current room check shortest path to each
 			for(int k=0; k<4; k++)
 			{
 				/////////////////////////////////////////////////////////////////////////
@@ -263,22 +257,22 @@ void CChallenges::ChallengeFour()
 				int current_vertex = verticesOfStartRoom[k];
 
 				//////////////////////////////////////////////////////////////////////////////////////////////
-				// Look at all blocks which havent been visited yet.
+				// Look at all blocks which haven't been visited yet.
 
 				for(unsigned int i=0; i<unknown_block_rooms.size(); i++)
 				{			
 					//////////////////////////////////////////////////////////////////////////////////////////
 					// Find which of these vertices exist and their labels
 					
-					ERoom room_type = aMap.GetRoomType(unknown_block_rooms[i]);
-					std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(unknown_block_rooms[i]);
+					ERoom room_type = aMap.GetRoomType(aMap.RoomIndexToCoord(unknown_block_rooms[i]));
+					std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(aMap.RoomIndexToCoord(unknown_block_rooms[i]));
 
 					//////////////////////////////////////////////////////////////////////////////////////////
 					// Check which of these vertices exist.
 
 					std::vector<int> existingVerticesOfRoom;
 					existingVerticesOfRoom = aMap.GetRoomVertices(room_type);
-					std::vector<int> room_vertices = aMap.CalculateRoomVertices(unknown_block_rooms[i]);
+					std::vector<int> room_vertices = aMap.CalculateRoomVertices(aMap.RoomIndexToCoord(unknown_block_rooms[i]));
 
 					for(int j=0; j<4; j++)
 					{
@@ -288,17 +282,33 @@ void CChallenges::ChallengeFour()
 						double current_shortest_distance = aGraph.ShortestDistance(current_vertex, room_vertices[j], current_shortest_path);
 
 						int size = current_shortest_path.size();
-						CInstructions aInstructions = CInstructions({current_shortest_path[size -2], current_shortest_path[size -1]}, 10);
-						std::vector<EInstruction> instruction = aInstructions.GetInstructions();
-
+						
 						bool replace = false;
+						////////////////////////////////////////////////////////////////////////////////////////////////////
+						// Calculate final instruction.
 
-						if(current_shortest_distance < shortest_distance)
+
+						if(current_shortest_distance == -1) continue;
+
+						if(size > 1 )
 						{
-							if(!end_straight) replace = true;
-							else if(instruction[0] == EInstruction_Straight) replace = true;
+							CInstructions aInstructions = CInstructions({current_shortest_path.at(size -2), current_shortest_path.at(size -1)}, 10);
+							std::vector<EInstruction> instruction = aInstructions.GetInstructions();
+						
+
+							
+
+							if(current_shortest_distance < shortest_distance)
+							{
+								if(!end_straight) replace = true;
+								else if(instruction[0] == EInstruction_Straight) replace = true;
+							}
+							else if(!end_straight && (instruction[0] == EInstruction_Straight)) replace = true;
 						}
-						else if(!end_straight && (instruction[0] == EInstruction_Straight)) replace = true;
+						else
+						{
+							replace = true;
+						}
 
 						if(replace)
 						{
@@ -330,8 +340,8 @@ void CChallenges::ChallengeFour()
 			/////////////////////////////////////////////////////////////////////////////////////////////
 			// Get current room type and the vertex labels of adjacent vertices.
 
-			ERoom start_room_type = aMap.GetRoomType(current_room);
-			std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(current_room);
+			ERoom start_room_type = aMap.GetRoomType(aMap.GetNextRoom());
+			std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(aMap.GetNextRoom());
 
 			////////////////////////////////////////////////////////////////////////////////////////////
 			// Check which of these vertices exist for the start room.
@@ -353,15 +363,15 @@ void CChallenges::ChallengeFour()
 
 				int current_vertex = verticesOfStartRoom[k];
 			
-				ERoom room_type = aMap.GetRoomType(target_room);
-				std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(target_room);
+				ERoom room_type = aMap.GetRoomType(aMap.RoomIndexToCoord(target_room));
+				std::vector<int> verticesOfStartRoom = aMap.CalculateRoomVertices(aMap.RoomIndexToCoord(target_room));
 
 				/////////////////////////////////////////////////////////////////////////////
 				// Check which of these vertices exist.
 
 				std::vector<int> existingVerticesOfRoom;
 				existingVerticesOfRoom = aMap.GetRoomVertices(room_type);
-				std::vector<int> room_vertices = aMap.CalculateRoomVertices(target_room);
+				std::vector<int> room_vertices = aMap.CalculateRoomVertices(aMap.RoomIndexToCoord(target_room));
 
 				for(int j=0; j<4; j++)
 				{
@@ -374,17 +384,29 @@ void CChallenges::ChallengeFour()
 					double current_shortest_distance = aGraph.ShortestDistance(current_vertex, room_vertices[j], current_shortest_path);
 					
 					int size = current_shortest_path.size();
-					CInstructions aInstructions = CInstructions({current_shortest_path[size -2], current_shortest_path[size -1]}, 10);
-					std::vector<EInstruction> instruction = aInstructions.GetInstructions();
 
 					bool replace = false;
 
-					if(current_shortest_distance < shortest_distance)
+					if(current_shortest_distance == -1) continue;
+
+					if(size > 1)
 					{
-						if(!end_straight) replace = true;
-						else if(instruction[0] == EInstruction_Straight) replace = true;
+						CInstructions aInstructions = CInstructions({current_shortest_path[size -2], current_shortest_path[size -1]}, 10);
+						std::vector<EInstruction> instruction = aInstructions.GetInstructions();
+
+						
+
+						if(current_shortest_distance < shortest_distance)
+						{
+							if(!end_straight) replace = true;
+							else if(instruction[0] == EInstruction_Straight) replace = true;
+						}
+						else if(!end_straight && (instruction[0] == EInstruction_Straight)) replace = true;
 					}
-					else if(!end_straight && (instruction[0] == EInstruction_Straight)) replace = true;
+					else
+					{
+						replace = true;
+					}
 
 					if(replace)
 					{
@@ -408,14 +430,11 @@ void CChallenges::ChallengeFour()
 		//////////////////////////////////////////////////////////////////////////////////////////////
 		// Now we know our route, execute it
 
+		EInstruction last_instruction = aMap.FollowInstructionsNotLast(aInstructions); // Automatically updates aMap.m_nextRoom
 
-		aMap.FollowInstructionsNotLast(aInstructions);
+		CManouvre::LastInstructionBeforeBlock(last_instruction);
 
-
-	
-	CGoodsOut::Stop();
-
-	int current_block_number = CManouvre::ApproachAndPhotographBlock();
+		int current_block_number = CManouvre::ApproachAndPhotographBlock(); // Do not manually update aMap.m_nextRoom
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	// Update the location vectors
@@ -438,18 +457,18 @@ void CChallenges::ChallengeFour()
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		// Remove the current room from the list of unknown rooms as we have just discovered which 
 		// block is there.
-		if(unknown_block_rooms[i] == current_room)
+		if(unknown_block_rooms[i] == aMap.RoomCoordToIndex(aMap.GetNextRoom()))
 		{
 			unknown_block_rooms.erase(unknown_block_rooms.begin() + i);
 		}
 	}
 	
-	for(size_t i=0; i<unknown_block_rooms.size(); i++)
+	for(size_t i=0; i<unknown_block_rooms.size(); i++) // TODO: Did you really want this twice??
 	{
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		// Remove the current room from the list of unknown rooms as we have just discovered which 
 		// block is there.
-		if(unknown_block_rooms[i] == current_room)
+		if(unknown_block_rooms[i] == aMap.RoomCoordToIndex(aMap.GetNextRoom()))
 		{
 			unknown_block_rooms.erase(unknown_block_rooms.begin() + i);
 		}
@@ -461,8 +480,43 @@ void CChallenges::ChallengeFour()
 
 	if(current_block_number != next_value)
 	{
+		CSignals::Notification2();
 		CManouvre::ReverseAndUTurn();
-	CSignals::Notification2();
+
+		std::vector<int> previous_room = aMap.GetNextRoom();
+		int current_orientation = aMap.GetCurrentOrientation();
+ 
+		std::vector<int> next_room = previous_room;
+
+		switch(current_orientation)
+		{
+		case EOrientation_North:
+		{
+			next_room[0] ++;
+			break;
+		}
+		case EOrientation_East:
+		{
+			next_room[1] --;
+			break;
+		}
+		case EOrientation_South:
+		{
+			next_room[0] --;
+			break;
+		} 
+		case EOrientation_West:
+		{
+			next_room[1] ++;
+			break;
+		}
+
+		//////////////////////////////////////////////////////////////////////
+		// Check next room is valid co-ordinate.
+
+		aMap.GetRoomMap().at(next_room.at(0)).at(next_room.at(1));
+
+		aMap.SetNextRoom(next_room); // TODO: Must manually update aMap.m_nextRoom and m_currnetOrientation (but maybe not m_currentVertex?) after ReverseAndUTurn
 		continue;
 	}
 
@@ -474,7 +528,9 @@ void CChallenges::ChallengeFour()
 
 	CManouvre::CollectBlock();
 
+	// TODO: If we are collecting the block then the shortest distance isn't necessarily from the vertex we came (though due to time pressures I don't suggest you change it!)
 	CManouvre::ReverseAndUTurn();
+	SetNextRoomAfterReverseAndUTurn(aMap);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	// Compute shortest path to start.
@@ -490,7 +546,7 @@ void CChallenges::ChallengeFour()
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	// Now we know our route, execute it
 
-	aMap.FollowInstructions(aInstructions);
+	aMap.FollowInstructions(aInstructions); // Automatically updates aMap.m_nextRoom
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	// Exit map and release block.
@@ -500,7 +556,46 @@ void CChallenges::ChallengeFour()
 	CManouvre::ReleaseBlock();
 
 	CManouvre::ReverseAndUTurn();
+	SetNextRoomAfterReverseAndUTurn(aMap);
 	}
 
 	CSignals::Complete();
+}
+
+}
+
+
+void CChallenges::SetNextRoomAfterReverseAndUTurn(CMap &aMap)
+{
+	std::vector<int> previous_room = aMap.GetNextRoom();
+	int current_orientation = aMap.GetCurrentOrientation();
+
+	std::vector<int> next_room = previous_room;
+
+	switch(current_orientation)
+	{
+	case EOrientation_North:
+	{
+		next_room[0] ++;
+	}
+	case EOrientation_East:
+	{
+		next_room[1] --;
+	}
+	case EOrientation_South:
+	{
+		next_room[0] --;
+	}
+	case EOrientation_West:
+	{
+		next_room[1] ++;
+	}
+	}
+
+	//////////////////////////////////////////////////////////////////////
+	// Check next room is valid co-ordinate.
+
+	aMap.GetRoomMap().at(next_room.at(0)).at(next_room.at(1));
+
+	aMap.SetNextRoom(next_room);
 }

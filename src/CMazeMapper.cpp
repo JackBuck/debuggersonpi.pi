@@ -17,7 +17,7 @@ using namespace std;
  * The update method (again!) sets the pMaze pointer and then calls FindVertsToExplore.
  *
  */
-CMazeMapper::CMazeMapper(const CMap* pMaze)
+CMazeMapper::CMazeMapper(CMap* pMaze)
 		: m_pCurrentMap { pMaze }
 {
 	DEBUG_METHOD();
@@ -50,9 +50,8 @@ bool CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& 
 
 	// Generate graph from the CMap
 	// TODO: Fix this when you now how you will generate the graph / receive the map
-	vector< vector<double> > distanceMatrix;
-	vector<int> vertexLabels;
-	CGraph currentGraph { distanceMatrix, vertexLabels };
+	vector<vector<double> > distMat = m_pCurrentMap->DistanceMatrix();
+	CGraph currentGraph { distMat };
 
 	// Check there remain vertices to explore
 	if (m_vertsToExplore.size() > 0)
@@ -96,7 +95,7 @@ bool CMazeMapper::ComputeNextVertex(const int& currentVertex, std::vector<int>& 
  * pNewMap - The new CMap pointer.
  *
  */
-void CMazeMapper::Update(const CMap* pNewMap)
+void CMazeMapper::Update(CMap* pNewMap)
 {
 	DEBUG_METHOD();
 

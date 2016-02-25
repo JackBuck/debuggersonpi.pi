@@ -52,7 +52,7 @@ int CMap_test()
 	return 0;
 }
 
-void PrintMatrix(std::vector<std::vector<int>> inputMap)
+void PrintMatrix(std::vector<std::vector<double>> inputMap)
 {
 	DEBUG_METHOD();
 
@@ -70,5 +70,5 @@ int DistanceMatrixTest()
 	CMap Maze(filepath);
 
 	PrintMatrix(Maze.DistanceMatrix());
-	return 0;
+	return UNKNOWN_TEST_RESULT;
 }

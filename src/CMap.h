@@ -34,13 +34,12 @@ private:
 	int m_exitRoom;
 	std::vector<int> m_entranceCell;
 	std::vector<int> m_exitCell;
-	std::vector<int[3]> m_distanceMatrixArray;
-	std::vector<std::vector<int>> m_distanceMatrixCoordinateList;
-	std::vector<std::vector<int>> m_distanceMatrix;
+	std::vector<std::vector<double>> m_distanceMatrix;
 
 	// === Location Tracking ==========================================================================
 
-	std::vector<int> m_currentRoom;
+	// These three are only updated in the FollowInstructions() and FollowInstructionsNotLast() methods
+	std::vector<int> m_nextRoom; // The room we are about to enter (while following instructions)
 	int m_currentVertex;
 	EOrientation m_currentOrientation;
 
@@ -48,7 +47,7 @@ private:
 	// === Accessor Functions =========================================================================
 public:
 	std::vector<std::vector<ERoom>>	GetRoomMap() const;
-	ERoom GetRoomType(int room_index) const;
+	ERoom GetRoomType(std::vector<int>) const;
 	std::vector<std::vector<int>> GetCellMap() const;
 	int GetEntranceRoom() const;
 	int GetExitRoom() const;
@@ -58,15 +57,14 @@ public:
 	int GetEntranceVertex() const;
 	int GetExitVertex() const;
 
-	std::vector<std::vector<int>> GetDistanceMatrix();
-	std::vector<std::vector<int>> GetDistanceMatrixCoordinateList();
-	//std::vector<int[3]> GetDistanceMatrixArray();
-
 	int GetCurrentVertex() const;
-	std::vector<int> GetCurrentRoom() const;
+	std::vector<int> GetNextRoom() const;
 
-	void SetCurrentRoom(int new_room_index);
+	//void SetNextRoom(int new_room_index);
+	void SetNextRoom(std::vector<int> coord);
 	void SetCurrentVertex(int new_vertex_index);
+
+	EOrientation GetCurrentOrientation();
 
 
 
@@ -76,24 +74,30 @@ public:
 	void UpdateCellMap();
 	void SetCurrentRoomType(ERoom roomType);
 	void CalculateBlockRooms(std::vector<int> *pBlockRooms) const;
-	std::vector<int> CalculateRoomVertices(int room_index) const;
+//	std::vector<int> CalculateRoomVertices(int room_index) const;
 	std::vector<int> CalculateRoomVertices(int row, int col) const;
 	std::vector<double> CalculateVertexCoords(int vertex) const;
 	void FollowInstructions(CInstructions &inputInstructions);
 	EInstruction FollowInstructionsNotLast(CInstructions &inputInstructions);
 
-	std::vector<std::vector<int>> DistanceMatrix();
-	std::vector<std::vector<int>> populateDistanceMatrixFromArray(std::vector<int>exampleArray, int rowCoordinate, int columnCoordinate, int roomWidth);
+	std::vector<std::vector<double>> DistanceMatrix();		// recomputes distance matrix
+	std::vector<std::vector<double>> GetDistanceMatrix();	// Doesnt recompute.
+	void populateDistanceMatrixFromArray(std::vector<int> roomVertices, int rowCoordinate, int columnCoordinate, int roomWidth);
 
 	void WriteCellMap(std::string filepath);
 
+	std::vector<int> RoomIndexToCoord(int room_index);
+
+	int RoomCoordToIndex(std::vector<int>);
+	std::vector<int> CalculateRoomVertices(std::vector<int> coord) const;
 
 	// === Private Functions ========================================================================
 private:
 	void CreateRoomMap();
 	void ComputeCellMapSize();
-	std::vector<int> CalculateRoomVertices(std::vector<int> coord) const;
-	std::vector<int> RoomIndextoCoord(int room_index) const;
+	
+	
+
 	
 };
 

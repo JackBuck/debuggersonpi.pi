@@ -24,7 +24,10 @@ void CBlockReader_test();
 int CBlockReader_test2();
 int CBlockReader_test3();
 void CBlockReader_test4();
-
+int Challenge1_run_test();
+int Challenge2_run_test();
+int Challenge3_run_test();
+int Challenge4_run_test();
 
 int TestAllFunctions()
 {
@@ -56,6 +59,14 @@ int TestAllFunctions()
 	//std::cout << '\n';
 	//returnVal += CMazeMapper_test();
 	//std::cout << '\n';
+//	returnVal += Challenge1_run_test();
+//	std::cout << '\n';
+	returnVal += Challenge2_run_test();
+	std::cout << '\n';
+	returnVal += Challenge3_run_test();
+	std::cout << '\n';
+	returnVal += Challenge4_run_test();
+	std::cout << '\n';
 
 
 

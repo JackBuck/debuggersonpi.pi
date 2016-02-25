@@ -94,6 +94,7 @@ class CGraph
 public:
 	// === Constructors and Destructors =============================================================
 	CGraph();
+	explicit CGraph(const std::vector<std::vector<double> >& distanceMatrix);
 	explicit CGraph(const std::vector<std::vector<double> >& distanceMatrix, const std::vector<int>& vertexLabels);
 
 	// === Public Functions =========================================================================
@@ -172,6 +173,9 @@ private:
 	enum class DistMatCheckResult { undefined, square, lowerTriangular, upperTriangular, badShape, invalidElements, tooLarge };
 
 	// === Private Functions ========================================================================
+	// Initialisation
+	void Initialise(const std::vector<std::vector<double> >& distanceMatrix, const std::vector<int>& vertexLabels);
+
 	// External look-up functions
 	int InternalToExternal(const unsigned int) const;
 	void InternalToExternal(const std::vector<unsigned int>&, std::vector<int>&) const;

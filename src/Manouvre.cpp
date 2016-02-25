@@ -13,6 +13,7 @@
 #include "GoodsOut.h"
 #include "GoodsIn.h"
 #include "DebugLog.hpp"
+#include "EnumsHeader.h"
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -38,11 +39,11 @@ void CManouvre::InstructionToManouvre(EInstruction instruction_type)
 	}
 }
 
-void CManouvre::LastInstructionToManouvre(EInstruction instruction_type)
+void CManouvre::LastInstructionBeforeBlock(EInstruction instruction_type)
 {
 	DEBUG_METHOD();
 
-	switch(instruction_type)
+	switch (instruction_type)
 	{
 	case EInstruction_Straight:
 	{
@@ -51,16 +52,16 @@ void CManouvre::LastInstructionToManouvre(EInstruction instruction_type)
 	case EInstruction_TurnLeft:
 	{
 		CManouvre::TurnRightInRoom();
-		CGoodsOut::Forward(HALFROOMLENGTH, false);
-		CManouvre::TurnRightInRoom();
-		CManouvre::TurnRightInRoom();
+		CGoodsOut::TurnRight90();
+		CGoodsOut::TurnRight90();
+		CGoodsOut::Forward(DISTANCE_TO_FIRST_CELL, false);
 	}
 	case EInstruction_TurnRight:
 	{
 		CManouvre::TurnLeftInRoom();
-		CGoodsOut::Forward(HALFROOMLENGTH, false);
-		CManouvre::TurnLeftInRoom();
-		CManouvre::TurnLeftInRoom();
+		CGoodsOut::TurnLeft90();
+		CGoodsOut::TurnLeft90();
+		CGoodsOut::Forward(DISTANCE_TO_FIRST_CELL, false);
 	}
 	}
 }

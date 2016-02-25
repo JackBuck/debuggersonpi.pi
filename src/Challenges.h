@@ -13,6 +13,7 @@
 #include "EnumsHeader.h"
 #include<vector>
 #include<string>
+#include "CMap.h"
 
 //~~~ CLASS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class CChallenges
@@ -24,7 +25,7 @@ public:
 	static void ChallengeTwo();
 	static void ChallengeThree();
 	static void ChallengeFour();
-	
+	static void SetNextRoomAfterReverseAndUTurn(CMap &aMap);
 };
 
 

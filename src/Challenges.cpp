@@ -460,7 +460,7 @@ void CChallenges::ChallengeFour()
 	{
 		CSignals::Notification2();
 		CManouvre::ReverseAndUTurn();
-		aMap.SetNextRoom(); // TODO: Must manually update aMap.m_nextRoom after ReverseAndUTurn
+		aMap.SetNextRoom(); // TODO: Must manually update aMap.m_nextRoom and m_currnetOrientation (but maybe not m_currentVertex?) after ReverseAndUTurn
 		continue;
 	}
 
@@ -474,7 +474,7 @@ void CChallenges::ChallengeFour()
 
 	// TODO: If we are collecting the block then the shortest distance isn't necessarily from the vertex we came (though due to time pressures I don't suggest you change it!)
 	CManouvre::ReverseAndUTurn();
-	aMap.SetNextRoom(); // TODO: Must manually update aMap.m_nextRoom after ReverseAndUTurn
+	aMap.SetNextRoom(); // TODO: Must manually update aMap.m_nextRoom and m_currnetOrientation (but maybe not m_currentVertex?) after ReverseAndUTurn
 
 	///////////////////////////////////////////////////////////////////////////////////
 	// Compute shortest path to start.
@@ -500,7 +500,7 @@ void CChallenges::ChallengeFour()
 	CManouvre::ReleaseBlock();
 
 	CManouvre::ReverseAndUTurn();
-	aMap.SetNextRoom(); // TODO: Must manually update aMap.m_nextRoom after ReverseAndUTurn
+	aMap.SetNextRoom(); // TODO: Must manually update aMap.m_nextRoom and m_currnetOrientation (but maybe not m_currentVertex?) after ReverseAndUTurn
 
 	}
 

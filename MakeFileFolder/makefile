@@ -20,29 +20,31 @@ vpath %.cpp $(REPO_DIR)/src \
 
 
 # Define source files
-SRCS  =     CBlockReader.cpp      \
-            CBlockReader_test.cpp \
-            CGraph.cpp            \
-            CGraph_test.cpp       \
-            Challenges.cpp        \
-            CInstruction_test.cpp \
-            CMap.cpp              \
-            CMap_test.cpp         \
-            CMazeMapper.cpp       \
-            CMazeMapper_test.cpp  \
-            CParseCSV.cpp         \
-            CParseCSV_test.cpp    \
-            CSVRow.cpp            \
-            DebugLog.cpp          \
-            GoodsIn.cpp           \
-            GoodsOut.cpp          \
-            Instructions.cpp      \
-            Main.cpp              \
-            Manouvre.cpp          \
-            Signals.cpp           \
-            TestFunctions.cpp     \
-            ExifTool.cpp          \
-            ExifToolPipe.cpp      \
+SRCS  =     CBlockReader.cpp        \
+            CBlockReader_test.cpp   \
+            CGraph.cpp              \
+            CGraph_test.cpp         \
+            Challenges.cpp          \
+            Challenges_Run_Test.cpp \
+            CInstruction_test.cpp   \
+            CMap.cpp                \
+            CMap_test.cpp           \
+            CMazeMapper.cpp         \
+            CMazeMapper_test.cpp    \
+            CParseCSV.cpp           \
+            CParseCSV_test.cpp      \
+            CSVRow.cpp              \
+            DebugLog.cpp            \
+            GoodsIn.cpp             \
+            GoodsOut.cpp            \
+            Instructions.cpp        \
+            Main.cpp                \
+            Manouvre.cpp            \
+            Signals.cpp             \
+            TestFunctions.cpp       \
+            TopLevel.cpp            \
+            ExifTool.cpp            \
+            ExifToolPipe.cpp        \
             TagInfo.cpp
 
 # Define object files (by naming rule)

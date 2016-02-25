@@ -722,7 +722,7 @@ int CMap::GetCurrentVertex() const
 }
 
 // This returns the room we are about to enter while following instructions
-std::vector<int> CMap::GetNextRoom() const
+int CMap::GetNextRoom() const
 {
 	DEBUG_METHOD();
 	return m_nextRoom;

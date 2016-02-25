@@ -58,7 +58,7 @@ public:
 	int GetExitVertex() const;
 
 	int GetCurrentVertex() const;
-	std::vector<int> GetNextRoom() const;
+	int GetNextRoom() const;
 
 	void SetNextRoom(int new_room_index);
 	void SetNextRoom(int row, int col);

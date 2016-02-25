@@ -76,7 +76,7 @@ void TopLevel::InterpretSwitches(vector<bool> switches, bool askerIsIdleState)
 	if (switches == vector<bool> { 0, 0, 0, 0 })      // 0000 -- Idle
 	{
 		if (!askerIsIdleState)
-			IdleState();
+			IdleState(); // Should only be called from Introduction
 		else
 			return; // Return control to the idle state
 	}

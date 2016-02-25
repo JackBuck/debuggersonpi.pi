@@ -132,7 +132,7 @@ void CChallenges::ChallengeThree()
 
 	CInstructions aInstructions = CInstructions(outputRoute, 10);
 
-	std::vector<EInstruction> macroInstructions = aInstructions.GetInstructions();
+	//std::vector<EInstruction> macroInstructions = aInstructions.GetInstructions();
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,10 +142,12 @@ void CChallenges::ChallengeThree()
 	// If you decide you need to use them, then the easiest way would be to use the CMap::FollowInstructions method.
 	CManouvre::MoveToStartVertex();
 
-	for(unsigned int i=0; i<macroInstructions.size(); i++)
-	{
-		CManouvre::InstructionToManoeuvre(macroInstructions[i]);
-	}
+//	for(unsigned int i=0; i<macroInstructions.size(); i++)
+//	{
+//		CManouvre::InstructionToManoeuvre(macroInstructions[i]);
+//	}
+	aMap.FollowInstructions(aInstructions);
+
 
 	CManouvre::ExitMap();
 
@@ -432,7 +434,9 @@ void CChallenges::ChallengeFour()
 
 		EInstruction last_instruction = aMap.FollowInstructionsNotLast(aInstructions); // Automatically updates aMap.m_nextRoom
 
-		CManouvre::LastInstructionBeforeBlock(last_instruction);
+		std::vector<int> nextRoomCoord = aMap.GetNextRoom(); // TODO: Check this is going to work when you're not ridiculously tired!!!
+		ERoom nextRoomType = aMap.GetRoomType(nextRoomCoord);
+		CManouvre::LastInstructionBeforeBlock(last_instruction, nextRoomType);
 
 		int current_block_number = CManouvre::ApproachAndPhotographBlock(); // Do not manually update aMap.m_nextRoom
 

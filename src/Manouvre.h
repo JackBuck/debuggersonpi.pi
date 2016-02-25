@@ -23,8 +23,8 @@ class CManouvre
 	// === Public Functions =========================================================================
 public:
 
-	static void InstructionToManoeuvre(EInstruction instruction_type);
-	static void LastInstructionBeforeBlock(EInstruction instruction_type);
+	static void InstructionToManoeuvre(EInstruction instruction_type, ERoom nextRoom);
+	static void LastInstructionBeforeBlock(EInstruction instruction_type, ERoom nextRoom);
 	static void MoveToStartVertex();
 	static void ExitMap();
 	static int ApproachAndPhotographBlock();
@@ -32,7 +32,8 @@ public:
 	static void ReleaseBlock();
 	static void ReverseAndUTurn();
 
-	static void StraightAcrossRoom();
+	static void StraightAcrossRoomNoJunct();
+	static void StraightAcrossRoomJunct();
 	static void TurnLeftInRoom();
 	static void TurnRightInRoom();
 	static ERoom DetectRoomType();

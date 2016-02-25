@@ -17,7 +17,7 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //
-void CManouvre::InstructionToManoeuvre(EInstruction instruction_type)
+void CManouvre::InstructionToManoeuvre(EInstruction instruction_type, ERoom nextRoom)
 {
 	DEBUG_METHOD();
 
@@ -25,7 +25,10 @@ void CManouvre::InstructionToManoeuvre(EInstruction instruction_type)
 	{
 	case EInstruction_Straight:
 	{
-		CManouvre::StraightAcrossRoom();
+		if (nextRoom == ERoom_NorthSouth || nextRoom == ERoom_EastWest)
+			CManouvre::StraightAcrossRoomNoJunct();
+		else
+			CManouvre::StraightAcrossRoomJunct();
 	}
 	case EInstruction_TurnLeft:
 	{
@@ -36,9 +39,10 @@ void CManouvre::InstructionToManoeuvre(EInstruction instruction_type)
 		CManouvre::TurnRightInRoom();
 	}
 	}
+
 }
 
-void CManouvre::LastInstructionBeforeBlock(EInstruction instruction_type)
+void CManouvre::LastInstructionBeforeBlock(EInstruction instruction_type, ERoom nextRoom)
 {
 	DEBUG_METHOD();
 
@@ -46,7 +50,10 @@ void CManouvre::LastInstructionBeforeBlock(EInstruction instruction_type)
 	{
 	case EInstruction_Straight:
 	{
-		CManouvre::StraightAcrossRoom();
+		if (nextRoom == ERoom_NorthSouth || nextRoom == ERoom_EastWest)
+			CManouvre::StraightAcrossRoomNoJunct();
+		else
+			CManouvre::StraightAcrossRoomJunct();
 	}
 	case EInstruction_TurnLeft:
 	{
@@ -85,12 +92,19 @@ void CManouvre::ExitMap()
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Move straight across a room from one vertex to another.
-void CManouvre::StraightAcrossRoom()
+void CManouvre::StraightAcrossRoomJunct()
 {
 	DEBUG_METHOD();
 
 	CGoodsOut::ForwardDetectJunction();
 	CGoodsOut::ForwardDetectJunction();
+}
+
+void CManouvre::StraightAcrossRoomNoJunct()
+{
+	DEBUG_METHOD();
+
+	CGoodsOut::ForwardDistance(ROOMLENGTH, true);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

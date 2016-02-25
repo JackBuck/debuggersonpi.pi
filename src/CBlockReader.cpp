@@ -473,6 +473,7 @@ void CBlockReader::ReadLightingCalibration()
 	m_ShutterSpeed = 0;
 	m_Iso = 0;
 
+	// TODO: Be careful here, it must always exist!! (since written into the default constructor)
 	ifstream file(lightingCalibrationPath);
 	if (!file.is_open())
 		throw Exception_CBlockReader_CantOpenFile { lightingCalibrationPath };

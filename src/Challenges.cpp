@@ -105,9 +105,7 @@ void CChallenges::ChallengeTwo()
 void CChallenges::ChallengeThree()
 {
 	DEBUG_METHOD();
-	std::string filepath;
-
-	filepath = std::string("/mnt/BlankUSB/RoadRunnerMap.csv");
+	std::string filepath { "/mnt/BlankUSB/RoadRunnerMap.csv" };
 
 	CMap aMap = CMap(filepath);
 	int entrance_vertex = aMap.GetEntranceVertex();
@@ -155,7 +153,6 @@ void CChallenges::ChallengeThree()
 
 	CSignals::Complete();
 }
-
 
 void CChallenges::ChallengeFour()
 {

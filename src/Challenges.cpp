@@ -240,7 +240,7 @@ void CChallenges::ChallengeFour()
 			
 
 			//////////////////////////////////////////////////////////////////////////////
-			// For each vertex of the current room check shorteset path to each
+			// For each vertex of the current room check shortest path to each
 			for(int k=0; k<4; k++)
 			{
 				/////////////////////////////////////////////////////////////////////////
@@ -254,7 +254,7 @@ void CChallenges::ChallengeFour()
 				int current_vertex = verticesOfStartRoom[k];
 
 				//////////////////////////////////////////////////////////////////////////////////////////////
-				// Look at all blocks which havent been visited yet.
+				// Look at all blocks which haven't been visited yet.
 
 				for(unsigned int i=0; i<unknown_block_rooms.size(); i++)
 				{			
@@ -435,7 +435,7 @@ void CChallenges::ChallengeFour()
 		}
 	}
 	
-	for(size_t i=0; i<unknown_block_rooms.size(); i++)
+	for(size_t i=0; i<unknown_block_rooms.size(); i++) // TODO: Did you really want this twice??
 	{
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		// Remove the current room from the list of unknown rooms as we have just discovered which 

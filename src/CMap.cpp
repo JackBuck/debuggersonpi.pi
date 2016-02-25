@@ -699,7 +699,7 @@ int CMap::GetEntranceVertex() const
 {
 	DEBUG_METHOD();
 
-	vector<int> coord = {m_cellheight/3, 0};
+	vector<int> coord = {m_cellheight/3 -1, 0};
 
 	return (coord[0]+1)*(2*m_cellwidth/3+1) + 2*coord[1] +1;
 }
@@ -708,7 +708,7 @@ int CMap::GetExitVertex() const
 {
 	DEBUG_METHOD();
 
-	vector<int> coord = {0, m_cellwidth/3};
+	vector<int> coord = {0, m_cellwidth/3 -1};
 
 	return (coord[0])*(2*m_cellwidth/3 + 1) + 2*coord[1] + 1;
 }

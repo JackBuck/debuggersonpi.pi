@@ -25,7 +25,7 @@ SRCS  =     CBlockReader.cpp        \
             CGraph.cpp              \
             CGraph_test.cpp         \
             Challenges.cpp          \
-            Challenges_Run_Test.cpp \
+            Challenge_Run_Test.cpp  \
             CInstruction_test.cpp   \
             CMap.cpp                \
             CMap_test.cpp           \
@@ -45,7 +45,8 @@ SRCS  =     CBlockReader.cpp        \
             TopLevel.cpp            \
             ExifTool.cpp            \
             ExifToolPipe.cpp        \
-            TagInfo.cpp
+            TagInfo.cpp             \
+            pi_spi.cpp
 
 # Define object files (by naming rule)
 OBJS  = $(SRCS:.cpp=.o)
@@ -54,12 +55,12 @@ OBJS  = $(SRCS:.cpp=.o)
 INCLUDE_DIRS := -I/usr/include/opencv -I $(REPO_DIR)/src -I $(REPO_DIR)/libs
 
 # Define linker flags for libraries
-LIBS := -lopencv_core -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_video -lopencv_highgui -lopencv_features2d
+LIBS := -lopencv_core -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_video -lopencv_highgui -lopencv_features2d -lwiringPi
 
 # # Implicit rule variables
 CXX = g++
-CPPFLAGS = $(INCLUDE_DIRS)
-CXXFLAGS = -std=c++0x -O0 -g0 -Wall -c -fmessage-length=0
+CPPFLAGS = $(INCLUDE_DIRS) -std=c++0x
+CXXFLAGS = -O0 -g0 -Wall -c -fmessage-length=0
 
 # All target
 all: renispace
